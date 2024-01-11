@@ -50,12 +50,15 @@ public class testItem extends Item {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
 
-        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setPos1(pos);
+//        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setPos1(pos);
+        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+//        AkatZumaWorldEdit.PlayerWEMap.containsKey(player.getUUID())
+        pwm.setPos1(pos);
 
         //判断是客户端
         if(player.isLocalPlayer()){
             player.sendSystemMessage(Component.literal("[")
-                    .append(AkatZumaWorldEdit.Akat)
+                    .append(AkatZumaWorldEdit.preAkat)
                     .append("左键选择了位置" + pos.toString())
             );
         }
@@ -79,7 +82,7 @@ public class testItem extends Item {
         if(world.isClientSide || player == null) {
 
             player.sendSystemMessage(Component.literal("[")
-                    .append(AkatZumaWorldEdit.Akat)
+                    .append(AkatZumaWorldEdit.preAkat)
                     .append("右键选择了位置" + blockPos2.toString())
             );
 
@@ -92,43 +95,5 @@ public class testItem extends Item {
 
         return InteractionResult.SUCCESS;
     }
-
-//    @Override
-//    public InteractionResult useOn(UseOnContext pContext) {
-//        Level world = pContext.getLevel();
-//        Player player = pContext.getPlayer();
-//        if(world.isClientSide || player == null) return InteractionResult.FAIL;
-//
-//        id.setTestData();
-//        player.sendSystemMessage(Component.literal("设置id="+ id.getTestData() ));
-////
-////        BlockPos blockPos = pContext.getClickedPos();
-////        BlockState airBlock = Blocks.AIR.defaultBlockState();
-//
-////        BlockPos bp = blockPos;
-////        for ( var i=0; i<5; i++){
-////            bp = bp.offset(1, 0, 0);
-////            if(!isPlaceBlock(world,player,bp,airBlock)){
-////                player.sendSystemMessage(Component.literal("位置:"+ bp.toString() + "替换失败！！！"));
-////                return InteractionResult.FAIL;
-////            }
-////        }
-//////        player.sendSystemMessage(Component.literal("位置2:"+ blockPos.toString() + "已替换"));
-////        BlockPos bp2 = blockPos;
-////        player.sendSystemMessage(Component.literal("位置2:"+ bp2.toString() + "已替换"));
-////        for ( var i=0; i<5; i++){
-////            bp2 = bp2.offset(1, 0, 0);
-////            player.sendSystemMessage(Component.literal("位置:"+ bp2.toString() + "已替换"));
-////            world.setBlockAndUpdate(bp2, airBlock);
-////
-////        }
-//
-//
-//
-//        return InteractionResult.PASS;
-//    }
-
-
-
 
 }

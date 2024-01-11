@@ -23,6 +23,8 @@ public class AkatZumaWorldEdit{
 
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
             .append( Component.literal("]:").withStyle(ChatFormatting.WHITE));
+    public static Component preAkat = Component.literal("渣男").withStyle(ChatFormatting.RED).append(Akat);
+
 
 
 
