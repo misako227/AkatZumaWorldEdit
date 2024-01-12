@@ -1,7 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 public class QueryBlockStateItem extends Item{
 
@@ -36,15 +37,12 @@ public class QueryBlockStateItem extends Item{
     //左键
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-//        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-////        VertexConsumer builder = buffer.getBuffer(OurRenderTypes.lines());
-//        VertexConsumer lineBuilder = buffer.getBuffer(RenderType.LINES);
-//        float colorR = 0, colorG = 1, colorB = 0;
+        UUID uuid = player.getUUID();
+        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
+
+
 //
-//        AABB aabb = new AABB(pos);
-//        LevelRenderer.renderLineBox(new PoseStack(),lineBuilder, aabb, colorR, colorG, colorB, 0.5f);
-//
-        return true;
+        return false;
     }
 
     //这在使用item时，在激活block之前调用。
@@ -52,15 +50,16 @@ public class QueryBlockStateItem extends Item{
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level world = context.getLevel();
         Player player = context.getPlayer();
-        BlockPos blockPos =  context.getClickedPos();
-        BlockState blockState = world.getBlockState(blockPos);
+
+
         if(player.isLocalPlayer()){
-            String msg = "value=" + Config.VALUE.get().toString();
-            AkatZumaWorldEdit.sendAkatMessage(msg,player);
-            String msg2 = blockState.toString();
-//            blockState.g
-            AkatZumaWorldEdit.sendAkatMessage(msg2 ,player);
-//            Config.whiteListBlock.get().
+            BlockPos blockPos =  context.getClickedPos();
+            BlockState blockState = world.getBlockState(blockPos);
+            String blockStateStr = blockState.toString().replaceFirst("}", "")
+                    .replaceFirst("^Block\\{", "§a");
+
+            Component component = Component.translatable("chat.item.query_block_state.right");
+            AkatZumaWorldEdit.sendAkatMessage(component, blockStateStr, player);
 
 
         }

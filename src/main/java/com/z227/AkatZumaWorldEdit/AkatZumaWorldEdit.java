@@ -26,6 +26,7 @@ public class AkatZumaWorldEdit{
     public static final String MODID = "akatzumaworldedit";
     public static final String MODNAME = "AkatZumaWorldEdit";
 
+
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
             .append( Component.literal("]:").withStyle(ChatFormatting.WHITE));
 
@@ -52,6 +53,10 @@ public class AkatZumaWorldEdit{
 
     public static void sendAkatMessage(String message, Component component, Player player){
         player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
+    }
+
+    public static void sendAkatMessage(Component component, String message,  Player player){
+        player.sendSystemMessage(Component.literal("[").append(Akat).append(component).append(message));
     }
 
 

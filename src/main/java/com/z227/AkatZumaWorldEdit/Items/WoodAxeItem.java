@@ -54,8 +54,9 @@ public class WoodAxeItem extends Item {
 
         //判断是客户端
         if(player.isLocalPlayer()){
-            String msg = "左键选择了位置" + pos.toString();
-            AkatZumaWorldEdit.sendAkatMessage(msg , player);
+            Component component = Component.translatable("chat.item.wood_axe.left");
+            String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");;
+            AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
         }
 
@@ -69,16 +70,16 @@ public class WoodAxeItem extends Item {
         Level world = context.getLevel();
         Player player = context.getPlayer();
         BlockPos blockPos2 = context.getClickedPos();
-
+//        player.createCommandSourceStack().
         PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
 
         pwm.setPos2(blockPos2);
 
         if(world.isClientSide) {
-
-            String msg = "右键选择了位置" + blockPos2.toString();
-            AkatZumaWorldEdit.sendAkatMessage(msg , player);
+            Component component = Component.translatable("chat.item.wood_axe.right");
+            String msg = blockPos2.toString().replaceFirst("^MutableBlockPos", "§5");
+            AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
 //            player.sendSystemMessage(Component.literal("[")
 //                    .append(AkatZumaWorldEdit.preAkat)
