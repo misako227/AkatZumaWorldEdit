@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class testItem extends Item {
+public class WoodAxeItem extends Item {
 
-    public testItem(Properties pProperties) {
+    public WoodAxeItem(Properties pProperties) {
         super(pProperties);
     }
 
@@ -41,7 +41,6 @@ public class testItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         if(pLevel.isClientSide)return super.use(pLevel, pPlayer, pUsedHand);
 
-
         return super.use(pLevel, pPlayer, pUsedHand);
 
     }
@@ -50,17 +49,14 @@ public class testItem extends Item {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
 
-//        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setPos1(pos);
         PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-//        AkatZumaWorldEdit.PlayerWEMap.containsKey(player.getUUID())
         pwm.setPos1(pos);
 
         //判断是客户端
         if(player.isLocalPlayer()){
-            player.sendSystemMessage(Component.literal("[")
-                    .append(AkatZumaWorldEdit.preAkat)
-                    .append("左键选择了位置" + pos.toString())
-            );
+            String msg = "左键选择了位置" + pos.toString();
+            AkatZumaWorldEdit.sendAkatMessage(msg , player);
+
         }
 
 
@@ -79,12 +75,15 @@ public class testItem extends Item {
 
         pwm.setPos2(blockPos2);
 
-        if(world.isClientSide || player == null) {
+        if(world.isClientSide) {
 
-            player.sendSystemMessage(Component.literal("[")
-                    .append(AkatZumaWorldEdit.preAkat)
-                    .append("右键选择了位置" + blockPos2.toString())
-            );
+            String msg = "右键选择了位置" + blockPos2.toString();
+            AkatZumaWorldEdit.sendAkatMessage(msg , player);
+
+//            player.sendSystemMessage(Component.literal("[")
+//                    .append(AkatZumaWorldEdit.preAkat)
+//                    .append("右键选择了位置" + blockPos2.toString())
+//            );
 
             Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pwm.getPos1(),pwm.getPos2());
             System.out.println("长=" + vec3.getX() + " 高="+ vec3.getY() +" 宽="+ vec3.getZ());

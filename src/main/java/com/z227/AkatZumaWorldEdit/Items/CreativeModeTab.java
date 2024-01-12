@@ -13,7 +13,8 @@ public class CreativeModeTab {
     public static void buildContents(BuildCreativeModeTabContentsEvent event) {
         // 添加到创造模式物品栏
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(AkatZumaWorldEdit.TEST_ITEM);
+            event.accept(AkatZumaWorldEdit.Query_Item);
+            event.accept(AkatZumaWorldEdit.WOOD_AXE);
         }
     }
 }

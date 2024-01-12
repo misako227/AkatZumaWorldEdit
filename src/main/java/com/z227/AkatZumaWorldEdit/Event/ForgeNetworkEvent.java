@@ -41,4 +41,8 @@ public class ForgeNetworkEvent {
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
     }
+
+
+
+
 }
