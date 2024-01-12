@@ -13,8 +13,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SetCommand {
@@ -46,15 +46,14 @@ public class SetCommand {
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         BlockState blockState =  blockInput.getState();
 
-
-
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
-        Level world = player.getCommandSenderWorld();
+
+        ServerLevel serverlevel = context.getSource().getLevel();
+//        Level world = player.getCommandSenderWorld();
+        PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState);
 
 
-
-        PlaceBlock.traverseCube(bp1,bp2,world,player, blockState);
         AkatZumaWorldEdit.sendAkatMessage("已替换成",blockState.getBlock().getName().withStyle(ChatFormatting.GREEN), player);
 
     }

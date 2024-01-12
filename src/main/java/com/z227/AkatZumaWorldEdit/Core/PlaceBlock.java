@@ -3,11 +3,10 @@ package com.z227.AkatZumaWorldEdit.Core;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.level.BlockEvent;
@@ -35,14 +34,16 @@ public class PlaceBlock {
     }
 
     //遍历两个坐标之间的每个点
-    public static void traverseCube(BlockPos pos1, BlockPos pos2, Level world, Player player,BlockState blockState) {
+    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState) {
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
             for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
                     // Process the coordinate (x, y, z) here
-                    world.setBlockAndUpdate(new BlockPos(x,y,z),blockState);
+//                    world.setBlockAndUpdate(new BlockPos(x,y,z),blockState);
 //                    world.setBlock(new BlockPos(x,y,z),blockState);
-//                    world.setBlock(new BlockPos(x,y,z),blockState, 2);
+                    BlockPos v3 = new BlockPos(x,y,z);
+                    world.setBlock(v3,blockState, 2);
+//                    world.blockUpdated(v3, blockState.getBlock());
 //                    System.out.println("Coordinate: (" + x + ", " +
 //                    y + ", " + z + ")");
                 }
