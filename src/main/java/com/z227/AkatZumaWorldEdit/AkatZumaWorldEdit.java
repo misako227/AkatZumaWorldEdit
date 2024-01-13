@@ -1,11 +1,13 @@
 package com.z227.AkatZumaWorldEdit;
 
+import com.mojang.logging.LogUtils;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +28,7 @@ import java.util.UUID;
 public class AkatZumaWorldEdit{
     public static final String MODID = "akatzumaworldedit";
     public static final String MODNAME = "AkatZumaWorldEdit";
+    public static final Logger LOGGER = LogUtils.getLogger();
 
 
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
@@ -32,6 +36,7 @@ public class AkatZumaWorldEdit{
 
 
     public static Map<UUID, PlayerMapData> PlayerWEMap = new HashMap<>();
+    public static Map<String,Boolean> ConfigMap = new HashMap<>();      //黑白名单方块
 
     public AkatZumaWorldEdit() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -46,9 +51,13 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Item> Query_Item = ITEMS.register("query_blockstate_item", () -> new QueryBlockStateItem(new Item.Properties()));
 
 
+
     //发送消息
-    public static void sendAkatMessage(String message, Player player){
-        player.sendSystemMessage(Component.literal("[").append(Akat).append(message));
+    public static void sendAkatMessage(Component component, Player player){
+        player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
+    }
+    public static void sendAkatMessage(MutableComponent component, Player player){
+        player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
     }
 
     public static void sendAkatMessage(String message, Component component, Player player){

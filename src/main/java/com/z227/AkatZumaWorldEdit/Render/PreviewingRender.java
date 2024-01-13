@@ -1,6 +1,5 @@
 package com.z227.AkatZumaWorldEdit.Render;
 
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -19,6 +18,8 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber
@@ -50,9 +51,11 @@ public class PreviewingRender {
 
     @SubscribeEvent
     public static void onRenderLastEvent(RenderLevelStageEvent event) {
-
+        if(player == null) return;
         //获取方块坐标
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+
+
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
         if (pStart != null && pEnd != null) {
@@ -65,7 +68,7 @@ public class PreviewingRender {
             BlockPos p2 = new BlockPos(Math.max(pStart.getX(), pEnd.getX()) + 1, Math.max(pStart.getY(), pEnd.getY()) + 1, Math.max(pStart.getZ(), pEnd.getZ()) + 1);
             AABB aabb = getAABB(p1, p2);
 
-            //以下两项不知道做什么的，但是最好不要动
+            //以下两项不知道做什么的，但是最好不要动 //builder
             VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
             PoseStack stack = event.getPoseStack();
 
@@ -77,7 +80,8 @@ public class PreviewingRender {
 
             //渲染
             stack.pushPose();
-            stack.translate( - s0,  - s1,  - s2);
+//            stack.translate( - s0,  - s1,  - s2);
+            stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
             LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 255, 90, 90, 1);
             RenderSystem.enableDepthTest();
             stack.popPose();

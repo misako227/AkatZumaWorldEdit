@@ -25,6 +25,13 @@ public class LanguageDataGenerator {
             this.add("item.test_item.desc2", "§6右键§f选取第二个点");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
             this.add("item.QueryBlockStateItem.desc1", "右键§a方块§f查询方块状态");
+
+            this.add("chat.akatzuma.error.invalid_pos", "无效的选区，请检查两个选区位置");
+            this.add("chat.akatzuma.error.volume_too_long", "选区过大，选区最大范围为§5");
+            this.add("chat.akatzuma.error.chunk_not_loaded", "区块没有加载");
+            this.add("chat.akatzuma.error.black_list", "此方块在黑名单中，无法进行操作");
+
+            this.add("chat.akatzuma.set.success", "已设置方块");
         }
     }
 

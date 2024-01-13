@@ -1,7 +1,6 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 public class QueryBlockStateItem extends Item{
 
@@ -35,15 +33,13 @@ public class QueryBlockStateItem extends Item{
 
 
     //左键
-    @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-        UUID uuid = player.getUUID();
-        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
-
-
+//    @Override
+//    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+//        UUID uuid = player.getUUID();
+//        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
 //
-        return false;
-    }
+//        return false;
+//    }
 
     //这在使用item时，在激活block之前调用。
     @Override
@@ -58,7 +54,8 @@ public class QueryBlockStateItem extends Item{
             String blockStateStr = blockState.toString().replaceFirst("}", "")
                     .replaceFirst("^Block\\{", "§a");
 
-            Component component = Component.translatable("chat.item.query_block_state.right");
+            Component component = blockState.getBlock().getName().append(Component.literal(": "));
+//            Component component = Component.translatable("chat.item.query_block_state.right");
             AkatZumaWorldEdit.sendAkatMessage(component, blockStateStr, player);
 
 

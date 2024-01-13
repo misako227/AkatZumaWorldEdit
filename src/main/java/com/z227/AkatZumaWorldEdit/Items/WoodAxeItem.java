@@ -17,8 +17,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class WoodAxeItem extends Item {
 
@@ -48,14 +49,28 @@ public class WoodAxeItem extends Item {
     //左键
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+        Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
+        if(AWE.get(player.getUUID()) == null){
+            AWE.put(player.getUUID(), new PlayerMapData(player.getName().getString()));
+        }
 
-        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData pwm = AWE.get(player.getUUID());
         pwm.setPos1(pos);
 
         //判断是客户端
         if(player.isLocalPlayer()){
+            //判断pos2存不存在
+            BlockPos pos2 = null; int size;
+            if (pwm.getPos2() !=null) pos2 = pwm.getPos2();
+
             Component component = Component.translatable("chat.item.wood_axe.left");
-            String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");;
+            String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
+
+            if(pos2!=null){
+                Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos, pos2);
+                size =  vec3.getX()*vec3.getY()*vec3.getZ();
+                msg = String.format("%s §5(%s)", msg, size);
+            }
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
         }
@@ -67,28 +82,36 @@ public class WoodAxeItem extends Item {
     //这在使用item时，在激活block之前调用。
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
+
+
         Level world = context.getLevel();
         Player player = context.getPlayer();
         BlockPos blockPos2 = context.getClickedPos();
-//        player.createCommandSourceStack().
-        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
+        if(AWE.get(player.getUUID()) == null){
+            AWE.put(player.getUUID(), new PlayerMapData(player.getName().getString()));
+        }
 
+        PlayerMapData pwm = AWE.get(player.getUUID());
         pwm.setPos2(blockPos2);
 
+        //判断是客户端
         if(world.isClientSide) {
+            //判断pos2存不存在
+            BlockPos pos1 = null; int size;
+            if (pwm.getPos1() !=null) pos1 = pwm.getPos1();
+
             Component component = Component.translatable("chat.item.wood_axe.right");
             String msg = blockPos2.toString().replaceFirst("^MutableBlockPos", "§5");
+
+            if(pos1!=null){
+                Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, blockPos2);
+                size =  vec3.getX()*vec3.getY()*vec3.getZ();
+                msg = String.format("%s §5(%s)", msg, size);
+            }
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
-//            player.sendSystemMessage(Component.literal("[")
-//                    .append(AkatZumaWorldEdit.preAkat)
-//                    .append("右键选择了位置" + blockPos2.toString())
-//            );
-
-            Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pwm.getPos1(),pwm.getPos2());
-            System.out.println("长=" + vec3.getX() + " 高="+ vec3.getY() +" 宽="+ vec3.getZ());
-            System.out.println("方块数量="+ vec3.getX()*vec3.getY()*vec3.getZ());
         }
 
 
