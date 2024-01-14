@@ -44,19 +44,67 @@ public class PlaceBlock {
         UUID uuid = player.getUUID();
         PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
 
-
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
             for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
 //                    world.setBlockAndUpdate(new BlockPos(x,y,z),blockState);
 //                    world.setBlock(new BlockPos(x,y,z),blockState);
                     BlockPos v3 = new BlockPos(x,y,z);
+//                    pwm.setUndoDataMap(v3, blockState);
 //                    pwm.setUndoDataMap(world.getBlockState(v3), v3);
                     world.setBlock(v3,blockState, 2);
 
                 }
             }
         }
+    }
+
+    //遍历两个坐标之间的每个点
+    public static void copy(BlockPos pos1, BlockPos pos2, Level world, Player player) {
+        UUID uuid = player.getUUID();
+        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
+
+        for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
+            for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
+                for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
+                    BlockPos v3 = new BlockPos(x,y,z);
+                    BlockState blockState = world.getBlockState(v3);
+                    pwm.setUndoDataMap(v3, blockState);
+
+                }
+            }
+        }
+    }
+
+
+     public static boolean checkArea(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
+         // 选区大小
+         Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
+         int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
+
+         int configVolume = Config.DEFAULTValue.get();
+         if(Config.VIPPlayerList.get().contains(player.getName().toString())){
+             configVolume = Config.VIPValue.get();
+         }
+         if(volume > configVolume){
+             Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
+             AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(configVolume), player);
+             return false;
+         }
+         return true;
+     }
+
+    public static boolean checkBlackList(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
+        //检查黑名单
+        String blockName = blockState.getBlock().getDescriptionId().replaceFirst("^block.", "").replaceFirst("\\.", ":");
+        Map<String,Boolean> CM =  AkatZumaWorldEdit.ConfigMap;
+
+        if(CM.get(blockName) != null && !CM.get(blockName)){
+            MutableComponent component = Component.translatable("chat.akatzuma.error.black_list");
+            AkatZumaWorldEdit.sendAkatMessage(component, player);
+            return false;
+        }
+        return true;
     }
 
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
@@ -70,29 +118,12 @@ public class PlaceBlock {
         //如果不是管理员
         if(!permissionLevel){
             // 选区大小
-            Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
-            int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
-
-            int configVolume = Config.DEFAULTValue.get();
-            if(Config.VIPPlayerList.get().contains(player.getName().toString())){
-                configVolume = Config.VIPValue.get();
+            if(!checkArea(pos1, pos2, world, player, blockState, permissionLevel)){
+                return  false;
             }
-            if(volume > configVolume){
-                Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
-                AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(configVolume), player);
-                return false;
-            }
-
             //检查黑名单
-            String blockName = blockState.getBlock().getDescriptionId().replaceFirst("^block.", "").replaceFirst("\\.", ":");
-            Map<String,Boolean> CM =  AkatZumaWorldEdit.ConfigMap;
-            System.out.println(blockName);
-            System.out.println(CM);
-            System.out.println(CM.get(blockName));
-            if(CM.get(blockName) != null && !CM.get(blockName)){
-                MutableComponent component = Component.translatable("chat.akatzuma.error.black_list");
-                AkatZumaWorldEdit.sendAkatMessage(component, player);
-                return false;
+            if(!checkBlackList(pos1, pos2, world, player, blockState, permissionLevel)){
+                return  false;
             }
 
             //区块是否加载

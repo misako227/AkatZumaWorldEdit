@@ -28,6 +28,7 @@ public class SetClientCommand {
 //                                    CompletableFuture.runAsync(()->{
 //                                        setBlock(context);
 //                                    });
+                                    new Thread(() -> setBlock(context)).start();
                                     setBlock(context);
                                     return 1;
                                 })
@@ -60,15 +61,24 @@ public class SetClientCommand {
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         BlockState blockState =  blockInput.getState();
 
+        Level world = context.getSource().getUnsidedLevel();
+        System.out.println(world.getMapData("123"));
+        System.out.println("----------------");
+        System.out.println(AkatZumaWorldEdit.PlayerWEMap);
+
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
 
-        Level world = context.getSource().getUnsidedLevel();
+
+
+
 //        Level world = player.getCommandSenderWorld();
         if(PlaceBlock.canSetBlock(bp1,bp2,world,player, blockState,playerPermission)){
             AkatZumaWorldEdit.LOGGER.info("this is client side");
             System.out.println("getDescriptionId:" + AkatZumaWorldEdit.ConfigMap);
         }
+
+
 
 
 

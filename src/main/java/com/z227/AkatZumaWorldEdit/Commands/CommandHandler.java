@@ -20,10 +20,11 @@ public class CommandHandler {
         CommandBuildContext commandbuildcontext = Commands.createValidationContext(VanillaRegistries.createLookup());
 
         SetCommand.register(dispatcher,commandbuildcontext);
-
+        CopyCommand.register(dispatcher,commandbuildcontext);
 
     }
 
+    //client 命令
     @SubscribeEvent
     public static void onServerStarting(RegisterClientCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
