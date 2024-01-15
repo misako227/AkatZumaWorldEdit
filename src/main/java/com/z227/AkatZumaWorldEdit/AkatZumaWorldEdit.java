@@ -7,7 +7,6 @@ import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -36,12 +35,16 @@ public class AkatZumaWorldEdit{
 
 
     public static Map<UUID, PlayerMapData> PlayerWEMap = new HashMap<>();
-    public static Map<String,Boolean> ConfigMap = new HashMap<>();      //黑白名单方块
+
+    public static Map<String, Integer> defaultBlockMap = new HashMap<>();      //黑白名单方块
+    public static Map<String, Integer> VipBlockMap = new HashMap<>();      //vip黑白名单方块
+
 
     public AkatZumaWorldEdit() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
+
 
     }
 
@@ -52,11 +55,12 @@ public class AkatZumaWorldEdit{
 
 
 
+
+
+
+
     //发送消息
     public static void sendAkatMessage(Component component, Player player){
-        player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
-    }
-    public static void sendAkatMessage(MutableComponent component, Player player){
         player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
     }
 
@@ -66,6 +70,10 @@ public class AkatZumaWorldEdit{
 
     public static void sendAkatMessage(Component component, String message,  Player player){
         player.sendSystemMessage(Component.literal("[").append(Akat).append(component).append(message));
+    }
+
+    public static void sendAkatMessage(Component message, Component component, Player player){
+        player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
     }
 
 

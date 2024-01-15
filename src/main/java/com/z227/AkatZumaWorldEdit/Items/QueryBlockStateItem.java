@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -25,6 +26,7 @@ public class QueryBlockStateItem extends Item{
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc1"));
+        pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc2"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }
@@ -52,11 +54,12 @@ public class QueryBlockStateItem extends Item{
             BlockPos blockPos =  context.getClickedPos();
             BlockState blockState = world.getBlockState(blockPos);
             String blockStateStr = blockState.toString().replaceFirst("}", "")
-                    .replaceFirst("^Block\\{", "§a");
+                    .replaceFirst("^Block\\{", "");
 
             Component component = blockState.getBlock().getName().append(Component.literal(": "));
+            Component copy = SendCopyMessage.send(blockStateStr);
 //            Component component = Component.translatable("chat.item.query_block_state.right");
-            AkatZumaWorldEdit.sendAkatMessage(component, blockStateStr, player);
+            AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
 
 
         }

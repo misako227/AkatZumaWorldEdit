@@ -1,7 +1,10 @@
 package com.z227.AkatZumaWorldEdit.Event;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,7 +20,8 @@ public class ForgeNetworkEvent {
         String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
-//        System.out.println("登录play："+ AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).getName());
+        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
+
     }
 
     @SubscribeEvent

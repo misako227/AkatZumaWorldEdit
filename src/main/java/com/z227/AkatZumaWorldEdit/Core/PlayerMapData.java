@@ -10,6 +10,8 @@ public class PlayerMapData {
     private String name;
     private BlockPos pos1;
     private BlockPos pos2;
+    private boolean vip;
+    private boolean flag;
 //    private Map<BlockState, List<BlockPos>> undoDataMap;
     private Map<BlockPos, BlockState> undoDataMap = new HashMap<>();
 
@@ -28,6 +30,7 @@ public class PlayerMapData {
 
     public PlayerMapData(String name) {
         this.name = name;
+        this.flag = true;
     }
 
     public String getName() {
@@ -52,5 +55,21 @@ public class PlayerMapData {
 
     public void setPos2(BlockPos pos2) {
         this.pos2 = pos2;
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

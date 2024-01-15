@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Core;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -77,15 +78,17 @@ public class PlaceBlock {
     }
 
 
-     public static boolean checkArea(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
+
+
+     public static boolean checkArea(BlockPos pos1, BlockPos pos2,Player player,int configVolume ){
          // 选区大小
          Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
          int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
 
-         int configVolume = Config.DEFAULTValue.get();
-         if(Config.VIPPlayerList.get().contains(player.getName().toString())){
-             configVolume = Config.VIPValue.get();
-         }
+//         int configVolume = Config.DEFAULTValue.get();
+//         if(Config.VIPPlayerList.get().contains(player.getName().toString())){
+//             configVolume = Config.VIPValue.get();
+//         }
          if(volume > configVolume){
              Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
              AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(configVolume), player);
@@ -94,12 +97,12 @@ public class PlaceBlock {
          return true;
      }
 
-    public static boolean checkBlackList(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
+    public static boolean checkBlackList(Player player, BlockState blockState, Map<String,Integer> CM){
         //检查黑名单
-        String blockName = blockState.getBlock().getDescriptionId().replaceFirst("^block.", "").replaceFirst("\\.", ":");
-        Map<String,Boolean> CM =  AkatZumaWorldEdit.ConfigMap;
+        String blockName = blockState.getBlock().toString().replace("Block{","").replace("}" ,"");
+//        Map<String,Boolean> CM =  AkatZumaWorldEdit.ConfigMap;
 
-        if(CM.get(blockName) != null && !CM.get(blockName)){
+        if(CM.get(blockName) != null && CM.get(blockName) < 0){
             MutableComponent component = Component.translatable("chat.akatzuma.error.black_list");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
@@ -107,7 +110,25 @@ public class PlaceBlock {
         return true;
     }
 
-    public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel){
+    //检查背包
+    public static boolean isCheckInventory( Player player, BlockState blockState){
+        Map<String, Integer> blockInInvMap = Util.findBlockFromPlayerInv(blockState,player);
+        if(blockInInvMap != null && blockInInvMap.get("count") > 0){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD){
+        // 判断上次操作是否完成
+        if(!PMD.isFlag()){
+            Component component = Component.translatable("chat.akatzuma.error.wait");
+            AkatZumaWorldEdit.sendAkatMessage(component, player);
+            return false;
+        }
+        // 设置标志位
+        PMD.setFlag(false);
+
         // 判断坐标是否为null
         if(pos1 == null||pos2 == null){
             MutableComponent component = Component.translatable("chat.akatzuma.error.invalid_pos");
@@ -115,14 +136,28 @@ public class PlaceBlock {
             return false;
         }
 
+
         //如果不是管理员
         if(!permissionLevel){
+            int areaValue = Config.DEFAULTValue.get();      //选区大小
+            boolean checkInventory = Config.CHECKInventory.get();    //是否检查背包
+            Map<String,Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
+            if(PMD.isVip()){
+                areaValue = Config.VIPValue.get();      //选区大小
+                checkInventory = Config.VIPCHECKInventory.get();    //是否检查背包
+                blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
+            }
+
+//            if(checkVip(player, Config.VIPPlayerList.get())){
+//
+//            }
+
             // 选区大小
-            if(!checkArea(pos1, pos2, world, player, blockState, permissionLevel)){
+            if(!checkArea(pos1, pos2,player, areaValue)){
                 return  false;
             }
             //检查黑名单
-            if(!checkBlackList(pos1, pos2, world, player, blockState, permissionLevel)){
+            if(!checkBlackList(player, blockState, blackWhiteMap)){
                 return  false;
             }
 
@@ -134,10 +169,17 @@ public class PlaceBlock {
             }
 
 
+            //检查白名单，检查背包
+//            if(checkInventory){
+//
+//            }
+
+
+            //检查放置权限
+
         }
 
-        //检查白名单，检查背包
-//        if(CM.get(blockName) != null){}
+
 
 
 

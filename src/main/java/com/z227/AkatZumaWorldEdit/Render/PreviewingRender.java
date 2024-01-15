@@ -91,7 +91,7 @@ public class PreviewingRender {
         //渲染
         stack.pushPose();
         stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
-        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 255, 1, 255, 1);
+        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         stack.popPose();
         RenderSystem.enableDepthTest();
         stack.clear();

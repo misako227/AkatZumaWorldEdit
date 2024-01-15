@@ -41,24 +41,31 @@ public class SetCommand {
     public static void setBlock(CommandContext<CommandSourceStack> context) {
 
         Player player = context.getSource().getPlayer();
+        //此处判断上一次操作是否完成
+        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
+
+
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         BlockState blockState =  blockInput.getState();
         boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
 
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
+
 //        serverlevel
 
 //        Level world = player.getCommandSenderWorld();
-        if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission)){
-//            AkatZumaWorldEdit.LOGGER.info("this is server side");
+        if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
             PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState);
             Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
-            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName);
+            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
             AkatZumaWorldEdit.sendAkatMessage(setSuccess, player);
+
+
         }
 
+        // 设置标志位 此处再把flag设为true
+        PMD.setFlag(true);
 
 
 

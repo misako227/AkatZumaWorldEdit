@@ -65,6 +65,8 @@ public class SetClientCommand {
         System.out.println(world.getMapData("123"));
         System.out.println("----------------");
         System.out.println(AkatZumaWorldEdit.PlayerWEMap);
+//        world.getBlockEntity(bp1)
+//        world.getLevelData().get
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
@@ -73,9 +75,9 @@ public class SetClientCommand {
 
 
 //        Level world = player.getCommandSenderWorld();
-        if(PlaceBlock.canSetBlock(bp1,bp2,world,player, blockState,playerPermission)){
+        if(PlaceBlock.canSetBlock(bp1,bp2,world,player, blockState,playerPermission, PMD)){
             AkatZumaWorldEdit.LOGGER.info("this is client side");
-            System.out.println("getDescriptionId:" + AkatZumaWorldEdit.ConfigMap);
+            System.out.println("getDescriptionId:" + AkatZumaWorldEdit.defaultBlockMap);
         }
 
 
