@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Items;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,7 @@ public class QueryBlockStateItem extends Item{
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc1"));
         pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc2"));
+        pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc3"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }
@@ -35,24 +37,15 @@ public class QueryBlockStateItem extends Item{
 
 
     //左键
-//    @Override
-//    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-//        UUID uuid = player.getUUID();
-//        PlayerMapData pwm = AkatZumaWorldEdit.PlayerWEMap.get(uuid);
-//
-//        return false;
-//    }
-
-    //这在使用item时，在激活block之前调用。
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Level world = context.getLevel();
-        Player player = context.getPlayer();
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+//        player.getViewVector()
 
 
         if(player.isLocalPlayer()){
-            BlockPos blockPos =  context.getClickedPos();
-            BlockState blockState = world.getBlockState(blockPos);
+            Level world = player.level();
+//            BlockPos blockPos =  pos;
+            BlockState blockState = world.getBlockState(pos);
             String blockStateStr = blockState.toString().replaceFirst("}", "")
                     .replaceFirst("^Block\\{", "");
 
@@ -63,8 +56,39 @@ public class QueryBlockStateItem extends Item{
 
 
         }
+        return true;
+    }
+
+    //这在使用item时，在激活block之前调用。
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 
 
+        Vec3i vec3i = context.getClickedFace().getNormal();     //Vec3i{x=0, y=0, z=-1}
+//        Direction.Axis axis = context.getClickedFace().getAxis();       //axis= z  or  axis= x
+//        int  StepZ = context.getClickedFace().getStepZ();       //StepZ= -1  or StepZ= 1
+        System.out.println("vec3i= "+ vec3i);
+//        System.out.println("axis= "+ axis);
+//        System.out.println("StepZ= "+ StepZ);
+        Level world =  context.getLevel();
+//        BlockState blockState = world.getBlockState(context.getClickedPos());
+        if(world.isClientSide){
+            String it = stack.getItem().toString();
+            String des = stack.getItem().getDescriptionId();
+            String item = stack.getItem().getName(stack).toString();
+            String did =  stack.getDescriptionId();
+            String hn = stack.getHoverName().toString();
+
+//        String tag = stack.getTag().toString();
+            System.out.printf("""
+                    did= %s
+                    hn= %s
+                    it= %s
+                    des = %s
+                    item= %s
+                                
+                    %n""", did, hn, it,des, item);
+        }
 
 
         return InteractionResult.SUCCESS;

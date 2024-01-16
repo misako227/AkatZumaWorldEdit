@@ -40,14 +40,16 @@ public class Config {
         CHECKInventory = BUILDER.comment("\n放置的时候是否扣除背包方块").define("checkInventory", true);
         WHITEListBlock = BUILDER.comment("""
                         
-                        白名单方块,此名单中的方块按比例扣除，%前面的数字为扣除比例，%号只做分隔使用，没有实际意义
-                         0%：则次方块不计算背包数量，无限制放置
-                         1%：则比例为1：1，放置1个方块需要扣除背包中1个
-                         50%：则比例为50：1，放置50个方块需要扣除背包中1个""")
-                .defineListAllowEmpty("whiteListBlock", List.of("0%minecraft:oak_log","10%minecraft:oak_log"), Config::validateWhiteBlockName);
+                        白名单方块,此名单中的方块按比例扣除，#前面的数字为扣除比例，#号只做分隔使用，没有实际意义，后面的*为匹配这个MOD的所有方块
+                        格式为 "比例值#方块名称"
+                         0#：则次方块不计算背包数量，无限制放置
+                         1#：则比例为1：1，放置1个方块需要扣除背包中1个
+                         50#：则比例为50：1，放置50个方块需要扣除背包中1个
+                         10#minecraft:* 则所有minecraft方块比例都为10：1，所有方块放置50个需要扣除背包中1个""")
+                .defineListAllowEmpty("whiteListBlock", List.of("0#minecraft:oak_log","10#minecraft:oak_log"), Config::validateWhiteBlockName);
 
-        BLACKListBlock = BUILDER.comment("\n黑名单方块\n优先级比白名单高,此名单中的方块均不允许放置，前面不需要%号")
-                .defineListAllowEmpty("blackListBlock", List.of("minecraft:water","minecraft:air"), Config::validateBlackBlockName);
+        BLACKListBlock = BUILDER.comment("\n黑名单方块\n优先级比白名单高,此名单中的方块均不允许放置，前面不需要#号")
+                .defineListAllowEmpty("blackListBlock", List.of("minecraft:stone","minecraft:oak_log"), Config::validateBlackBlockName);
         BUILDER.pop();
 
         BUILDER.comment("高级玩家").push("VipSettings");
@@ -56,14 +58,16 @@ public class Config {
         VIPCHECKInventory = BUILDER.comment("\n高级玩家放置的时候是否扣除背包方块").define("VipCheckInventory", true);
         VIPWHITEListBlock = BUILDER.comment("""
                         
-                        白名单方块,此名单中的方块按比例扣除，%前面的数字为扣除比例，%号只做分隔使用，没有实际意义
-                         0%：则次方块不计算背包数量，无限制放置
-                         1%：则比例为1：1，放置1个方块需要扣除背包中1个
-                         50%：则比例为50：1，放置50个方块需要扣除背包中1个""")
-                .defineListAllowEmpty("VipWhiteListBlock", List.of("0%minecraft:oak_log","5%minecraft:oak_log"), Config::validateWhiteBlockName);
+                        白名单方块,此名单中的方块按比例扣除，#前面的数字为扣除比例，#号只做分隔使用，没有实际意义，后面的*为匹配这个MOD的所有方块
+                        格式为 "比例值#方块名称"
+                         0#：则次方块不计算背包数量，无限制放置
+                         1#：则比例为1：1，放置1个方块需要扣除背包中1个
+                         50#：则比例为50：1，放置50个方块需要扣除背包中1个
+                         10#minecraft:* 则所有minecraft方块比例都为10：1，所有方块放置50个需要扣除背包中1个""")
+                .defineListAllowEmpty("VipWhiteListBlock", List.of("0#minecraft:oak_log","5#minecraft:oak_log"), Config::validateWhiteBlockName);
 
-        VIPBLACKListBlock = BUILDER.comment("\n高级玩家黑名单方块\n优先级比白名单高,此名单中的方块均不允许放置")
-                .defineListAllowEmpty("VipBlackListBlock", List.of("44%minecraft:water","minecraft:air","minecraft:air"), Config::validateBlackBlockName);
+        VIPBLACKListBlock = BUILDER.comment("\n高级玩家黑名单方块\n优先级比白名单高,此名单中的方块均不允许放置，前面不需要#号")
+                .defineListAllowEmpty("VipBlackListBlock", List.of("minecraft:water","minecraft:air"), Config::validateBlackBlockName);
         BUILDER.pop();
 
     }
@@ -85,7 +89,8 @@ public class Config {
 
         Matcher matcher = BlockStateString.findWhiteBlockName((String)obj);
         if(matcher==null) return false;
-        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(matcher.group(2),matcher.group(3)));
+        return true;
+//        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(matcher.group(2),matcher.group(3)));
     }
 
 //    @SubscribeEvent

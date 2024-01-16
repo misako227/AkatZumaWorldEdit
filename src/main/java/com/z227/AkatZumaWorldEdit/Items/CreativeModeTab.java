@@ -15,6 +15,7 @@ public class CreativeModeTab {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             event.accept(AkatZumaWorldEdit.Query_Item);
             event.accept(AkatZumaWorldEdit.WOOD_AXE);
+
         }
     }
 }

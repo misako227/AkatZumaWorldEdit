@@ -2,7 +2,7 @@ package com.z227.AkatZumaWorldEdit.utilities;
 
 import java.util.ArrayDeque;
 
-class BoundedStack<T> {
+public class BoundedStack<T> {
     private final ArrayDeque<T> stack;
     private final int maxSize;
 

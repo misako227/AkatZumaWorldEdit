@@ -32,20 +32,11 @@ public class ModNetworkEvent {
     }
 
 
-    public static void addConfigMap() {
-//        Config.WHITEListBlock.get().forEach(k -> {
-//            Matcher matcher = BlockStateString.findWhiteBlockName(k);
-//            if(matcher==null) return;
-//            String tempKey = matcher.group(1) +  ":" + matcher.group(2);
-//            AkatZumaWorldEdit.defaultBlockMap.put(tempKey, Integer.parseInt(matcher.group(0)));
-//        });
-//        Config.BLACKListBlock.get().forEach(k -> {
-//            Matcher matcher = BlockStateString.findWhiteBlockName(k);
-//            if(matcher==null) return;
-//            String tempKey = matcher.group(1) +  ":" + matcher.group(2);
-//            AkatZumaWorldEdit.defaultBlockMap.put(tempKey, -1);
-//        });
 
+
+
+
+    public static void addConfigMap() {
         addBlackWhiteToMap(Config.WHITEListBlock.get(), true,AkatZumaWorldEdit.defaultBlockMap);
         addBlackWhiteToMap(Config.BLACKListBlock.get(), false,AkatZumaWorldEdit.defaultBlockMap);
 
@@ -56,7 +47,7 @@ public class ModNetworkEvent {
 
     }
 
-
+    //@param b true=白名单 false=黑名单
     public static void addBlackWhiteToMap(List<? extends String> input, boolean b, Map output) {
         input.forEach(k ->{
             Matcher matcher;String tempKey;

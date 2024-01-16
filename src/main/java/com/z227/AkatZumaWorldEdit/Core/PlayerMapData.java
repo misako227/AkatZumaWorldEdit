@@ -1,9 +1,9 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
+import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerMapData {
@@ -12,25 +12,24 @@ public class PlayerMapData {
     private BlockPos pos2;
     private boolean vip;
     private boolean flag;
-//    private Map<BlockState, List<BlockPos>> undoDataMap;
-    private Map<BlockPos, BlockState> undoDataMap = new HashMap<>();
+    private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
+//    private Map<BlockPos, BlockState> undoDataMap = new HashMap<>();
 
 
-    public  Map<BlockPos, BlockState> getUndoDataMap() {
+    public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
         return this.undoDataMap;
     }
 
-    public void setUndoDataMap(BlockPos blockPos,BlockState blockState) {
-//        if (this.undoDataMap == null)this.undoDataMap =new HashMap<>();
-        this.undoDataMap.put(blockPos, blockState);
-//        return true;
-    }
+//    public void setUndoDataMap(BlockPos blockPos,BlockState blockState) {
+//        this.undoDataMap = new BoundedStack<>(5);
+//    }
 
 
 
     public PlayerMapData(String name) {
         this.name = name;
         this.flag = true;
+        this.undoDataMap = new BoundedStack<>(5);
     }
 
     public String getName() {

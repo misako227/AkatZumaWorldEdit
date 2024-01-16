@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -55,7 +56,7 @@ public class WoodAxeItem extends Item {
                 Component msg = Component.literal(Config.LOWHight.get().toString()).withStyle(ChatFormatting.RED);
                 AkatZumaWorldEdit.sendAkatMessage(component,msg, player);
             }
-            return ;
+            return;
         }
 
         Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
@@ -94,6 +95,7 @@ public class WoodAxeItem extends Item {
                 size =  vec3.getX()*vec3.getY()*vec3.getZ();
                 msg = String.format("%s §5(%s)", msg, size);
             }
+            Minecraft minecraft = Minecraft.getInstance();
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
         }

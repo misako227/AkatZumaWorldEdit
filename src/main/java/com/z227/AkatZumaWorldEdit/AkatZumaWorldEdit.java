@@ -42,6 +42,7 @@ public class AkatZumaWorldEdit{
 
     public AkatZumaWorldEdit() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+//        wat.register(FMLJavaModLoadingContext.get().getModEventBus());
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
@@ -50,9 +51,11 @@ public class AkatZumaWorldEdit{
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final RegistryObject<Item> WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties()));
-    public static final RegistryObject<Item> Query_Item = ITEMS.register("query_blockstate_item", () -> new QueryBlockStateItem(new Item.Properties()));
+    public static final RegistryObject<Item> WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> Query_Item = ITEMS.register("query_blockstate_item", () -> new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
 
+//    public static final DeferredRegister<Item> wat = DeferredRegister.create(ForgeRegistries.ITEMS, "minecraft");
+//    public static final RegistryObject<Item> water = wat.register("water", () -> new Item(new Item.Properties().stacksTo(1)));
 
 
 

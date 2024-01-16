@@ -18,6 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SetCommand {
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
 
@@ -56,7 +59,9 @@ public class SetCommand {
 
 //        Level world = player.getCommandSenderWorld();
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
-            PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState);
+            Map<BlockPos,BlockState> undoMap  = new HashMap<>();
+            PMD.getUndoDataMap().push(undoMap);
+            PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
             Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
             Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
             AkatZumaWorldEdit.sendAkatMessage(setSuccess, player);

@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayDeque;
 import java.util.Map;
 
 public class CopyCommand {
@@ -49,25 +52,20 @@ public class CopyCommand {
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         BlockState blockState =  blockInput.getState();
-        Map<String, Integer> blockInInvMap = Util.findBlockFromPlayerInv(blockState,player);
-        if (blockInInvMap !=null){
-            System.out.println("blockInInvMap is not null ");
-        }
-        System.out.println("背包中的方块"+ blockInInvMap);
+        Map<String, Map<Integer,Integer>> blockInInvMap = Util.findPlayerInv(player);
+        String blockName = BlockStateString.getBlockName(blockState);
 
-        String sld = serverlevel.getLevel().toString();
-        String leavedata =  serverlevel.getLevelData().toString();
-//        serverlevel.getLevelData()
-//        serverlevel.getChunk()
-        System.out.println("serverlevel is= "+ sld);
-        System.out.println("leveldata is= "+ leavedata);
-//        player.getInventory().getContainerSize();
-//        int itemcount = player.getInventory().getItem(1);
-//        if(itemcount != null) .getCount();
 
-        System.out.println(blockState.getBlock().toString());
-        System.out.println("defaultBlockMap is= "+ AkatZumaWorldEdit.defaultBlockMap);
-        System.out.println("VipBlockMap is= "+ AkatZumaWorldEdit.VipBlockMap);
+        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+
+        ArrayDeque undoMap  = PMD.getUndoDataMap().getStack();
+        System.out.println(undoMap);
+
+//        System.out.println("背包中的方块"+ blockInInvMap);
+//
+//
+//        System.out.println("defaultBlockMap is= "+ AkatZumaWorldEdit.defaultBlockMap);
+//        System.out.println("VipBlockMap is= "+ AkatZumaWorldEdit.VipBlockMap);
 
 //        player.getInventory().findSlotMatchingItem(ItemStack.of());
 
