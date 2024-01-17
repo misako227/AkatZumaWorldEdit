@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -40,13 +41,15 @@ public class PlaceBlock {
         return new Vec3i(length,width,height);
     }
 
+
+
     //遍历两个坐标之间的每个点
     public static void traverseCube(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, Map<BlockPos,BlockState> undoMap) {
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
             for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
 
-                    BlockPos v3 = new BlockPos(x,y,z);
+                    BlockPos v3 = new BlockPos(x, y, z);
                     undoMap.put(v3,world.getBlockState(v3));
                     world.setBlock(v3,blockState, 2);
 
@@ -92,18 +95,46 @@ public class PlaceBlock {
 
     }
 
-    //检测背包是否有指定物品，没有或者数量不够返回null，有则返回槽位：数量的Map
-    public static Map getSlotInInv(String blockName,int multiple,int size, Player player, Map<String, Map<Integer,Integer>> playerInv){
-        if (playerInv.containsKey(blockName)){
-            int sum = playerInv.get(blockName).values().stream().mapToInt(Integer::intValue).sum() * multiple;
-            if(sum < size){
-                MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough");
+    // blockName:扣除的物品名
+    // n： 扣除的比例
+    // volume：扣除的总数量
+    public static boolean checkInv(String blockName, int n, int volume, Player player, MutableComponent deBlockName) {
+        //检查是否无限制放置
+        if (n > 0) {
+            Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
+            int sum = blockInInvMap.values().stream().mapToInt(Integer::intValue).sum();
+            //要扣除的数量
+            int num = (int) Math.ceil((double) volume / n);
+            MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
+                    .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num);
+            if (blockInInvMap.size() < 1) {
                 AkatZumaWorldEdit.sendAkatMessage(component, player);
-                return null;
+                return false;
+            }
+            //背包如果不够
+            if (sum < num) {
+                AkatZumaWorldEdit.sendAkatMessage(component, player);
+                return false;
+            }
+            //遍历
+            for (Map.Entry<Integer, Integer> entry : blockInInvMap.entrySet()) {
+                int slot = entry.getKey();
+                int num1 = entry.getValue();
+
+                if (num1 >= num) {
+                    player.getInventory().removeItem(slot, num);
+                    break;
+                } else {
+                    player.getInventory().removeItem(slot, num1);
+                    num = num - num1;
+                }
+                if (num <= 0) break;
             }
         }
-        return  playerInv.get(blockName);
+        return true;
     }
+
+
 
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
         // 判断上次操作是否完成
@@ -133,9 +164,7 @@ public class PlaceBlock {
                 checkInventory = Config.VIPCHECKInventory.get();    //是否检查背包
                 blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
             }
-            String blockName = BlockStateString.getBlockName(blockState);
-            Integer n = blackWhiteMap.get(blockName);  //比例值
-            if (n == null) n = 1;
+
             // 选区大小
             Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
             int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
@@ -146,10 +175,6 @@ public class PlaceBlock {
             }
 
 
-            //检查黑名单
-            if (!checkBlackList(player, n)) {
-                return false;
-            }
 
             //区块是否加载
             if (!world.hasChunkAt(pos1) || !world.hasChunkAt(pos2)) {
@@ -158,41 +183,54 @@ public class PlaceBlock {
                 return false;
             }
 
-            Map<String, Map<Integer, Integer>> blockInInvMap;
-            Map<Integer, Integer> itemSlot = null;
-            if (checkInventory) {
-                n = getLimit(blockName, blackWhiteMap);
-                //检查是否无限制放置
-                if (n > 0) {
-                    //检查背包
-                    blockInInvMap = Util.findPlayerInv(player);
-                    if (blockInInvMap.size() > 0) {
-                        itemSlot = getSlotInInv(blockName, n, volume, player, blockInInvMap);
-                        if (itemSlot == null) return false;
-                    }
-                    //背包数量够则扣除
-                    int num = (int) Math.ceil((double)volume / n);
-                    //遍历
-                    for (Map.Entry<Integer, Integer> entry : itemSlot.entrySet()) {
-                        int slot = entry.getKey();
-                        int num1 = entry.getValue();
-//                        ItemStack invItem = player.getInventory().getItem(slot);
-                        if (num1 >= num) {
-                            player.getInventory().removeItem(slot, num);
-                            break;
-                        } else {
-                            player.getInventory().removeItem(slot, num1);
-                            num = num - num1;
-                        }
-                        if (num<=0)break;
-                    }
 
 
-                    //检查放置权限
-                }
+            String blockName = BlockStateString.getBlockName(blockState);
+            int n = getLimit(blockName, blackWhiteMap);  //比例值
 
-
+            //检查黑名单
+            if (!checkBlackList(player, n)) {
+                return false;
             }
+
+            //检查背包
+            if(checkInventory){
+                MutableComponent deBlockName = blockState.getBlock().getName();
+                if(!checkInv(blockName,n,volume,player,deBlockName))return false;
+            }
+
+//            if (checkInventory) {
+////                n = getLimit(blockName, blackWhiteMap);
+//                //检查是否无限制放置
+//                if (n > 0) {
+//                    //检查背包
+//                    blockInInvMap = Util.findBlockInPlayerInv(player,blockName);
+//                    if (blockInInvMap.size() < 1) return false;
+////                        itemSlot = getSlotInInv(blockName, n, volume, player, blockInInvMap);
+//
+//                    //背包数量够则扣除
+//                    int num = (int) Math.ceil((double)volume / n);
+//                    //遍历
+//                    for (Map.Entry<Integer, Integer> entry : blockInInvMap.entrySet()) {
+//                        int slot = entry.getKey();
+//                        int num1 = entry.getValue();
+////                        ItemStack invItem = player.getInventory().getItem(slot);
+//                        if (num1 >= num) {
+//                            player.getInventory().removeItem(slot, num);
+//                            break;
+//                        } else {
+//                            player.getInventory().removeItem(slot, num1);
+//                            num = num - num1;
+//                        }
+//                        if (num<=0)break;
+//                    }
+//
+//
+//                    //检查放置权限
+//                }
+//
+//
+//            }
 
         }
         return true;

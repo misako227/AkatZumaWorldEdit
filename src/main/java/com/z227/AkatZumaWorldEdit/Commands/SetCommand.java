@@ -28,14 +28,14 @@ public class SetCommand {
                 Commands.literal(AkatZumaWorldEdit.MODID)
                     .then(Commands.literal("set")
                         .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
-                            .executes((context)->{
-                                setBlock(context);
-                                return 1;
-                            })
-                        )
+                        .executes((context)->{
+                            setBlock(context);
+                            return 1;
+                        })
+                    )
 
 //                            .requires((commandSource) -> commandSource.hasPermission(1))
-                    )
+                )
         );
         dispatcher.register(Commands.literal("a").redirect(cmd));
 
@@ -44,7 +44,7 @@ public class SetCommand {
     public static void setBlock(CommandContext<CommandSourceStack> context) {
 
         Player player = context.getSource().getPlayer();
-        //此处判断上一次操作是否完成
+
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
 

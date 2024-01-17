@@ -1,5 +1,6 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
+import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,13 +14,16 @@ public class PlayerMapData {
     private boolean vip;
     private boolean flag;
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
+    private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
 //    private Map<BlockPos, BlockState> undoDataMap = new HashMap<>();
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
         return this.undoDataMap;
     }
-
+    public  BoundedStack<Map<BlockPos,BlockState>> getRedoDataMap() {
+        return this.redoDataMap;
+    }
 //    public void setUndoDataMap(BlockPos blockPos,BlockState blockState) {
 //        this.undoDataMap = new BoundedStack<>(5);
 //    }
@@ -29,7 +33,8 @@ public class PlayerMapData {
     public PlayerMapData(String name) {
         this.name = name;
         this.flag = true;
-        this.undoDataMap = new BoundedStack<>(5);
+        this.undoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
+        this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
     }
 
     public String getName() {

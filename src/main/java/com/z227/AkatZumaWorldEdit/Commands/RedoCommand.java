@@ -15,18 +15,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class UndoCommand {
+public class RedoCommand {
 
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
 
         LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
             Commands.literal(AkatZumaWorldEdit.MODID)
-                .then(Commands.literal("undo")
+                .then(Commands.literal("redo")
                     .executes((context)->{
-                        undo(context);
+                        redo(context);
                         return 1;
                     })
             )
@@ -37,7 +36,7 @@ public class UndoCommand {
 
 }
 
-    public static void undo(CommandContext<CommandSourceStack> context){
+    public static void redo(CommandContext<CommandSourceStack> context){
 
         Player player = context.getSource().getPlayer();
         //此处判断上一次操作是否完成
@@ -53,15 +52,12 @@ public class UndoCommand {
         // 设置标志位
         PMD.setFlag(false);
 
-        Map<BlockPos,BlockState> undoMap  = PMD.getUndoDataMap().pop();
-        Map<BlockPos,BlockState> redoMap  = new HashMap<>();
+        Map<BlockPos,BlockState> redoMap  = PMD.getRedoDataMap().pop();
+        component = Component.translatable("chat.akatzuma.error.not_redo");
 
-        component = Component.translatable("chat.akatzuma.error.not_undo");
-
-        if(undoMap!=null){
-            PMD.getRedoDataMap().push(redoMap);
-            UndoBlock.undoSetBlock(serverlevel,undoMap,redoMap);
-            component = Component.translatable("chat.akatzuma.success_undo");
+        if(redoMap!=null){
+            UndoBlock.redoSetBlock(serverlevel,redoMap);
+            component = Component.translatable("chat.akatzuma.success_redo");
         }
 
         AkatZumaWorldEdit.sendAkatMessage(component, player);

@@ -116,44 +116,6 @@ public class WoodAxeItem extends Item {
         Player player = context.getPlayer();
 //        Level world = context.getLevel();
         clickPos(blockPos2, player,false );
-//
-//        //超出最低高度
-//        if(blockPos2.getY() < Config.LOWHight.get()){
-//            if(world.isClientSide) {
-//                Component component = Component.translatable("chat.item.wood_axe.left_error");
-//                Component msg = Component.literal(Config.LOWHight.get().toString()).withStyle(ChatFormatting.RED);
-//                AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
-//            }
-//            return InteractionResult.SUCCESS;
-//        }
-//
-//        Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
-//
-//
-//        if(AWE.get(player.getUUID()) == null){
-//            AWE.put(player.getUUID(), new PlayerMapData(player.getName().getString()));
-//        }
-//
-//        PlayerMapData pwm = AWE.get(player.getUUID());
-//        pwm.setPos2(blockPos2);
-//
-//        //判断是客户端
-//        if(world.isClientSide) {
-//            //判断pos2存不存在
-//            BlockPos pos1 = null; int size;
-//            if (pwm.getPos1() !=null) pos1 = pwm.getPos1();
-//
-//            Component component = Component.translatable("chat.item.wood_axe.right");
-//            String msg = blockPos2.toString().replaceFirst("^MutableBlockPos", "§5");
-//
-//            if(pos1!=null){
-//                Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, blockPos2);
-//                size =  vec3.getX()*vec3.getY()*vec3.getZ();
-//                msg = String.format("%s §5(%s)", msg, size);
-//            }
-//            AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
-//
-//        }
 
 
 

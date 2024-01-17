@@ -34,11 +34,14 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.volume_too_long", "§c 选区过大，选区最大范围为");
             this.add("chat.akatzuma.error.chunk_not_loaded", "§c 区块没有加载");
             this.add("chat.akatzuma.error.black_list", "§c 这个方块在黑名单中，无法进行操作");
-            this.add("chat.akatzuma.error.inventory_not_enough", "§c 背包中对应方块数量不够，无法进行操作");
-            this.add("chat.akatzuma.error.not_undo", "§c 没有要撤销的操作");
-            this.add("chat.akatzuma.success_undo", "§a 撤销成功");
+            this.add("chat.akatzuma.error.inventory_not_enough", "§c 背包中需要方块数量不够，无法进行操作，需要");
 
-            this.add("chat.akatzuma.set.success", "已设置方块");
+            this.add("chat.akatzuma.error.not_undo", "§c 没有要撤销的操作");
+            this.add("chat.akatzuma.error.not_redo", "§c 没有要redo的操作");
+            this.add("chat.akatzuma.success_undo", "§a 撤销成功");
+            this.add("chat.akatzuma.success_redo", "§a redo成功");
+
+            this.add("chat.akatzuma.set.success", "已放置方块");
             this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");
             this.add("chat.action.copy", "点击复制: ");
         }

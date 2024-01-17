@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class BlockStateString {
 
     public static Matcher findWhiteBlockName(String blockName) {
-        // 匹配:999%minecraft:oak_log[axis=y]
+        // 匹配:999#minecraft:oak_log[axis=y]
         // 结果:
         // matcher.group(1) = 999
         // matcher.group(2) = minecraft

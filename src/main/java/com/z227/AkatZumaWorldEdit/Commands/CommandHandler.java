@@ -22,6 +22,7 @@ public class CommandHandler {
         SetCommand.register(dispatcher,commandbuildcontext);
         CopyCommand.register(dispatcher,commandbuildcontext);
         UndoCommand.register(dispatcher,commandbuildcontext);
+        RedoCommand.register(dispatcher,commandbuildcontext);
 
     }
 

@@ -66,7 +66,7 @@ public class PreviewingRender {
                         VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
                         PoseStack stack = event.getPoseStack();
                         DrawLineBox(vertexConsumer, stack, pStart, pEnd);
-                        break;
+                        return;
                     }
                 }
             }
@@ -85,13 +85,12 @@ public class PreviewingRender {
 
         //坐标变换
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        double s0 = camvec.x;
-        double s1 = camvec.y;
-        double s2 = camvec.z;
         //渲染
         stack.pushPose();
         stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
+        LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 1, 170, 170, 1);
+        LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 255, 255, 85, 1);
         stack.popPose();
         RenderSystem.enableDepthTest();
         stack.clear();
