@@ -54,9 +54,6 @@ public class SetCommand {
         boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
 
-
-//        serverlevel
-
 //        Level world = player.getCommandSenderWorld();
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
             Map<BlockPos,BlockState> undoMap  = new HashMap<>();

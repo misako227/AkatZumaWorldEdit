@@ -65,7 +65,7 @@ public class Util {
 //    }
 
 
-    //遍历玩家背包，返回指定物品的槽位和数量，并返回一个map为槽位和数量
+    //遍历玩家背包，返回一个map为物品的槽位和数量
     public static Map<Integer,Integer> findBlockInPlayerInv(Player player, String blockName){
         Map<Integer,Integer> temp = new HashMap<>();
         int size = player.getInventory().getContainerSize();

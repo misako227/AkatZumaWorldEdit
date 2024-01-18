@@ -13,9 +13,9 @@ public class PlayerMapData {
     private BlockPos pos2;
     private boolean vip;
     private boolean flag;
+    private BlockState queryBlockState;
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
-//    private Map<BlockPos, BlockState> undoDataMap = new HashMap<>();
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -24,10 +24,6 @@ public class PlayerMapData {
     public  BoundedStack<Map<BlockPos,BlockState>> getRedoDataMap() {
         return this.redoDataMap;
     }
-//    public void setUndoDataMap(BlockPos blockPos,BlockState blockState) {
-//        this.undoDataMap = new BoundedStack<>(5);
-//    }
-
 
 
     public PlayerMapData(String name) {
@@ -75,5 +71,13 @@ public class PlayerMapData {
 
     public void setFlag(boolean flag) {
         this.flag = flag;
+    }
+
+    public BlockState getQueryBlockState() {
+        return queryBlockState;
+    }
+
+    public void setQueryBlockState(BlockState queryBlockState) {
+        this.queryBlockState = queryBlockState;
     }
 }
