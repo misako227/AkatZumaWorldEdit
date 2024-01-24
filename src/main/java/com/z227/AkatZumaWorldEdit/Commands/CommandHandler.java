@@ -3,6 +3,9 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.z227.AkatZumaWorldEdit.Commands.clientCommands.SetClientCommand;
+import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
+import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
+import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -21,6 +24,8 @@ public class CommandHandler {
 
         SetCommand.register(dispatcher,commandbuildcontext);
         CopyCommand.register(dispatcher,commandbuildcontext);
+        PasteCommand.register(dispatcher,commandbuildcontext);
+        FlipCommand.register(dispatcher,commandbuildcontext);
         UndoCommand.register(dispatcher,commandbuildcontext);
         RedoCommand.register(dispatcher,commandbuildcontext);
 

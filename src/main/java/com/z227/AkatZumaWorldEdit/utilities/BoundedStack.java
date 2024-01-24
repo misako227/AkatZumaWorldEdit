@@ -18,11 +18,20 @@ public class BoundedStack<T> {
         stack.push(item); // 执行push操作
     }
 
+    //移除并返回队列中的最后一个元素
     public T pop() {
         if (stack.size() <= 0) {
             return null;
         }
         return stack.pop();
+    }
+
+    //移除并返回队列中的第一个元素
+    public T pollFirst() {
+        if (stack.size() <= 0) {
+            return null;
+        }
+        return stack.pollFirst();
     }
 
     public T peek() {
@@ -33,7 +42,8 @@ public class BoundedStack<T> {
         return stack.size();
     }
 
-    public ArrayDeque getStack() {
+
+    public ArrayDeque<T> getStack() {
         return this.stack;
     }
 }

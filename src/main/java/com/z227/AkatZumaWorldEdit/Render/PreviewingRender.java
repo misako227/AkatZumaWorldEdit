@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import net.minecraft.client.Minecraft;
@@ -61,6 +62,15 @@ public class PreviewingRender {
     }
 
     public static void DrawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
+        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
+        BlockPos cp1=null,cp2=null;
+        if(copyBlock!=null){
+            if(copyBlock.getTempPastePosMap()!=null){
+                cp1 = copyBlock.getTempPastePosMap().get("startPos");
+                cp2 = copyBlock.getTempPastePosMap().get("endPos");
+            }
+        }
+
         //渲染
         //关闭深度检测
         RenderSystem.disableDepthTest();
@@ -78,9 +88,13 @@ public class PreviewingRender {
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
+        if(cp1!=null){
+            LevelRenderer.renderLineBox(stack, vertexConsumer, cp1.getX(),cp1.getY(),cp1.getZ(),cp1.getX()+1,cp1.getY()+1,cp1.getZ()+1, 1, 255, 255, 1);
+            LevelRenderer.renderLineBox(stack, vertexConsumer, cp2.getX(),cp2.getY(),cp2.getZ(),cp2.getX()+1,cp2.getY()+1, cp2.getZ()+1, 1, 255, 255, 1);
+        }
+
         stack.popPose();
         RenderSystem.enableDepthTest();
-        stack.clear();
 
     }
 }

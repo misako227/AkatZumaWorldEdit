@@ -14,8 +14,11 @@ public class PlayerMapData {
     private boolean vip;
     private boolean flag;
     private BlockState queryBlockState;
+
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
+
+    private CopyBlock copyBlock;
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -31,6 +34,7 @@ public class PlayerMapData {
         this.flag = true;
         this.undoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
+//        this.copyBlockMap = new HashMap<>();
     }
 
     public String getName() {
@@ -79,5 +83,13 @@ public class PlayerMapData {
 
     public void setQueryBlockState(BlockState queryBlockState) {
         this.queryBlockState = queryBlockState;
+    }
+
+    public CopyBlock getCopyBlock() {
+        return copyBlock;
+    }
+
+    public void setCopyBlock(CopyBlock copyBlock) {
+        this.copyBlock = copyBlock;
     }
 }

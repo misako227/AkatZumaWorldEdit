@@ -54,10 +54,11 @@ public class SetCommand {
         boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
 
-//        Level world = player.getCommandSenderWorld();
+        //判断权限，背包等
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
             Map<BlockPos,BlockState> undoMap  = new HashMap<>();
-            PMD.getUndoDataMap().push(undoMap);
+            PMD.getUndoDataMap().push(undoMap);//添加到undo
+            //放置方块
             PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
             Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
             Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));

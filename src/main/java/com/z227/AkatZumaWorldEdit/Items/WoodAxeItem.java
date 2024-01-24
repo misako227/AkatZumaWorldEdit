@@ -50,10 +50,10 @@ public class WoodAxeItem extends Item {
     //@param bool true左键，false右键
     public void clickPos(BlockPos pos,Player player, boolean bool) {
         //超出最低高度
-        if(pos.getY() < Config.LOWHight.get()){
+        if(pos.getY() < Config.LOWHeight.get()){
             if(player.isLocalPlayer()){
                 Component component = Component.translatable("chat.item.wood_axe.left_error");
-                Component msg = Component.literal(Config.LOWHight.get().toString()).withStyle(ChatFormatting.RED);
+                Component msg = Component.literal(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);
                 AkatZumaWorldEdit.sendAkatMessage(component,msg, player);
             }
             return;

@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 
 public class Config {
     public static final ForgeConfigSpec.Builder BUILDER;
-    public static ForgeConfigSpec.IntValue LOWHight;
+    public static ForgeConfigSpec.IntValue LOWHeight;
     public static ForgeConfigSpec.IntValue UNDOLimit;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> VIPPlayerList;
 
@@ -32,7 +32,7 @@ public class Config {
 
     static {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
-        LOWHight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
+        LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
         UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
         BUILDER.pop();
 

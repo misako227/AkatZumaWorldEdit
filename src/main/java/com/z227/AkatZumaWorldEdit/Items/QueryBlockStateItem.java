@@ -1,15 +1,19 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,8 +43,17 @@ public class QueryBlockStateItem extends Item{
 
     }
 
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 
+        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
+        BlockPos cp1 = copyBlock.getTempPastePosMap().get("startPos"),
+        cp2 = copyBlock.getTempPastePosMap().get("endPos");
 
+        System.out.println(cp1 + " " + cp2);
+
+        return super.use(pLevel, pPlayer, pUsedHand);
+    }
 
     //左键
     @Override
@@ -92,7 +105,7 @@ public class QueryBlockStateItem extends Item{
                 String blockName = BlockStateString.getBlockName(PMD.getQueryBlockState());
                 int n = PlaceBlock.getLimit(blockName, blackWhiteMap);
                 //检查黑名单
-                if (!PlaceBlock.checkBlackList(player, n)) {
+                if (!PlaceBlock.checkBlackList(player, n, descriptBlockName)) {
                     return InteractionResult.SUCCESS;
                 }
                 Map<Integer, Integer> blockInInvMap = PlaceBlock.checkInv(blockName, 1, 1, player, descriptBlockName);
