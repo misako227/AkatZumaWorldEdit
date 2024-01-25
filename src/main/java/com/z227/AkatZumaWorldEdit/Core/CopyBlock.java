@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit.Core;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ public class CopyBlock {
 //    ServerLevel serverLevel;
     PlayerMapData PMD;
     Vec3i copyVec3, pasteVec3;
+    boolean permissionLevel;
 
 
     public CopyBlock(PlayerMapData PMD, Player player) {
@@ -34,6 +36,8 @@ public class CopyBlock {
         this.copyMap = new HashMap<>();
         this.pastePosMap = new HashMap<>();
         this.PMD = PMD;
+        this.permissionLevel = player.hasPermissions(2);;
+
         this.copyVec3 = player.getDirection().getNormal();
     }
 
@@ -51,12 +55,33 @@ public class CopyBlock {
     public boolean checkPosAddCopyMap(ServerLevel serverlevel, PlayerMapData PMD){
         BlockPos pos1 = this.copyPos1,
                  pos2 = this.copyPos2;
+
+        Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
+        if (!this.permissionLevel) {
+            int areaValue = Config.DEFAULTValue.get();      //选区大小
+
+            if (PMD.isVip()) {
+                areaValue = Config.VIPValue.get();      //选区大小
+                blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
+            }
+
+            // 选区大小
+            Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, pos2);
+            int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
+            // 选区大小
+            if (!PlaceBlock.checkArea(pos1, pos2, player, areaValue, volume)) {
+                return false;
+            }
+
+        }
+
         int cx = this.playerCopyPos.getX(),
             cy = this.playerCopyPos.getY(),
             cz = this.playerCopyPos.getZ();
         pastePosMap.put("startPos", this.copyPos1.offset(-cx,-cy, -cz));
         pastePosMap.put("endPos", this.copyPos2.offset(-cx,-cy, -cz));
 
+        Component component;
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
             for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
@@ -64,7 +89,17 @@ public class CopyBlock {
                     BlockState state = serverlevel.getBlockState(pos);
                     BlockPos transfPos = new BlockPos(x-cx, y-cy, z-cz);
                     //判断有没有黑名单
-                    // TODO
+                    if (!this.permissionLevel){
+                        String blockName = BlockStateString.getBlockName(state);
+                        int n = PlaceBlock.getLimit(blockName, blackWhiteMap);  //比例值
+                        //检查黑名单
+                        MutableComponent deBlockName = state.getBlock().getName();
+                        if (!PlaceBlock.checkBlackList(player, n, deBlockName)) {
+                            return false;
+                        }
+                    }
+
+
 
                     //添加到copyMap
                     this.copyMap.put(transfPos, state);
@@ -94,7 +129,7 @@ public class CopyBlock {
         return true;
     }
 
-    public void flip(){
+    public void flip(boolean Y){
         Component component;
 
         Vec3i flipVec3 = new Vec3i(1,1,1);
@@ -103,6 +138,7 @@ public class CopyBlock {
         }else{
             flipVec3 =   new Vec3i(1,1,-1);
         }
+        if(Y)flipVec3 =   new Vec3i(1,-1,1);
         //修改Paste起始坐标
         setPastePosMapFlip(flipVec3);
 
@@ -147,8 +183,8 @@ public class CopyBlock {
             undoMap.put(transfPos,serverlevel.getBlockState(transfPos));
             serverlevel.setBlock(transfPos, state, 2);
         }
-
-        if(isLowHeight)this.player.sendSystemMessage(Component.translatable("chat.akatzuma.error.low_hight"));
+        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),this.player);
+        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),this.player);
     }
 
 

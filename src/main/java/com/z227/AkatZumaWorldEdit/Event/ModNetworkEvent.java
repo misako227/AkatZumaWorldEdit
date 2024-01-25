@@ -33,12 +33,10 @@ public class ModNetworkEvent {
 
 
 
-
-
-
     public static void addConfigMap() {
         addBlackWhiteToMap(Config.WHITEListBlock.get(), true,AkatZumaWorldEdit.defaultBlockMap);
         addBlackWhiteToMap(Config.BLACKListBlock.get(), false,AkatZumaWorldEdit.defaultBlockMap);
+
 
         //vip
         addBlackWhiteToMap(Config.VIPWHITEListBlock.get(), true,AkatZumaWorldEdit.VipBlockMap);
@@ -62,4 +60,7 @@ public class ModNetworkEvent {
 
 
     }
+
+    //
+
 }

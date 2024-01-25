@@ -68,6 +68,18 @@ public class Util {
 //
 ////        return  null ;
 //    }
+
+//    public static boolean checkOreTags(ITag<Block> Tags, BlockState state, Player player){
+//        //判断矿词
+//        if(Tags.contains(state.getBlock())){
+//            Component component = Component.literal(" ")
+//                    .append(state.getBlock().getName()).withStyle(ChatFormatting.GREEN)
+//                    .append(Component.translatable(("chat.akatzuma.error.black_list")));
+//            AkatZumaWorldEdit.sendAkatMessage(component,player);
+//            return false;
+//        }
+//        return true;
+//    }
 }
 
 

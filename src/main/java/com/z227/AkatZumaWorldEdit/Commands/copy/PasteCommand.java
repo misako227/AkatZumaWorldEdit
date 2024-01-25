@@ -58,6 +58,9 @@ public class PasteCommand {
 
         copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+
+        //粘帖前权限检查
+        //todo
         copyBlock.pasteBlock(serverlevel, undoMap);
 
         // 设置标志位

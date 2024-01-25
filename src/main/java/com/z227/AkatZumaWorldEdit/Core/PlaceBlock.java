@@ -97,7 +97,8 @@ public class PlaceBlock {
         if(blackWhiteMap.containsKey(blockName))return blackWhiteMap.get(blockName);
         //检查*
         String[] splitName = blockName.split(":");
-        String prefixName = splitName[0];String suffixName = splitName[1];
+        String prefixName = splitName[0];
+        //String suffixName = splitName[1];
         if(blackWhiteMap.containsKey(prefixName+":*"))
             return blackWhiteMap.get(prefixName+":*");
         return 1;

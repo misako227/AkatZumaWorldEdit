@@ -21,16 +21,21 @@ public class FlipCommand {
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("flip")
                                 .executes((context)->{
-                                            flip(context);
+                                            flip(context,false);
                                             return 1;
                                         }
                                 )
+                        .then(Commands.literal("up")
+                                .executes((context)->{
+                                    flip(context,true);
+                                    return 1;
+                                })
                         )
-        );
+        ));
 
     }
 
-    public static void flip(CommandContext<CommandSourceStack> context) {
+    public static void flip(CommandContext<CommandSourceStack> context,boolean up) {
 
         Player player = context.getSource().getPlayer();
         ServerLevel serverlevel = context.getSource().getLevel();
@@ -47,7 +52,7 @@ public class FlipCommand {
         if(!PlaceBlock.cheakFlag(PMD,player))return ;
         PMD.setFlag(false);
 
-        copyBlock.flip();
+        copyBlock.flip(up);
 
         // 设置标志位
         PMD.setFlag(true);

@@ -1,5 +1,6 @@
 package com.z227.AkatZumaWorldEdit.utilities;
 
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.regex.Matcher;
@@ -27,7 +28,7 @@ public class BlockStateString {
         // 结果:
         // matcher.group(1) = minecraft
         // matcher.group(2) = oak_log
-        Pattern pattern = Pattern.compile("^(\\w+):(\\w+)");
+        Pattern pattern = Pattern.compile("^(\\w+):([\\w]+|[*])");
         Matcher matcher = pattern.matcher(blockName);
         if (matcher.find()) {
             return matcher;
@@ -38,4 +39,9 @@ public class BlockStateString {
     public static String getBlockName(BlockState blockState) {
         return blockState.getBlock().toString().replace("Block{","").replace("}" ,"");
     }
+
+    public static String getBlockName(Block block) {
+        return block.toString().replace("Block{","").replace("}" ,"");
+    }
+
 }
