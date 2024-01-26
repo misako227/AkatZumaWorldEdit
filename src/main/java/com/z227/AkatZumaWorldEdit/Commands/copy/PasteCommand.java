@@ -37,7 +37,7 @@ public class PasteCommand {
     public static void paste(CommandContext<CommandSourceStack> context) {
 
         Player player = context.getSource().getPlayer();
-        boolean playerPermission = context.getSource().hasPermission(2);
+//        boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         //undo
@@ -59,8 +59,6 @@ public class PasteCommand {
         copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
 
-        //粘帖前权限检查
-        //todo
         copyBlock.pasteBlock(serverlevel, undoMap);
 
         // 设置标志位

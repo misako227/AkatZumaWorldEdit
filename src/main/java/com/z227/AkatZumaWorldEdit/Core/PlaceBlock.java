@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class PlaceBlock {
 
-    //判断能否放置方块
+    //判断能否放置方块 by ConstructionWand
     public static Boolean isPlaceBlock(Level world, Player player, BlockPos blockPos, BlockState blockState){
 
         BlockSnapshot blockSnapshot = BlockSnapshot.create(world.dimension(), world, blockPos);
@@ -30,7 +30,40 @@ public class PlaceBlock {
         return !entityPlaceEvent.isCanceled();
     }
 
-        //计算长宽高
+    public static Boolean isPlaceBlock(Level world, Player player, BlockPos pos1,BlockPos pos2, BlockState blockState){
+        int y = Math.max(pos1.getY(), pos2.getY()) /2;
+        int maxX =  Math.max(pos1.getX(), pos2.getX());
+        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+        int minX = Math.min(pos1.getX(), pos2.getX());
+        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+
+        for (int x = minX; x <=maxX; x+=15) {
+            for (int z = minZ; z <=maxZ; z+=15)  {
+                if(!isPlaceBlock(world, player, new BlockPos(x, y, z), blockState))return false;
+            }
+        }
+
+        for (int z = minZ; z <=maxZ; z+=15)  {
+            if(!isPlaceBlock(world, player, new BlockPos(maxX, y, z), blockState))return false;
+        }
+
+        for (int x = minX; x <=maxX; x+=15) {
+            if(!isPlaceBlock(world, player, new BlockPos(x, y, maxZ), blockState))return false;
+        }
+        return true;
+    }
+
+    public static Boolean isPlaceBlockFromPlane(Level world, Player player, BlockPos pos1,BlockPos pos2, BlockState blockState){
+        if(!isPlaceBlock(world, player, pos1,pos2, blockState)){
+            Component component = Component.translatable("chat.akatzuma.error.not_permission_place");
+            AkatZumaWorldEdit.sendAkatMessage(component,player);
+            return false;
+        }
+        return true;
+    }
+
+
+    //计算长宽高
     public static Vec3i calculateCubeDimensions(BlockPos pos1, BlockPos pos2) {
         int length = Math.abs(pos1.getX() - pos2.getX()) + 1;
         int width = Math.abs(pos1.getY() - pos2.getY()) + 1;
@@ -158,7 +191,7 @@ public class PlaceBlock {
 
     //#################################################################################################
 
-
+    //set
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
         if(!cheakFlag(PMD,player)){
             return false;
@@ -174,6 +207,13 @@ public class PlaceBlock {
             return false;
         }
 
+
+        //如果不是管理员
+        return canCopyBlock(pos1, pos2, world, player, blockState, permissionLevel, PMD);
+    }
+
+
+    public static boolean canCopyBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
 
         //如果不是管理员
         if (!permissionLevel) {
@@ -226,14 +266,13 @@ public class PlaceBlock {
             }
 
             //检查是否有放置权限
-            //todo
+            if(!isPlaceBlockFromPlane(world, player, pos1, pos2, blockState))return false;
 
 
             //扣除背包
             if(blockInInvMap!=null){
                 removeItemInPlayerInv(blockInInvMap, n, volume, player);
             }
-
         }
         return true;
     }

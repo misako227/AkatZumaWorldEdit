@@ -5,7 +5,6 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -48,7 +47,7 @@ public class WoodAxeItem extends Item {
 //    }
 
     //@param bool true左键，false右键
-    public void clickPos(BlockPos pos,Player player, boolean bool) {
+    public static void clickPos(BlockPos pos,Player player, boolean bool) {
         //超出最低高度
         if(pos.getY() < Config.LOWHeight.get()){
             if(player.isLocalPlayer()){
@@ -95,7 +94,6 @@ public class WoodAxeItem extends Item {
                 size =  vec3.getX()*vec3.getY()*vec3.getZ();
                 msg = String.format("%s §5(%s)", msg, size);
             }
-            Minecraft minecraft = Minecraft.getInstance();
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
         }
@@ -104,7 +102,8 @@ public class WoodAxeItem extends Item {
     //左键
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-        clickPos(pos, player,true );
+//        clickPos(pos, player,true );
+
         return true;
     }
 

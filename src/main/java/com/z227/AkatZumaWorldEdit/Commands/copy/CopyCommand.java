@@ -33,7 +33,6 @@ public class CopyCommand {
     public static void copyBlock(CommandContext<CommandSourceStack> context) {
 
         Player player = context.getSource().getPlayer();
-        boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());

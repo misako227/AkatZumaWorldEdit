@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit;
 import com.mojang.logging.LogUtils;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Items.AkatZumaCreativeModeTab;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import net.minecraft.ChatFormatting;
@@ -33,11 +34,18 @@ public class AkatZumaWorldEdit{
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
             .append( Component.literal("]:").withStyle(ChatFormatting.WHITE));
 
+    public static Map<Item, Boolean> USEITEM = new HashMap<>();
+
 
     public static Map<UUID, PlayerMapData> PlayerWEMap = new HashMap<>();
 
     public static Map<String, Integer> defaultBlockMap = new HashMap<>();      //黑白名单方块
     public static Map<String, Integer> VipBlockMap = new HashMap<>();      //vip黑白名单方块
+
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final RegistryObject<Item> WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
+
 
 
     public AkatZumaWorldEdit() {
@@ -45,17 +53,14 @@ public class AkatZumaWorldEdit{
 //        wat.register(FMLJavaModLoadingContext.get().getModEventBus());
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
+        AkatZumaCreativeModeTab.TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+//        USEITEM.put(queryBlockStateItem.getDefaultInstance(), true);
 
 
     }
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final RegistryObject<Item> WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryObject<Item> Query_Item = ITEMS.register("query_blockstate_item", () -> new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
-
-//    public static final DeferredRegister<Item> wat = DeferredRegister.create(ForgeRegistries.ITEMS, "minecraft");
-//    public static final RegistryObject<Item> water = wat.register("water", () -> new Item(new Item.Properties().stacksTo(1)));
 
 
 

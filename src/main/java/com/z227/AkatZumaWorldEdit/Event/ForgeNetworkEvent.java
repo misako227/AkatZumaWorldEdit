@@ -3,15 +3,25 @@ package com.z227.AkatZumaWorldEdit.Event;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
+import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -71,6 +81,39 @@ public class ForgeNetworkEvent {
         });
 
     }
+
+    @SubscribeEvent
+    public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        ItemStack itemStack =  event.getItemStack();
+        Item item = itemStack.getItem();
+        if(AkatZumaWorldEdit.USEITEM.get(item) == null )return;
+        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
+
+        BlockPos pos =  event.getPos();
+        Level world = event.getLevel();
+        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        if(item instanceof QueryBlockStateItem){
+            BlockState blockState = world.getBlockState(pos);
+
+            PMD.setQueryBlockState(blockState);
+            if(player.isLocalPlayer()){
+                String blockStateStr = blockState.toString().replaceFirst("}", "")
+                        .replaceFirst("^Block\\{", "");
+
+                Component component = blockState.getBlock().getName().append(Component.literal(": "));
+                Component copy = SendCopyMessage.send(blockStateStr);
+                AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
+            }
+            return;
+
+        }
+        if(item instanceof WoodAxeItem){
+            WoodAxeItem.clickPos(pos, player,true );
+
+        }
+    }
+
 
 
 

@@ -17,6 +17,7 @@ public class LanguageDataGenerator {
 
         @Override
         protected void addTranslations() {
+            this.add("item_group.akatzumaworldedit.item", "AkatZuma的工具");
             this.add("chat.item.wood_axe.left", "§a左键§f选择了位置:");
             this.add("chat.item.wood_axe.left_error", "§c最低选区高度:§4");
             this.add("chat.item.wood_axe.right", "§6右键§f选择了位置:");
@@ -39,6 +40,7 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.inventory_not_enough", "§c 背包中需要方块数量不够，无法进行操作，需要");
             this.add("chat.akatzuma.error.low_hight", "§c 已忽略低于高度限制的方块");
             this.add("chat.akatzuma.error.no_copy_map", "§c 没有找到复制的内容，请先使用§d /a copy §f指令创建一个");
+            this.add("chat.akatzuma.error.not_permission_place", "§c 请检查选区内是否有权限放置方块");
 
 
             this.add("chat.akatzuma.error.not_undo", "§c 没有要撤销的操作");

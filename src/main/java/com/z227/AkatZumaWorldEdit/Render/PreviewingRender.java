@@ -23,11 +23,13 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@OnlyIn(Dist.CLIENT)
+
 @Mod.EventBusSubscriber
+@OnlyIn(Dist.CLIENT)
 public class PreviewingRender {
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public static void onRenderLastEvent(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             return;
@@ -60,7 +62,7 @@ public class PreviewingRender {
 
         }
     }
-
+    @OnlyIn(Dist.CLIENT)
     public static void DrawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
         CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
         BlockPos cp1=null,cp2=null;

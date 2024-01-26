@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -81,7 +82,7 @@ public class CopyBlock {
         pastePosMap.put("startPos", this.copyPos1.offset(-cx,-cy, -cz));
         pastePosMap.put("endPos", this.copyPos2.offset(-cx,-cy, -cz));
 
-        Component component;
+//        Component component;
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
             for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
@@ -90,6 +91,7 @@ public class CopyBlock {
                     BlockPos transfPos = new BlockPos(x-cx, y-cy, z-cz);
                     //判断有没有黑名单
                     if (!this.permissionLevel){
+//                        if(state==Blocks.AIR.defaultBlockState())continue;
                         String blockName = BlockStateString.getBlockName(state);
                         int n = PlaceBlock.getLimit(blockName, blackWhiteMap);  //比例值
                         //检查黑名单
@@ -98,13 +100,8 @@ public class CopyBlock {
                             return false;
                         }
                     }
-
-
-
                     //添加到copyMap
                     this.copyMap.put(transfPos, state);
-
-
                 }
             }
         }
@@ -165,6 +162,11 @@ public class CopyBlock {
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
 
         this.tempPastePosMap = getPastePosMap(rotation);
+        //粘帖前权限检查
+        BlockPos pos1 = tempPastePosMap.get("startPos"),pos2= tempPastePosMap.get("endPos");
+        if (!PlaceBlock.canCopyBlock( pos1, pos2,serverlevel, this.player, Blocks.GRASS.defaultBlockState(), this.permissionLevel, this.PMD)){
+            return;
+        }
 
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
 

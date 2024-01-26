@@ -4,7 +4,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
-import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.Nullable;
@@ -77,22 +75,23 @@ public class QueryBlockStateItem extends Item{
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
 
-//        player.getViewVector()
-        Level world = player.level();
-        BlockState blockState = world.getBlockState(pos);
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        PMD.setQueryBlockState(blockState);
-        if(player.isLocalPlayer()){
-            String blockStateStr = blockState.toString().replaceFirst("}", "")
-                    .replaceFirst("^Block\\{", "");
 
-            Component component = blockState.getBlock().getName().append(Component.literal(": "));
-            Component copy = SendCopyMessage.send(blockStateStr);
-//            Component component = Component.translatable("chat.item.query_block_state.right");
-            AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
-
-
-        }
+//        Level world = player.level();
+//        BlockState blockState = world.getBlockState(pos);
+//        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+//        PMD.setQueryBlockState(blockState);
+//        if(player.isLocalPlayer()){
+//            String blockStateStr = blockState.toString().replaceFirst("}", "")
+//                    .replaceFirst("^Block\\{", "");
+//
+//            Component component = blockState.getBlock().getName().append(Component.literal(": "));
+//            Component copy = SendCopyMessage.send(blockStateStr);
+////            Component component = Component.translatable("chat.item.query_block_state.right");
+//            AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
+//
+//
+//        }
+//        player.getCooldowns().addCooldown(this, 10);
         return true;
     }
 
@@ -131,7 +130,9 @@ public class QueryBlockStateItem extends Item{
 
                 //检查放置权限
                 if (!PlaceBlock.isPlaceBlock(world, player, placePos, PMD.getQueryBlockState())) {
-                        return InteractionResult.SUCCESS;
+                    component = Component.translatable("chat.akatzuma.error.not_permission_place");
+                    AkatZumaWorldEdit.sendAkatMessage(component,player);
+                    return InteractionResult.SUCCESS;
                 }
                 if (blockInInvMap == null) {
                     return InteractionResult.SUCCESS;
@@ -144,8 +145,8 @@ public class QueryBlockStateItem extends Item{
              }
 
             world.setBlock(placePos, PMD.getQueryBlockState(), 16);
-
-        };
+//            player.getCooldowns().addCooldown(this, 10);
+        }
         return InteractionResult.SUCCESS;
     }
 }

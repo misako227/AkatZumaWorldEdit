@@ -29,6 +29,9 @@ public class ModNetworkEvent {
     @SubscribeEvent
     public static void onModLoadComplete(FMLLoadCompleteEvent event) {
         event.enqueueWork(ModNetworkEvent::addConfigMap);
+
+        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.WOOD_AXE.get(), true);
+        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Query_Item.get(), true);
     }
 
 
