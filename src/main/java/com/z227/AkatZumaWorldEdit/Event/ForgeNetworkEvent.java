@@ -19,6 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -56,8 +58,9 @@ public class ForgeNetworkEvent {
     }
 
     //玩家加入服务器，仅在客户端触发
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void Logout(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void LogginIn(ClientPlayerNetworkEvent.LoggingIn event) {
         LocalPlayer player = event.getPlayer();
         String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
@@ -68,6 +71,7 @@ public class ForgeNetworkEvent {
     public static void ServerStarted(ServerStartedEvent event){
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
         addTagsToMap(Config.VIPBLACKListBlock.get(), AkatZumaWorldEdit.VipBlockMap);
+        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签成功");
     }
 
     public static void addTagsToMap(List<? extends String> input, Map output) {
@@ -87,7 +91,7 @@ public class ForgeNetworkEvent {
         Player player = event.getEntity();
         ItemStack itemStack =  event.getItemStack();
         Item item = itemStack.getItem();
-        if(AkatZumaWorldEdit.USEITEM.get(item) == null )return;
+        if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
         if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
         BlockPos pos =  event.getPos();

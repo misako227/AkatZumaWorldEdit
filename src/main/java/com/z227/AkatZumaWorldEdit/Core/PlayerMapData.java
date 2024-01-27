@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,6 +20,7 @@ public class PlayerMapData {
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
 
     private CopyBlock copyBlock;
+//    private StackBlock stackBlock;
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -92,4 +94,12 @@ public class PlayerMapData {
     public void setCopyBlock(CopyBlock copyBlock) {
         this.copyBlock = copyBlock;
     }
+
+//    public StackBlock getStackBlock() {
+//        return stackBlock;
+//    }
+//
+//    public void setStackBlock(StackBlock stackBlock) {
+//        this.stackBlock = stackBlock;
+//    }
 }

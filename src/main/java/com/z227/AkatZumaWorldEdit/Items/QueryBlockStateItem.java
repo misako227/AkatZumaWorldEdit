@@ -1,15 +1,13 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -19,10 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -46,27 +41,6 @@ public class QueryBlockStateItem extends Item{
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-//        ITag<Block> oreTags =  ForgeRegistries.BLOCKS.tags().getTag(BlockTags.create(new ResourceLocation("forge", "storage_blocks")));
-        ITag<Block> ores =  ForgeRegistries.BLOCKS.tags().getTag(BlockTags.create(new ResourceLocation("forge", "ores")));
-//
-//        if(pLevel.isClientSide){
-//            System.out.println(oreTags);
-//            oreTags.stream().forEach(block ->{
-//
-////                System.out.println(block.getName());
-//                System.out.println(block.getDescriptionId());
-//                System.out.println("----------");
-//            });
-//            System.out.println(tools);
-//            tools.forEach(block ->{
-//                System.out.println(block);
-//            });
-//        }
-        if(!pLevel.isClientSide){
-//            System.out.println(ores);
-            System.out.println(AkatZumaWorldEdit.defaultBlockMap);
-        }
-
 
         return super.use(pLevel, pPlayer, pUsedHand);
     }

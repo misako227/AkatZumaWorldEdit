@@ -1,8 +1,9 @@
-package com.z227.AkatZumaWorldEdit.Core;
+package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
@@ -89,7 +90,7 @@ public class PlaceBlock {
     }
 
 
-    public static boolean cheakFlag( PlayerMapData PMD, Player player) {
+    public static boolean cheakFlag(PlayerMapData PMD, Player player) {
         // 判断上次操作是否完成
         if (!PMD.isFlag()) {
             Component component = Component.translatable("chat.akatzuma.error.wait");
@@ -193,6 +194,15 @@ public class PlaceBlock {
 
     //set
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
+
+        if(!checkPos(pos1, pos2, player, PMD))return false;
+
+        //如果不是管理员
+        return canPlaceBlock(pos1, pos2, world, player, blockState, permissionLevel, PMD);
+    }
+
+
+    public static boolean checkPos(BlockPos pos1, BlockPos pos2,Player player, PlayerMapData PMD){
         if(!cheakFlag(PMD,player)){
             return false;
         }
@@ -206,14 +216,10 @@ public class PlaceBlock {
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
-
-
-        //如果不是管理员
-        return canCopyBlock(pos1, pos2, world, player, blockState, permissionLevel, PMD);
+        return true;
     }
 
-
-    public static boolean canCopyBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
+    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
 
         //如果不是管理员
         if (!permissionLevel) {

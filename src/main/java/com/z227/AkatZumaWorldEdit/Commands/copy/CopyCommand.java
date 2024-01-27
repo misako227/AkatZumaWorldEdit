@@ -3,7 +3,7 @@ package com.z227.AkatZumaWorldEdit.Commands.copy;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;

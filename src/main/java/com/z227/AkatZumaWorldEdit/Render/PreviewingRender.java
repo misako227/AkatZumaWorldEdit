@@ -4,9 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
-import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,33 +16,31 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 
-@Mod.EventBusSubscriber
-@OnlyIn(Dist.CLIENT)
+
+@Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PreviewingRender {
 
     @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
     public static void onRenderLastEvent(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             return;
         }
         Player player = Minecraft.getInstance().player;
-        if (player == null)
-            return;
+        if (player == null)return;
 
         ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.isEmpty())
-            return;
+        if (heldItem.isEmpty())return;
 
-        if (!(heldItem.getItem() instanceof WoodAxeItem)) {
-            return;
-        }
+//        if (!(heldItem.getItem() instanceof WoodAxeItem)) {
+//            return;
+//        }
+        if(AkatZumaWorldEdit.USEITEM.get(heldItem.getItem()) == null)return;
+
         //获取方块坐标
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
@@ -62,16 +58,27 @@ public class PreviewingRender {
 
         }
     }
-    @OnlyIn(Dist.CLIENT)
+
     public static void DrawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
-        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
-        BlockPos cp1=null,cp2=null;
-        if(copyBlock!=null){
-            if(copyBlock.getTempPastePosMap()!=null){
-                cp1 = copyBlock.getTempPastePosMap().get("startPos");
-                cp2 = copyBlock.getTempPastePosMap().get("endPos");
-            }
-        }
+        //paste
+//        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
+//        BlockPos cp1=null,cp2=null;
+//        if(copyBlock!=null){
+//            if(copyBlock.getTempPastePosMap()!=null){
+//                cp1 = copyBlock.getTempPastePosMap().get("startPos");
+//                cp2 = copyBlock.getTempPastePosMap().get("endPos");
+//            }
+//        }
+
+        //stack
+//        StackBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getStackBlock();
+//        BlockPos cp1=null,cp2=null;
+//        if(copyBlock!=null){
+//            if(copyBlock.getMaxPos1()!=null){
+//                cp1 = copyBlock.getMaxPos1();
+//                cp2 = copyBlock.getMaxPos2();
+//            }
+//        }
 
         //渲染
         //关闭深度检测
@@ -90,10 +97,10 @@ public class PreviewingRender {
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
-        if(cp1!=null){
-            LevelRenderer.renderLineBox(stack, vertexConsumer, cp1.getX(),cp1.getY(),cp1.getZ(),cp1.getX()+1,cp1.getY()+1,cp1.getZ()+1, 1, 255, 255, 1);
-            LevelRenderer.renderLineBox(stack, vertexConsumer, cp2.getX(),cp2.getY(),cp2.getZ(),cp2.getX()+1,cp2.getY()+1, cp2.getZ()+1, 1, 255, 255, 1);
-        }
+//        if(cp1!=null){
+//            LevelRenderer.renderLineBox(stack, vertexConsumer, cp1.getX(),cp1.getY(),cp1.getZ(),cp1.getX()+1,cp1.getY()+1,cp1.getZ()+1, 150, 10, 200, 1);
+//            LevelRenderer.renderLineBox(stack, vertexConsumer, cp2.getX(),cp2.getY(),cp2.getZ(),cp2.getX()+1,cp2.getY()+1, cp2.getZ()+1, 100, 200, 100, 1);
+//        }
 
         stack.popPose();
         RenderSystem.enableDepthTest();

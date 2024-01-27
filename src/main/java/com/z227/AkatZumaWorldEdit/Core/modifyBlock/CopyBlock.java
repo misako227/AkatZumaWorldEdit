@@ -1,7 +1,9 @@
-package com.z227.AkatZumaWorldEdit.Core;
+package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -26,6 +28,7 @@ public class CopyBlock {
     PlayerMapData PMD;
     Vec3i copyVec3, pasteVec3;
     boolean permissionLevel;
+    BlockState invBlockState = Blocks.GRASS_BLOCK.defaultBlockState();
 
 
     public CopyBlock(PlayerMapData PMD, Player player) {
@@ -164,7 +167,7 @@ public class CopyBlock {
         this.tempPastePosMap = getPastePosMap(rotation);
         //粘帖前权限检查
         BlockPos pos1 = tempPastePosMap.get("startPos"),pos2= tempPastePosMap.get("endPos");
-        if (!PlaceBlock.canCopyBlock( pos1, pos2,serverlevel, this.player, Blocks.GRASS.defaultBlockState(), this.permissionLevel, this.PMD)){
+        if (!PlaceBlock.canPlaceBlock( pos1, pos2,serverlevel, this.player, this.invBlockState , this.permissionLevel, this.PMD)){
             return;
         }
 
@@ -204,7 +207,7 @@ public class CopyBlock {
                 end.getZ()*vec3i.getZ()
         ));
     }
-
+//计算粘帖时的pos1，pos2
     public HashMap<String,BlockPos> getPastePosMap(Rotation rotation){
         BlockPos start = this.pastePosMap.get("startPos");
         BlockPos end = this.pastePosMap.get("endPos");

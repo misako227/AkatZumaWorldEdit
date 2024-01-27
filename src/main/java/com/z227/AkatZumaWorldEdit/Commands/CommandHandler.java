@@ -28,6 +28,7 @@ public class CommandHandler {
         FlipCommand.register(dispatcher,commandbuildcontext);
         UndoCommand.register(dispatcher,commandbuildcontext);
         RedoCommand.register(dispatcher,commandbuildcontext);
+        StackCommand.register(dispatcher,commandbuildcontext);
 
     }
 
