@@ -62,7 +62,7 @@ public class SetCommand {
             PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
             Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
             Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
-            AkatZumaWorldEdit.sendAkatMessage(setSuccess, player);
+            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
 
 
         }

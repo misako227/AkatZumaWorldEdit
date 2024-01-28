@@ -39,9 +39,12 @@ public class QueryBlockStateItem extends Item{
 
     }
 
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-
+        Component component = Component.translatable("chat.akatzuma.set.success")
+                ;
+        AkatZumaWorldEdit.sendClientMessage(component, pPlayer);
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
@@ -115,7 +118,7 @@ public class QueryBlockStateItem extends Item{
                 PlaceBlock.removeItemInPlayerInv(blockInInvMap, 1, 1, player);
                 component = Component.translatable("chat.akatzuma.set.success")
                         .append(descriptBlockName.withStyle(ChatFormatting.GREEN));
-                AkatZumaWorldEdit.sendAkatMessage(component, player);
+                AkatZumaWorldEdit.sendClientMessage(component, player);
              }
 
             world.setBlock(placePos, PMD.getQueryBlockState(), 16);

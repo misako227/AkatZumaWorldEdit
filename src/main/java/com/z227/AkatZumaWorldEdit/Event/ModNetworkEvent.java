@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.utilities.AkatRecipe;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.LanguageDataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -23,6 +24,7 @@ public class ModNetworkEvent {
         var packOutput = gen.getPackOutput();
         gen.addProvider(event.includeClient(), new LanguageDataGenerator.EnglishLanguageProvider(packOutput));
         gen.addProvider(event.includeClient(), new LanguageDataGenerator.ChineseLanguageProvider(packOutput));
+        gen.addProvider(event.includeServer(), new AkatRecipe(packOutput));
     }
 
 
