@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -28,7 +27,7 @@ public class CopyBlock {
     PlayerMapData PMD;
     Vec3i copyVec3, pasteVec3;
     boolean permissionLevel;
-    BlockState invBlockState = Blocks.GRASS_BLOCK.defaultBlockState();
+    BlockState invBlockState =  AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
 
 
     public CopyBlock(PlayerMapData PMD, Player player) {
@@ -64,7 +63,7 @@ public class CopyBlock {
         if (!this.permissionLevel) {
             int areaValue = Config.DEFAULTValue.get();      //选区大小
 
-            if (PMD.isVip()) {
+            if (PlaceBlock.checkVip(this.player)) {
                 areaValue = Config.VIPValue.get();      //选区大小
                 blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
             }
@@ -167,7 +166,7 @@ public class CopyBlock {
         this.tempPastePosMap = getPastePosMap(rotation);
         //粘帖前权限检查
         BlockPos pos1 = tempPastePosMap.get("startPos"),pos2= tempPastePosMap.get("endPos");
-        if (!PlaceBlock.canPlaceBlock( pos1, pos2,serverlevel, this.player, this.invBlockState , this.permissionLevel, this.PMD)){
+        if (!PlaceBlock.canPlaceBlock( pos1, pos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
             return;
         }
 

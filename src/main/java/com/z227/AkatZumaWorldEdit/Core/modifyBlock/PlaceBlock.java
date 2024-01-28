@@ -198,7 +198,7 @@ public class PlaceBlock {
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
         //如果不是管理员
-        return canPlaceBlock(pos1, pos2, world, player, blockState, permissionLevel, PMD);
+        return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
     }
 
 
@@ -216,17 +216,31 @@ public class PlaceBlock {
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
+
+        if(!PlaceBlock.checkLowHeight(pos1,pos2,player))return false;
         return true;
     }
 
-    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
+    //检查最低高度
+    public static boolean checkLowHeight(BlockPos pos1,BlockPos pos2, Player player){
+        if(pos1.getY()<Config.LOWHeight.get() || pos2.getY()<Config.LOWHeight.get()){
+            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),player);
+            return false;
+        }
+        return true;
+    }
+    public static boolean checkVip(Player player){
+        return AkatZumaWorldEdit.VipPlayerMap.containsKey(player.getName().getString());
+    }
+
+    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel, PlayerMapData PMD) {
 
         //如果不是管理员
         if (!permissionLevel) {
             int areaValue = Config.DEFAULTValue.get();      //选区大小
             boolean checkInventory = Config.CHECKInventory.get();    //是否检查背包
             Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
-            if (PMD.isVip()) {
+            if (checkVip(player)) {
                 areaValue = Config.VIPValue.get();      //选区大小
                 checkInventory = Config.VIPCHECKInventory.get();    //是否检查背包
                 blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
@@ -234,7 +248,10 @@ public class PlaceBlock {
 
             // 选区大小
             Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
-            int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
+            int volume  = deductNum;
+            if(deductNum == -1){
+                volume =  vec3.getX() * vec3.getY()* vec3.getZ();
+            }
             MutableComponent deBlockName = blockState.getBlock().getName();
 
             // 选区大小

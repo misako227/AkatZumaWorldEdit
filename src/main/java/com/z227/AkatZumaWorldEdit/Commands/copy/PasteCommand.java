@@ -40,9 +40,7 @@ public class PasteCommand {
 //        boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        //undo
-        Map<BlockPos, BlockState> undoMap  = new HashMap<>();
-        PMD.getUndoDataMap().push(undoMap);
+
 
 
         CopyBlock copyBlock = PMD.getCopyBlock();
@@ -52,12 +50,18 @@ public class PasteCommand {
             return;
         }
 
+
+
         // 设置标志位
         if(!PlaceBlock.cheakFlag(PMD,player))return ;
         PMD.setFlag(false);
 
         copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+
+        //undo
+        Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+        PMD.getUndoDataMap().push(undoMap);
 
         copyBlock.pasteBlock(serverlevel, undoMap);
 

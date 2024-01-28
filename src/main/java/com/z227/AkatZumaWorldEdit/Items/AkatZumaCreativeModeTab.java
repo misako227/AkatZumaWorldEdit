@@ -31,6 +31,7 @@ public class AkatZumaCreativeModeTab {
             .displayItems((params, output) -> {
                 output.accept(AkatZumaWorldEdit.Query_Item.get());
                 output.accept(AkatZumaWorldEdit.WOOD_AXE.get());
+                output.accept(AkatZumaWorldEdit.Building_Consumable_Item.get());
             })
             .build()
     );

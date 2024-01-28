@@ -12,7 +12,7 @@ public class PlayerMapData {
     private String name;
     private BlockPos pos1;
     private BlockPos pos2;
-    private boolean vip;
+//    private boolean vip;
     private boolean flag;
     private BlockState queryBlockState;
 
@@ -63,13 +63,13 @@ public class PlayerMapData {
         this.pos2 = pos2;
     }
 
-    public boolean isVip() {
-        return vip;
-    }
+//    public boolean isVip() {
+//        return vip;
+//    }
 
-    public void setVip(boolean vip) {
-        this.vip = vip;
-    }
+//    public void setVip(boolean vip) {
+//        this.vip = vip;
+//    }
 
     public boolean isFlag() {
         return flag;

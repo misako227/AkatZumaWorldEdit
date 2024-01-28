@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 public class Config {
     public static final ForgeConfigSpec.Builder BUILDER;
     public static ForgeConfigSpec.IntValue LOWHeight;
+//    public static ForgeConfigSpec.IntValue MOVELimit;
     public static ForgeConfigSpec.IntValue UNDOLimit;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> VIPPlayerList;
 
@@ -31,6 +32,7 @@ public class Config {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
         LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
         UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
+//        MOVELimit = BUILDER.comment("move指令最大移动距离").defineInRange("undoLimit", 100, 0, 1000);
         BUILDER.pop();
 
         BUILDER.comment("普通玩家").push("Default");
@@ -47,7 +49,7 @@ public class Config {
                 .defineListAllowEmpty("whiteListBlock", List.of("10#minecraft:oak_log","5#minecraft:stone"), Config::validateWhiteBlockName);
 
         BLACKListBlock = BUILDER.comment("""
-                        \n黑名单方块，优先级：黑名单 > 白名单比例值 > * 
+                        \n黑名单方块，优先级：黑名单 > 白名单比例值 > *
                         优先级比白名单高,此名单中的方块均不允许放置，只填入名字即可，不需要前面的#""")
                 .defineListAllowEmpty("blackListBlock", List.of("minecraft:water","minecraft:tnt"), Config::validateBlackBlockName);
         BLACKListTags = BUILDER.comment("""
@@ -69,7 +71,7 @@ public class Config {
                          1#：则比例为1：1，放置1个方块需要扣除背包中1个
                          50#：则比例为50：1，放置50个方块需要扣除背包中1个
                          10#minecraft:* 则所有minecraft方块比例都为10：1，所有minecraft方块放置10个需要扣除背包中1个""")
-                .defineListAllowEmpty("VipWhiteListBlock", List.of("0#minecraft:oak_log","10#minecraft:stone","5#minecraft:stone"), Config::validateWhiteBlockName);
+                .defineListAllowEmpty("VipWhiteListBlock", List.of("0#minecraft:oak_log","10#minecraft:stone"), Config::validateWhiteBlockName);
 
         VIPBLACKListBlock = BUILDER.comment("""
                         \n黑名单方块，优先级：黑名单 > 白名单比例值 > *

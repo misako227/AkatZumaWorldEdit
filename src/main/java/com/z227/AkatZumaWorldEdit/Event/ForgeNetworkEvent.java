@@ -7,7 +7,6 @@ import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
-import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -44,7 +43,7 @@ public class ForgeNetworkEvent {
         String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
-        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
+//        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
 
     }
 

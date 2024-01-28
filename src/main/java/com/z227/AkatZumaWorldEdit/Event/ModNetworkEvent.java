@@ -44,7 +44,7 @@ public class ModNetworkEvent {
         //vip
         addBlackWhiteToMap(Config.VIPWHITEListBlock.get(), true,AkatZumaWorldEdit.VipBlockMap);
         addBlackWhiteToMap(Config.VIPBLACKListBlock.get(), false,AkatZumaWorldEdit.VipBlockMap);
-
+        updateVipPlayerMap(Config.VIPPlayerList.get(), AkatZumaWorldEdit.VipPlayerMap);
 
     }
 
@@ -60,8 +60,11 @@ public class ModNetworkEvent {
             output.put(tempKey, b?Integer.parseInt(matcher.group(1)) : -1);
 
         });
-
-
+    }
+    public static void updateVipPlayerMap(List<? extends String> input, Map output){
+        input.forEach(k ->{
+            output.put(k,true);
+        });
     }
 
     //

@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class StackBlock {
     int stackNum;
     boolean permissionLevel;
     Map<BlockPos, BlockState> stackMap;
-    BlockState invBlockState = Blocks.GRASS_BLOCK.defaultBlockState();
+    BlockState invBlockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
 
     public StackBlock(PlayerMapData PMD, ServerLevel level, Player player, int num, int direction) {
         this.player = player;
@@ -54,7 +53,7 @@ public class StackBlock {
             calcMaxPos();
             if(!addStackMap())return false;
             //放置前权限检查
-            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState, this.permissionLevel, this.PMD);
+            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState,-1, this.permissionLevel, this.PMD);
         }
 //
         return false;
@@ -79,7 +78,7 @@ public class StackBlock {
         if (!this.permissionLevel) {
             int areaValue = Config.DEFAULTValue.get();      //选区大小
 
-            if (PMD.isVip()) {
+            if (PlaceBlock.checkVip(this.player)) {
                 areaValue = Config.VIPValue.get();      //选区大小
                 blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
             }

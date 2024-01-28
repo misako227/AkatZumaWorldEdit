@@ -23,6 +23,8 @@ public class LanguageDataGenerator {
             this.add("chat.item.wood_axe.right", "§6右键§f选择了位置:");
             this.add("chat.item.query_block_state.right", "方块状态:");
             this.add("item.akatzumaworldedit.wood_axe","§b选区斧头");
+            this.add("block.akatzumaworldedit.building_consumable","§b建筑耗材");
+            this.add("item.akatzumaworldedit.building_consumable.desc","用于copy等指令消耗的材料");
             this.add("item.test_item.desc1", "§a左键§f选取第一个点");
             this.add("item.test_item.desc2", "§6右键§f选取第二个点");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
@@ -41,7 +43,7 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.low_hight", "§c 已忽略低于高度限制的方块");
             this.add("chat.akatzuma.error.no_copy_map", "§c 没有找到复制的内容，请先使用§d /a copy §f指令创建一个");
             this.add("chat.akatzuma.error.not_permission_place", "§c 请检查当前位置是否有权限放置");
-
+            this.add("chat.akatzuma.error.no_replace", "§c 没有找到要替换的方块");
 
             this.add("chat.akatzuma.error.not_undo", "§c 没有要撤销的操作");
             this.add("chat.akatzuma.error.not_redo", "§c 没有要redo的操作");
