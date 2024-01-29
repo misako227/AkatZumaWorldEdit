@@ -1,4 +1,7 @@
 
+[语雀文档地址](https://www.yuque.com/u39444834/dgakrb/gt2eg4whuq7hcvwf?singleDoc#)
+
+
 Source installation information for modders
 -------------------------------------------
 This code follows the Minecraft Forge installation methodology. It will apply

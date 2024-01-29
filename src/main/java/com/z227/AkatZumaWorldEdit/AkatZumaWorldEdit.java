@@ -46,7 +46,8 @@ public class AkatZumaWorldEdit{
 
     public static Map<String, Integer> defaultBlockMap = new HashMap<>();      //黑白名单方块
     public static Map<String, Integer> VipBlockMap = new HashMap<>();      //vip黑白名单方块
-    public static Map<String, Boolean> VipPlayerMap = new HashMap<>();
+    public static Map<String, Boolean> VipPlayerMap = new HashMap<>();      //vip玩家
+    public static Map<String, Boolean> BlackWorldMap = new HashMap<>();
 
     public static final DeferredRegister<Item> ITEMS;
     public static final RegistryObject<Item> WOOD_AXE;

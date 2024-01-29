@@ -16,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -48,7 +50,7 @@ public class WoodAxeItem extends Item {
 //    }
 
     //@param bool true左键，false右键
-    public static void clickPos(BlockPos pos,Player player, boolean bool) {
+    public static void clickPos(Level leve, BlockPos pos,Player player, boolean bool) {
         //超出最低高度
         if(pos.getY() < Config.LOWHeight.get()){
             if(player.isLocalPlayer()){
@@ -58,6 +60,15 @@ public class WoodAxeItem extends Item {
             }
             return;
         }
+        //禁止选中基岩
+        Block block = leve.getBlockState(pos).getBlock();
+        if(block == Blocks.BEDROCK){
+            Component component = Component.literal(" ")
+                    .append(block.getName()).withStyle(ChatFormatting.GREEN)
+                    .append(Component.translatable(("chat.akatzuma.error.black_list")));
+            AkatZumaWorldEdit.sendAkatMessage(component, player);
+            return;
+        }
 
         Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
         //isFlag
@@ -65,11 +76,11 @@ public class WoodAxeItem extends Item {
             return;
         }
 
-        if(AWE.get(player.getUUID()) == null){
+        PlayerMapData pwm = AWE.get(player.getUUID());
+        if(pwm == null){
             AWE.put(player.getUUID(), new PlayerMapData(player.getName().getString()));
         }
 
-        PlayerMapData pwm = AWE.get(player.getUUID());
         if(bool)pwm.setPos1(pos);
         else pwm.setPos2(pos);
 
@@ -116,8 +127,8 @@ public class WoodAxeItem extends Item {
 
         BlockPos blockPos2 = context.getClickedPos();
         Player player = context.getPlayer();
-//        Level world = context.getLevel();
-        clickPos(blockPos2, player,false );
+        Level world = context.getLevel();
+        clickPos(world,blockPos2, player,false );
 
 
 

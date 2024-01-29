@@ -112,7 +112,7 @@ public class ForgeNetworkEvent {
 
         }
         if(item instanceof WoodAxeItem){
-            WoodAxeItem.clickPos(pos, player,true );
+            WoodAxeItem.clickPos(world,pos, player,true );
 
         }
     }

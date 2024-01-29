@@ -11,6 +11,7 @@ public class Config {
     public static final ForgeConfigSpec.Builder BUILDER;
     public static ForgeConfigSpec.IntValue LOWHeight;
     public static ForgeConfigSpec.IntValue UNDOLimit;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKListWorld;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> VIPPlayerList;
 
     public static ForgeConfigSpec.IntValue DEFAULTValue;
@@ -31,7 +32,10 @@ public class Config {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
         LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
         UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
-
+        BLACKListWorld = BUILDER.comment("""
+                世界黑名单，格式为"世界名/维度名"，世界名是创建世界时候的名字
+                "主世界/minecraft:overworld"，"下界/minecraft:the_nether"，"末地/minecraft:the_end\"""")
+                .defineListAllowEmpty("blackListWorld", List.of("新的世界/minecraft:the_nether"), Config::validateWorldName);
         BUILDER.pop();
 
         BUILDER.comment("普通玩家").push("Default");
@@ -111,6 +115,15 @@ public class Config {
         if(!(obj instanceof String))return false;
 
         Matcher matcher = BlockStateString.findBlackBlockName((String)obj);
+        if(matcher==null) return false;
+        return true;
+//        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(matcher.group(2),matcher.group(3)));
+    }
+
+    private static boolean validateWorldName(final Object obj) {
+        if(!(obj instanceof String))return false;
+
+        Matcher matcher = BlockStateString.findWorldName((String)obj);
         if(matcher==null) return false;
         return true;
 //        return ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(matcher.group(2),matcher.group(3)));

@@ -36,6 +36,19 @@ public class BlockStateString {
         return null;
     }
 
+    public static Matcher findWorldName(String worldName) {
+        // 匹配:minecraft:oak_log[axis=y]
+        // 结果:
+        // matcher.group(1) = minecraft
+        // matcher.group(2) = oak_log
+        Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5\\w]+/\\w+:\\w+");
+        Matcher matcher = pattern.matcher(worldName);
+        if (matcher.find()) {
+            return matcher;
+        }
+        return null;
+    }
+
     public static String getBlockName(BlockState blockState) {
         return blockState.getBlock().toString().replace("Block{","").replace("}" ,"");
     }

@@ -42,9 +42,11 @@ public class QueryBlockStateItem extends Item{
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        Component component = Component.translatable("chat.akatzuma.set.success")
-                ;
-        AkatZumaWorldEdit.sendClientMessage(component, pPlayer);
+
+        if(!pLevel.isClientSide()){
+            System.out.println(AkatZumaWorldEdit.BlackWorldMap);
+
+        }
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 

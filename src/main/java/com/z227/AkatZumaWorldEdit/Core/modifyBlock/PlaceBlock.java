@@ -14,6 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.level.BlockEvent;
@@ -97,6 +98,19 @@ public class PlaceBlock {
         // 判断上次操作是否完成
         if (!PMD.isFlag()) {
             Component component = Component.translatable("chat.akatzuma.error.wait");
+            AkatZumaWorldEdit.sendAkatMessage(component, player);
+            return false;
+        }
+        return true;
+    }
+
+    //检查世界
+    public static boolean cheakLevel(Level level, Player player) {
+        String worldName =  ((ServerLevelData)level.getLevelData()).getLevelName();
+        String dimension = level.dimension().location().toString();
+        String tempName = worldName + "/" + dimension;
+        if(AkatZumaWorldEdit.BlackWorldMap.containsKey(tempName)){
+            Component component = Component.translatable("chat.akatzuma.error.black_world");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -199,6 +213,8 @@ public class PlaceBlock {
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, boolean permissionLevel, PlayerMapData PMD) {
 
         if(!checkPos(pos1, pos2, player, PMD))return false;
+
+        if(!cheakLevel(world,player))return false;
 
         //如果不是管理员
         return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
