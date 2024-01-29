@@ -32,7 +32,10 @@ public class PlaceBlock {
     }
 
     public static Boolean isPlaceBlock(Level world, Player player, BlockPos pos1,BlockPos pos2, BlockState blockState){
-        int y = Math.max(pos1.getY(), pos2.getY()) /2;
+        int maxY = Math.max(pos1.getY(), pos2.getY());
+//        int minY = Math.min(pos1.getY(), pos2.getY());
+        int y = maxY/2;
+
         int maxX =  Math.max(pos1.getX(), pos2.getX());
         int maxZ = Math.max(pos1.getZ(), pos2.getZ());
         int minX = Math.min(pos1.getX(), pos2.getX());

@@ -2,8 +2,9 @@ package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -72,8 +73,7 @@ public class WoodAxeItem extends Item {
         if(bool)pwm.setPos1(pos);
         else pwm.setPos2(pos);
 
-        //判断是客户端
-        if(player.isLocalPlayer()){
+
             BlockPos pos2 = null; int size;
             Component component;
             //判断pos2存不存在
@@ -84,19 +84,22 @@ public class WoodAxeItem extends Item {
                 component = Component.translatable("chat.item.wood_axe.right");
                 if (pwm.getPos1() !=null) pos2 = pwm.getPos1();
             }
+        String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
 
+        //判断是客户端
+        if(player.isLocalPlayer()){
 
-
-            String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
 
             if(pos2!=null){
                 Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos, pos2);
                 size =  vec3.getX()*vec3.getY()*vec3.getZ();
                 msg = String.format("%s §5(%s)", msg, size);
             }
+
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
         }
+        Util.logDebug(player,component.getString()+msg);
     }
 
     //左键

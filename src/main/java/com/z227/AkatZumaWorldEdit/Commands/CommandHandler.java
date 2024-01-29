@@ -2,6 +2,8 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.z227.AkatZumaWorldEdit.Commands.admin.AddVipPlayerCommand;
+import com.z227.AkatZumaWorldEdit.Commands.admin.DelVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
@@ -28,6 +30,9 @@ public class CommandHandler {
         RedoCommand.register(dispatcher,commandbuildcontext);
         StackCommand.register(dispatcher,commandbuildcontext);
         ReplaceCommand.register(dispatcher,commandbuildcontext);
+
+        AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
+        DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
 
     }
 

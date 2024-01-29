@@ -37,7 +37,7 @@ public class SetCommand {
 //                            .requires((commandSource) -> commandSource.hasPermission(1))
                 )
         );
-        dispatcher.register(Commands.literal("a").redirect(cmd));
+        dispatcher.register(Commands.literal("/").redirect(cmd));
 
     }
 

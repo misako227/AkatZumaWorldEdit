@@ -62,8 +62,8 @@ public class AkatZumaWorldEdit{
         WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
         Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
 
-        Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.6f, 1.5F)));
-        Building_Consumable_Item = ITEMS.register( "building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
+        Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
+        Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
 
     }
 

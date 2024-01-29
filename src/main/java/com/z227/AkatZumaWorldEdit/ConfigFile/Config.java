@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 public class Config {
     public static final ForgeConfigSpec.Builder BUILDER;
     public static ForgeConfigSpec.IntValue LOWHeight;
-//    public static ForgeConfigSpec.IntValue MOVELimit;
     public static ForgeConfigSpec.IntValue UNDOLimit;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> VIPPlayerList;
 
@@ -32,11 +31,11 @@ public class Config {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
         LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
         UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
-//        MOVELimit = BUILDER.comment("move指令最大移动距离").defineInRange("undoLimit", 100, 0, 1000);
+
         BUILDER.pop();
 
         BUILDER.comment("普通玩家").push("Default");
-        DEFAULTValue  = BUILDER.comment("普通玩家默认选区大小").defineInRange("defaultValue", 100, 0, Integer.MAX_VALUE);
+        DEFAULTValue  = BUILDER.comment("普通玩家默认选区大小").defineInRange("defaultValue", 1000, 0, Integer.MAX_VALUE);
         CHECKInventory = BUILDER.comment("\n放置的时候是否扣除背包方块").define("checkInventory", true);
         WHITEListBlock = BUILDER.comment("""
                         
@@ -61,7 +60,7 @@ public class Config {
 
         BUILDER.comment("高级玩家").push("VipSettings");
         VIPPlayerList = BUILDER.comment("高级玩家名单").defineListAllowEmpty("vipPlayerList", List.of("高级玩家名单"),Config::VipPlayerName);
-        VIPValue = BUILDER.comment("\n高级玩家选区大小").defineInRange("vipValue", 1000, 0, Integer.MAX_VALUE);
+        VIPValue = BUILDER.comment("\n高级玩家选区大小").defineInRange("vipValue", 100000, 0, Integer.MAX_VALUE);
         VIPCHECKInventory = BUILDER.comment("\n高级玩家放置的时候是否扣除背包方块").define("VipCheckInventory", true);
         VIPWHITEListBlock = BUILDER.comment("""
                         
