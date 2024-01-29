@@ -50,15 +50,17 @@ public class ReplaceBlock {
     }
 
     public boolean checkReplaceBlock(){
-        Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
-        if (PlaceBlock.checkVip(this.player)) {
-            blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
-        }
-        String blockName = BlockStateString.getBlockName(this.inputState);
-        int n = PlaceBlock.getLimit(blockName, blackWhiteMap);  //比例值
-        MutableComponent deBlockName = this.inputState.getBlock().getName();
-        //检查黑名单
-        return PlaceBlock.checkBlackList(player, n, deBlockName);
+        if(!this.permissionLevel){
+            Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
+            if (PlaceBlock.checkVip(this.player)) {
+                blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
+            }
+            String blockName = BlockStateString.getBlockName(this.inputState);
+            int n = PlaceBlock.getLimit(blockName, blackWhiteMap);  //比例值
+            MutableComponent deBlockName = this.inputState.getBlock().getName();
+            //检查黑名单
+            return PlaceBlock.checkBlackList(player, n, deBlockName);
+        }return  true;
     }
 
 

@@ -55,6 +55,7 @@ public class PasteCommand {
         // 设置标志位
         if(!PlaceBlock.cheakFlag(PMD,player))return ;
         PMD.setFlag(false);
+        if(!PlaceBlock.cheakLevel(serverlevel,player))return; //世界黑名单
 
         copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向

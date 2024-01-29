@@ -214,8 +214,6 @@ public class PlaceBlock {
 
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
-        if(!cheakLevel(world,player))return false;
-
         //如果不是管理员
         return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
     }
@@ -256,6 +254,9 @@ public class PlaceBlock {
 
         //如果不是管理员
         if (!permissionLevel) {
+            //检查世界黑名单
+            if(!cheakLevel(world,player))return false;
+
             int areaValue = Config.DEFAULTValue.get();      //选区大小
             boolean checkInventory = Config.CHECKInventory.get();    //是否检查背包
             Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块

@@ -61,6 +61,7 @@ public class CopyBlock {
 
         Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
         if (!this.permissionLevel) {
+            if(!PlaceBlock.cheakLevel(serverlevel,player))return false; //世界黑名单
             int areaValue = Config.DEFAULTValue.get();      //选区大小
 
             if (PlaceBlock.checkVip(this.player)) {
