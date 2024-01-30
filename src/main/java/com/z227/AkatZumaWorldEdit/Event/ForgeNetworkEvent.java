@@ -70,7 +70,7 @@ public class ForgeNetworkEvent {
     public static void ServerStarted(ServerStartedEvent event){
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
         addTagsToMap(Config.VIPBLACKListBlock.get(), AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签成功");
+        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
     }
 
     public static void addTagsToMap(List<? extends String> input, Map output) {

@@ -8,19 +8,19 @@
 
 |  指令   | 描述  |
 |  ----  | ----  |
-| /// set | 设置选区内方块 |
-| /// stack      | 堆叠选区内方块 |
-| /// copy      | 复制 |
-| /// paste      | 粘帖 |
-| /// flip      | 翻转复制的内容 |
-| /// replace      | 替换 |
-| /// undo      | 撤销 |
-| /// redo      | 撤销undo |
+| /a set | 设置选区内方块 |
+| /a stack      | 堆叠选区内方块 |
+| /a copy      | 复制 |
+| /a paste      | 粘帖 |
+| /a flip      | 翻转复制的内容 |
+| /a replace      | 替换 |
+| /a undo      | 撤销 |
+| /a redo      | 撤销undo |
 
 | 管理员指令      |  |
 |  ----  | ----  |
-| /// add viplayer | 添加高级玩家 |
-| /// del viplayer | 删除高级玩家 |
+| /a add viplayer | 添加高级玩家 |
+| /a del viplayer | 删除高级玩家 |
 
 ### 工具
 
@@ -37,26 +37,26 @@
 ● 注意：因为只消耗此MOD的物品，会产生复制方块的问题
 ● `不想复制的方块`加入黑名单即可
 ● `不想使用复制功能`的把此方块加入黑名单
-适用于指令`/// copy 、 /// stack`
+适用于指令`/a copy 、 /a stack`
 
 
 ### 指令
 ```java
 //格式
-/// 指令 <必填参数> [选填参数]
+/a 指令 <必填参数> [选填参数]
 ```
 
-#### /// set 设置选区内方块
-`/// set <方块ID>`
+#### /a set 设置选区内方块
+`/a set <方块ID>`
 可以使用查询工具查看方块的状态并复制,[]内是方块的各种状态
-比如：`/// set minecraft:cherry_leaves[persistent=true]`
+比如：`/a set minecraft:cherry_leaves[persistent=true]`
 放置一个不会枯萎的樱花树叶，默认放置的树叶是会枯萎的
 <br>
 
 - - -
-#### /// stack 堆叠
+#### /a stack 堆叠
 默认根据玩家朝向东南西北堆叠，上下方向需要填入参数
-`/// stack <堆叠次数> [方向]`
+`/a stack <堆叠次数> [方向]`
 - <堆叠次数>： 数字即可，受选区范围限制
 - [方向]：可选参数`up、down`，
 
@@ -64,30 +64,30 @@
 
 - - -
 
-#### /// copy 复制
-复制选区内的方块，使用`/// paste` 粘帖
+#### /a copy 复制
+复制选区内的方块，使用`/a paste` 粘帖
 > 复制时候玩家的站位会影响粘帖的位置和翻转，粘帖时候会根据玩家朝向来粘帖
 * <font color='red'>注意</font>： 不会复制NBT属性，比如箱子里面的数据等，只复制方块状态
 
 
-#### /// flip 翻转
-`/// flip`
+#### /a flip 翻转
+`/a flip`
 参数：`[up / down]`（选填）
 > 位置影响参考复制↑
 
 翻转复制的选区内容，不填参数默认左右翻转
 以玩家复制时候的位置为原点翻转
 
-#### /// paste 粘帖
+#### /a paste 粘帖
 会根据玩家朝向来旋转复制的内容粘帖
 
-#### /// replace 替换
-`/// replace <被替换的方块> <替换成的方块>`
+#### /a replace 替换
+`/a replace <被替换的方块> <替换成的方块>`
 
 
 ### 管理员指令
-#### /// add viplayer 添加高级玩家 
-`/// add viplayer <玩家名字>`
+#### /a add viplayer 添加高级玩家 
+`/a add viplayer <玩家名字>`
 
-#### /// del viplayer 删除高级玩家 
-`/// del viplayer <玩家名字>`
+#### /a del viplayer 删除高级玩家 
+`/a del viplayer <玩家名字>`

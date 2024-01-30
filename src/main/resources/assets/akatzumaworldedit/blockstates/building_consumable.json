@@ -1,0 +1,19 @@
+{
+  "variants": {
+	"facing=east": {
+      "model": "akatzumaworldedit:block/building_consumable",
+      "y": 90
+    },
+	"facing=north": {
+      "model": "akatzumaworldedit:block/building_consumable"
+    },
+	"facing=south": {
+      "model": "akatzumaworldedit:block/building_consumable",
+      "y": 180
+    },
+	"facing=west": {
+      "model": "akatzumaworldedit:block/building_consumable",
+      "y": 270
+    }
+  }
+}
