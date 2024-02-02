@@ -21,7 +21,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 
-
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PreviewingRender {
 
@@ -44,6 +43,8 @@ public class PreviewingRender {
         //获取方块坐标
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
+
+
 
         if (pStart != null && pEnd != null) {
             for (Entity entity : Minecraft.getInstance().level.entitiesForRendering()) {
@@ -84,6 +85,8 @@ public class PreviewingRender {
         //关闭深度检测
         RenderSystem.disableDepthTest();
 
+
+
         //获取标线AABB
         BlockPos p1 = new BlockPos(Math.min(pStart.getX(), pEnd.getX()), Math.min(pStart.getY(), pEnd.getY()), Math.min(pStart.getZ(), pEnd.getZ()));
         BlockPos p2 = new BlockPos(Math.max(pStart.getX(), pEnd.getX()) + 1, Math.max(pStart.getY(), pEnd.getY()) + 1, Math.max(pStart.getZ(), pEnd.getZ()) + 1);
@@ -94,6 +97,19 @@ public class PreviewingRender {
         //渲染
         stack.pushPose();
         stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
+//        BlockState bs = Minecraft.getInstance().level.getBlockState(pStart);
+//        BakedModel bm = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(bs);
+//        Level level = Minecraft.getInstance().level;
+////        ModelData md = bm.getModelData(level, pStart, bs, stack, ModelData.EMPTY);
+//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+//                bs,
+//                stack,
+//                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
+//                15728880,
+//                OverlayTexture.NO_OVERLAY,
+//                ModelData.EMPTY,
+//                null
+//                );
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
@@ -104,6 +120,7 @@ public class PreviewingRender {
 
         stack.popPose();
         RenderSystem.enableDepthTest();
+
 
     }
 }

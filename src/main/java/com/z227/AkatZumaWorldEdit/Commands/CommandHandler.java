@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Commands.admin.DelVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
+import com.z227.AkatZumaWorldEdit.Commands.shape.CylinderCommand;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -30,6 +31,7 @@ public class CommandHandler {
         RedoCommand.register(dispatcher,commandbuildcontext);
         StackCommand.register(dispatcher,commandbuildcontext);
         ReplaceCommand.register(dispatcher,commandbuildcontext);
+        CylinderCommand.register(dispatcher,commandbuildcontext);
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
