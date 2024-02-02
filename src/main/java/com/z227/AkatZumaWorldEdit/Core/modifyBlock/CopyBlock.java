@@ -189,7 +189,7 @@ public class CopyBlock {
             serverlevel.setBlock(transfPos, state, 2);
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),this.player);
-        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),this.player);
+        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.ignore_low_hight"),this.player);
     }
 
 

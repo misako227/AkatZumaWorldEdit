@@ -240,9 +240,11 @@ public class PlaceBlock {
 
     //检查最低高度
     public static boolean checkLowHeight(BlockPos pos1,BlockPos pos2, Player player){
-        if(pos1.getY()<Config.LOWHeight.get() || pos2.getY()<Config.LOWHeight.get()){
-            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),player);
-            return false;
+        if(!player.hasPermissions(2)){
+            if(pos1.getY()<Config.LOWHeight.get() || pos2.getY()<Config.LOWHeight.get()){
+                AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),player);
+                return false;
+            }
         }
         return true;
     }

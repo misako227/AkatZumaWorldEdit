@@ -16,43 +16,44 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CylinderCommand {
+public class SphereCommand {
+
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
 
         LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
-                        .then(Commands.literal("cyl")
+                        .then(Commands.literal("sphere")
                                 .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
-                                                .then(Commands.argument("高度", IntegerArgumentType.integer(1))
+                                            .executes((context)->{
+                                                setSphere(context,false);
+                                                return 1;
+                                            })
+                                            .then(Commands.literal("-h")
                                                 .executes((context)->{
-                                                    setCyl(context,false);
+                                                    setSphere(context,true);
                                                     return 1;
-                                                })
-                                        .then(Commands.literal("-h")
-                                                .executes((context)->{
-                                                    setCyl(context,true);
-                                                    return 1;
-                                                }))))
-                                        )
+                                                })))
+                                )
                         )
         );
     }
 
-    public static void setCyl(CommandContext<CommandSourceStack> context,boolean hollow){
+    public static void setSphere(CommandContext<CommandSourceStack> context, boolean hollow){
         Player player = context.getSource().getPlayer();
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         int radius =  IntegerArgumentType.getInteger(context, "半径");
-        int height =  IntegerArgumentType.getInteger(context, "高度");
+        int height = 0;
         BlockState blockState =  blockInput.getState();
         ServerLevel serverlevel = context.getSource().getLevel();
 
-        ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState, radius, height, hollow, "cyl");
+
+        ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState,radius, height,hollow, "sphere");
         if(shapeBase.init()){
-            shapeBase.cyl();
+            shapeBase.sphere();
         }
         // 设置标志位
         PMD.setFlag(true);

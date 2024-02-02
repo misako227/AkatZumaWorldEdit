@@ -23,12 +23,15 @@ public class ShapeBase {
     int radius;
     boolean permissionLevel,hollow;
     int height,blockNum;
+    String shape;
     List<BlockPos> volList;
     BlockPos playerPos;
     Map<BlockPos, BlockState> undoMap;
 
 
-    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow) {
+
+
+    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow,String shape) {
         this.pos1 = PMD.getPos1();
         this.pos2 = PMD.getPos2();
         this.world = level;
@@ -38,8 +41,9 @@ public class ShapeBase {
         this.radius = radius;
         this.height = height;
         this.hollow = hollow;
+        this.shape = shape;
         this.volList = new ArrayList<>();
-        this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY()+2,player.getBlockZ());
+        this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY(),player.getBlockZ());
         this.permissionLevel = player.hasPermissions(2);
 
         this.blockNum = 0;
@@ -49,7 +53,7 @@ public class ShapeBase {
 
     public boolean init(){
         if(checkPos(this.player,this.PMD)){
-            calcCylCubePos();
+
             if(PlaceBlock.canPlaceBlock(this.pos1,this.pos2,this.world,this.player,this.blockState,this.blockNum, this.permissionLevel,PMD)) {
                 this.undoMap  = new HashMap<>();
                 PMD.getUndoDataMap().push(undoMap);
@@ -64,21 +68,22 @@ public class ShapeBase {
     }
 
 
-    public static boolean checkPos(Player player, PlayerMapData PMD){
+    public boolean checkPos(Player player, PlayerMapData PMD){
         if(!PlaceBlock.cheakFlag(PMD,player)){
             return false;
         }
         // 设置标志位
         PMD.setFlag(false);
-        return true;
+
+        calcCylCubePos();
+
+        return PlaceBlock.checkLowHeight(pos1, pos2, player);
     }
 
     public void cyl(){
         int xOrigin = this.playerPos.getX();
         int yOrigin = this.playerPos.getY();
         int zOrigin = this.playerPos.getZ();
-
-
 
         double step = 180.0 / (Math.PI * radius);
         for (int i = 0; i < this.height; i++) {
@@ -91,6 +96,7 @@ public class ShapeBase {
                         }
                     }
                 }
+                player.teleportTo(xOrigin,yOrigin+this.height,zOrigin);
             } else {
                 for (double x = 0; x < 360; x += step) {
                     calcCylPos(xOrigin, yOrigin+i, zOrigin, x, this.radius);
@@ -99,6 +105,7 @@ public class ShapeBase {
                         for (double j = 0; j <= radius; j+=0.5) {
                             calcCylPos(xOrigin, yOrigin+i, zOrigin, x, j);
                         }
+                        player.teleportTo(xOrigin,yOrigin+this.height,zOrigin);
                     }
                 }
             }
@@ -130,13 +137,52 @@ public class ShapeBase {
 
     //计算圆柱体所在方形的坐标
     public void calcCylCubePos(){
-        this.pos1 = this.playerPos.offset(this.radius,0,this.radius);
-        this.pos2 = this.playerPos.offset(-this.radius,this.height-1,-this.radius);
+        switch (this.shape){
+            case "cyl" -> {
+                this.pos1 = this.playerPos.offset(this.radius,0,this.radius);
+                this.pos2 = this.playerPos.offset(-this.radius,this.height-1,-this.radius);
+            }
+            case "sphere"->{
+                this.pos1 = this.playerPos.offset(this.radius-1,-this.radius+1,this.radius-1);
+                this.pos2 = this.playerPos.offset(-this.radius+1,this.radius-1,-this.radius+1);
+            }
+        }
+
         if(this.hollow){
-            this.blockNum = (int) (Math.PI * this.radius * 2);
+            switch (this.shape){
+                case "cyl" -> this.blockNum = (int) (Math.PI * this.radius * 2);
+                case "sphere" -> this.blockNum = (int) (4 * Math.PI * this.radius * this.radius);
+            }
         }else{
             this.blockNum = -1;
         }
+    }
+
+    public void sphere(){
+        int centerX = this.playerPos.getX();
+        int centerY = this.playerPos.getY();
+        int centerZ = this.playerPos.getZ();
+            for (int x = centerX - radius; x <= centerX + radius; x++) {
+                for (int y = centerY - radius; y <= centerY + radius; y++) {
+                    for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) + Math.pow(z - centerZ, 2));
+                        if(hollow)
+                        {//空心球
+                            if (distance < radius && distance >= radius - 1){
+                                BlockPos pos = new BlockPos(x, y, z);
+                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap); // 使用指定方块来代表球体
+                            }
+                        }else{//实心球
+                            if (distance < radius){
+                                BlockPos pos = new BlockPos(x, y, z);
+                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap); // 使用指定方块来代表球体
+                            }
+                        }
+                    }
+                }
+            }
+        player.teleportTo(centerX,centerY+this.radius,centerZ);
+
     }
 
 //    public  void rotate(){

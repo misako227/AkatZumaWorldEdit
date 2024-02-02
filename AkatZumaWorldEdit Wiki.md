@@ -94,3 +94,9 @@
 
 #### /a del viplayer 删除高级玩家 
 `/a del viplayer <玩家名字>`
+
+
+
+### 更新日志
+v1.0.1
+- 添加圆柱体`/a cyl`指令
