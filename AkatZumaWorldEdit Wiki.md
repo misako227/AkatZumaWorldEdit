@@ -4,6 +4,10 @@
 
 [语雀文档地址](https://www.yuque.com/u39444834/dgakrb/gt2eg4whuq7hcvwf?singleDoc#)
 
+作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、Akashiya_yukina
+
+MCMOD作者主页：https://center.mcmod.cn/60332/
+
 ### 指令列表
 
 |  指令   | 描述  |
