@@ -3,10 +3,10 @@ package com.z227.AkatZumaWorldEdit.Commands.shape;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,7 +20,7 @@ public class SphereCommand {
 
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
 
-        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
+        dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("sphere")
                                 .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
@@ -39,6 +39,7 @@ public class SphereCommand {
         );
     }
 
+
     public static void setSphere(CommandContext<CommandSourceStack> context, boolean hollow){
         Player player = context.getSource().getPlayer();
 
@@ -54,6 +55,7 @@ public class SphereCommand {
         ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState,radius, height,hollow, "sphere");
         if(shapeBase.init()){
             shapeBase.sphere();
+            SendCopyMessage.sendSuccessMsg(blockState,player);
         }
         // 设置标志位
         PMD.setFlag(true);

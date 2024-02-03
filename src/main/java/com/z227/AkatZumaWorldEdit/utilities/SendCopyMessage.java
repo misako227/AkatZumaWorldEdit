@@ -1,9 +1,12 @@
 package com.z227.AkatZumaWorldEdit.utilities;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SendCopyMessage {
     public static Component send(String message) {
@@ -15,5 +18,12 @@ public class SendCopyMessage {
                 );
         return component;
 
+    }
+
+
+    public static void sendSuccessMsg(BlockState blockState, Player player) {
+        Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
+        Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
+        AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
     }
 }

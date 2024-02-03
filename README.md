@@ -3,7 +3,7 @@
 
 作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、Akashiya_yukina
 
-MCMOD作者主页：https://center.mcmod.cn/60332/
+MCMOD主页：https://www.mcmod.cn/class/13584.html
 
 Source installation information for modders
 -------------------------------------------

@@ -6,12 +6,9 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShapeBase {
@@ -20,16 +17,12 @@ public class ShapeBase {
     Player player;
     PlayerMapData PMD;
     BlockState blockState;
-    int radius;
+    int radius,radiusZ;
     boolean permissionLevel,hollow;
     int height,blockNum;
     String shape;
-    List<BlockPos> volList;
     BlockPos playerPos;
     Map<BlockPos, BlockState> undoMap;
-
-
-
 
     public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow,String shape) {
         this.pos1 = PMD.getPos1();
@@ -41,14 +34,15 @@ public class ShapeBase {
         this.radius = radius;
         this.height = height;
         this.hollow = hollow;
-        this.shape = shape;
-        this.volList = new ArrayList<>();
+        this.shape = shape;//要生成的类型
         this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY(),player.getBlockZ());
         this.permissionLevel = player.hasPermissions(2);
-
         this.blockNum = 0;
 
-
+    }
+    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int radiusZ,int height, boolean hollow,String shape) {
+        this(PMD,level,player,blockState,radius,height,hollow,shape);
+        this.radiusZ = radiusZ;
     }
 
     public boolean init(){
@@ -57,8 +51,8 @@ public class ShapeBase {
             if(PlaceBlock.canPlaceBlock(this.pos1,this.pos2,this.world,this.player,this.blockState,this.blockNum, this.permissionLevel,PMD)) {
                 this.undoMap  = new HashMap<>();
                 PMD.getUndoDataMap().push(undoMap);
-                this.world.setBlock(this.pos1, Blocks.COBBLESTONE.defaultBlockState(), 2);
-                this.world.setBlock(this.pos2, Blocks.COBBLESTONE.defaultBlockState(), 2);
+//                this.world.setBlock(this.pos1, Blocks.COBBLESTONE.defaultBlockState(), 2);
+//                this.world.setBlock(this.pos2, Blocks.COBBLESTONE.defaultBlockState(), 2);
                 return true;
             }
 
@@ -76,7 +70,7 @@ public class ShapeBase {
         PMD.setFlag(false);
 
         calcCylCubePos();
-
+        //检查生成时候的高度
         return PlaceBlock.checkLowHeight(pos1, pos2, player);
     }
 
@@ -87,7 +81,7 @@ public class ShapeBase {
 
         double step = 180.0 / (Math.PI * radius);
         for (int i = 0; i < this.height; i++) {
-            if (this.radius > 50 && !hollow) {
+            if (this.radius > 50 && !hollow) { //半径大于50的实心圆
                 for (int x = -radius; x <= radius; x += 1) {
                     for (int z = -radius; z <= radius; z += 1) {
                         if (x * x + z * z <= radius * radius) {
@@ -97,7 +91,7 @@ public class ShapeBase {
                     }
                 }
                 player.teleportTo(xOrigin,yOrigin+this.height,zOrigin);
-            } else {
+            } else { //空心圆
                 for (double x = 0; x < 360; x += step) {
                     calcCylPos(xOrigin, yOrigin+i, zOrigin, x, this.radius);
                     if (!hollow) {
@@ -146,17 +140,24 @@ public class ShapeBase {
                 this.pos1 = this.playerPos.offset(this.radius-1,-this.radius+1,this.radius-1);
                 this.pos2 = this.playerPos.offset(-this.radius+1,this.radius-1,-this.radius+1);
             }
+            case "ellipse"->{
+                this.pos1 = this.playerPos.offset(this.radius,-this.height,this.radiusZ);
+                this.pos2 = this.playerPos.offset(-this.radius,this.height,-this.radiusZ);
+            }
         }
 
         if(this.hollow){
             switch (this.shape){
                 case "cyl" -> this.blockNum = (int) (Math.PI * this.radius * 2);
                 case "sphere" -> this.blockNum = (int) (4 * Math.PI * this.radius * this.radius);
+                //椭圆体的表面积
+                case "ellipse" -> this.blockNum = (int)((2 * Math.PI * this.radius * this.radiusZ)+ (Math.PI * this.height * this.height));
             }
         }else{
             this.blockNum = -1;
         }
     }
+
 
     public void sphere(){
         int centerX = this.playerPos.getX();
@@ -170,12 +171,12 @@ public class ShapeBase {
                         {//空心球
                             if (distance < radius && distance >= radius - 1){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap); // 使用指定方块来代表球体
+                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap);
                             }
                         }else{//实心球
                             if (distance < radius){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap); // 使用指定方块来代表球体
+                                MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap);
                             }
                         }
                     }
@@ -184,6 +185,60 @@ public class ShapeBase {
         player.teleportTo(centerX,centerY+this.radius,centerZ);
 
     }
+
+    public void ellipse(){
+        int centerX = this.playerPos.getX();
+        int centerY = this.playerPos.getY();
+        int centerZ = this.playerPos.getZ();
+        int radiusX = this.radius;
+        int radiusY = this.height;
+        int radiusZ = this.radiusZ;
+
+
+
+        double density;
+        if(radiusX<10||radiusY<10||radiusZ<10)density = 0.5;  // 设置密度
+        else density = 1;
+
+
+        for (double x = centerX - radiusX; x <= centerX + radiusX; x += density) {
+            for (double y = centerY - radiusY; y <= centerY + radiusY; y += density) {
+                for (double z = centerZ - radiusZ; z <= centerZ + radiusZ; z += density) {
+                    if (isPointInsideEllipsoid(x, y, z, centerX, centerY, centerZ, radiusX, radiusY, radiusZ)) {
+                        BlockPos blockPos = new BlockPos((int)x,(int)y, (int)z);
+                        MySetBlock.shapeSetBlock(this.world, this.player, blockPos, this.blockState, 2, this.undoMap);
+                    }
+                }
+            }
+        }
+        player.teleportTo(centerX,centerY+this.height,centerZ);
+    }
+
+    private boolean isPointInsideEllipsoid(int x, int y, int z, int xCenter, int yCenter, int zCenter,
+                                                  int semiMajorAxis, int verticalRadius, int semiMinorAxis) {
+        double normalizedX = (x - xCenter) / (double) semiMajorAxis;
+        double normalizedY = (y - yCenter) / (double) verticalRadius;
+        double normalizedZ = (z - zCenter) / (double) semiMinorAxis;
+
+        double ellipsoidSurface = Math.pow(normalizedX, 2) + Math.pow(normalizedY, 2) + Math.pow(normalizedZ, 2);
+        if(this.hollow)return ellipsoidSurface >= 0.9 && ellipsoidSurface <= 1.1; // 调整阈值以控制表面的宽度
+        return ellipsoidSurface < 1;
+    }
+
+    private boolean isPointInsideEllipsoid(double x, double y, double z, int xCenter, int yCenter, int zCenter,
+                                                  int semiMajorAxis, int verticalRadius, int semiMinorAxis) {
+        double normalizedX = (x - xCenter) / (double) semiMajorAxis;
+        double normalizedY = (y - yCenter) / (double) verticalRadius;
+        double normalizedZ = (z - zCenter) / (double) semiMinorAxis;
+
+//
+        double ellipsoidSurface = Math.pow(normalizedX, 2) + Math.pow(normalizedY, 2) + Math.pow(normalizedZ, 2);
+        if(this.hollow)return ellipsoidSurface >= 0.9 && ellipsoidSurface <= 1.1; // 调整阈值以控制表面的宽度
+        return ellipsoidSurface < 1;
+
+    }
+
+
 
 //    public  void rotate(){
 //        int tX = clyX - xOrigin;

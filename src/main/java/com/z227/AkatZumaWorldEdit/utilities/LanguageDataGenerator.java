@@ -39,7 +39,8 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.volume_too_long", "§c 选区过大，选区最大范围为");
             this.add("chat.akatzuma.error.chunk_not_loaded", "§c 区块没有加载");
             this.add("chat.akatzuma.error.black_list", "§c 这个方块在黑名单中，无法进行操作");
-            this.add("chat.akatzuma.error.inventory_not_enough", "§c 背包中需要方块数量不够，无法进行操作，需要");
+            this.add("chat.akatzuma.error.inventory_not_enough", "§c 背包中方块数量不够，需要");
+            this.add("chat.akatzuma.error.current_num", "§c 当前数量");
             this.add("chat.akatzuma.error.ignore_low_hight", "§c 已忽略低于高度限制的方块");
             this.add("chat.akatzuma.error.low_hight", "§c 低于高度限制");
             this.add("chat.akatzuma.error.no_copy_map", "§c 没有找到复制的内容，请先使用§d /a copy §f指令创建一个");

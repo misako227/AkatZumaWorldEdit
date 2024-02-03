@@ -53,11 +53,11 @@ public class WoodAxeItem extends Item {
     public static void clickPos(Level leve, BlockPos pos,Player player, boolean bool) {
         //超出最低高度
         if(pos.getY() < Config.LOWHeight.get()){
-            if(player.isLocalPlayer()){
+            if(player.isLocalPlayer()){return;}
                 Component component = Component.translatable("chat.item.wood_axe.left_error");
                 Component msg = Component.literal(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);
                 AkatZumaWorldEdit.sendAkatMessage(component,msg, player);
-            }
+
             return;
         }
         //禁止选中基岩
@@ -96,10 +96,11 @@ public class WoodAxeItem extends Item {
                 if (pwm.getPos1() !=null) pos2 = pwm.getPos1();
             }
         String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
-
+//        if(player.isLocalPlayer()){}
+        msg = msg.replaceFirst("^BlockPos", "§5");
         //判断是客户端
-        if(player.isLocalPlayer()){
-
+//        if(player.isLocalPlayer()){
+        if(player.isLocalPlayer())return;
 
             if(pos2!=null){
                 Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos, pos2);
@@ -109,7 +110,7 @@ public class WoodAxeItem extends Item {
 
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
-        }
+//        }
         Util.logDebug(player,component.getString()+msg);
     }
 

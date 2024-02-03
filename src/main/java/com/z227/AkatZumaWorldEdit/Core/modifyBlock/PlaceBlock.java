@@ -35,7 +35,8 @@ public class PlaceBlock {
     public static Boolean isPlaceBlock(Level world, Player player, BlockPos pos1,BlockPos pos2, BlockState blockState){
         int maxY = Math.max(pos1.getY(), pos2.getY());
 //        int minY = Math.min(pos1.getY(), pos2.getY());
-        int y = maxY/2;
+//        int y = maxY/2;
+        int y = maxY;
 
         int maxX =  Math.max(pos1.getX(), pos2.getX());
         int maxZ = Math.max(pos1.getZ(), pos2.getZ());
@@ -44,17 +45,22 @@ public class PlaceBlock {
 
         for (int x = minX; x <=maxX; x+=15) {
             for (int z = minZ; z <=maxZ; z+=15)  {
+//                world.setBlock(new BlockPos(x, y, z), blockState, 2);
                 if(!isPlaceBlock(world, player, new BlockPos(x, y, z), blockState))return false;
             }
         }
 
         for (int z = minZ; z <=maxZ; z+=15)  {
+//            world.setBlock(new BlockPos(maxX, y, z), blockState, 2);
             if(!isPlaceBlock(world, player, new BlockPos(maxX, y, z), blockState))return false;
         }
 
         for (int x = minX; x <=maxX; x+=15) {
+//            world.setBlock(new BlockPos(x, y, maxZ), blockState, 2);
             if(!isPlaceBlock(world, player, new BlockPos(x, y, maxZ), blockState))return false;
         }
+//        world.setBlock(new BlockPos(maxX, y, maxZ), blockState, 2);
+        if(!isPlaceBlock(world, player, new BlockPos(maxX, y, maxZ), blockState))return false;
         return true;
     }
 
@@ -169,7 +175,9 @@ public class PlaceBlock {
             //要扣除的数量
             int num = (int) Math.ceil((double) volume / n);
             MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
-                    .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num);
+                    .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num)
+                    .append(Component.translatable("chat.akatzuma.error.current_num").append(":"+sum))
+                    ;
             if (blockInInvMap.isEmpty()) {
                 AkatZumaWorldEdit.sendAkatMessage(component, player);
                 return null;
