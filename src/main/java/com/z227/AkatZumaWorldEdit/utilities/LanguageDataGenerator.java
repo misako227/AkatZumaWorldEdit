@@ -54,6 +54,8 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.success_redo", "§a redo成功");
             this.add("chat.akatzuma.copyBlock.copy_success", "§a 已复制选区内方块数：");
             this.add("chat.akatzuma.success.flip", "§a 已翻转复制的选区内容，使用§d /a paste §f粘帖");
+            this.add("chat.akatzuma.success.rotate", "§a 已旋转复制的选区内容，使用§d /a paste §f粘帖");
+
             this.add("chat.akatzuma.success.paste", "§a 粘帖成功，可以使用§d/a undo§f指令撤销操作");
             this.add("chat.akatzuma.success.stack", "§a 堆叠成功，可以使用§d/a undo§f指令撤销操作");
 

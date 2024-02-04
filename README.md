@@ -1,52 +1,171 @@
+[toc]
+
+<br>
 
 [语雀文档地址](https://www.yuque.com/u39444834/dgakrb/gt2eg4whuq7hcvwf?singleDoc#)
 
 作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、Akashiya_yukina
 
-MCMOD主页：https://www.mcmod.cn/class/13584.html
+MCMOD：https://www.mcmod.cn/class/13584.html
 
-Source installation information for modders
--------------------------------------------
-This code follows the Minecraft Forge installation methodology. It will apply
-some small patches to the vanilla MCP source code, giving you and it access 
-to some of the data and functions you need to build a successful mod.
+### 指令列表
 
-Note also that the patches are built against "un-renamed" MCP source code (aka
-SRG Names) - this means that you will not be able to read them directly against
-normal code.
+|  指令   | 描述  |
+|  ----  | ----  |
+| /a set | 设置选区内方块 |
+| /a stack      | 堆叠选区内方块 |
+| /a copy      | 复制 |
+| /a paste      | 粘帖 |
+| /a flip      | 翻转复制的内容 |
+| /a replace      | 替换 |
+| /a undo      | 撤销 |
+| /a redo      | 撤销undo |
+| /a cyl        | 实心圆形/圆柱体 |
+| /a hcyl        | 空心圆形/圆柱体 |
+| /a sphere     | 球 |
+| /a ellipse    | 椭圆 |
 
-Setup Process:
-==============================
+| 管理员指令      |  |
+|  ----  | ----  |
+| /a add viplayer | 添加高级玩家 |
+| /a del viplayer | 删除高级玩家 |
 
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
 
-Step 2: You're left with a choice.
-If you prefer to use Eclipse:
-1. Run the following command: `./gradlew genEclipseRuns`
-2. Open Eclipse, Import > Existing Gradle Project > Select Folder 
-   or run `gradlew eclipse` to generate the project.
+### 说明
+* 所有功能都只扣除背包，撤销不会返还，也不会产生掉落物
 
-If you prefer to use IntelliJ:
-1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
-3. Run the following command: `./gradlew genIntellijRuns`
-4. Refresh the Gradle Project in IDEA if required.
+### 工具
+#### 选区工具
+使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can 
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-(this does not affect your code) and then start the process again.
+#### 查询工具
+`左键`查看方块状态，消息可以点击复制状态
 
-Mapping Names:
-=============================
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license, if you do not agree with it you can change your mapping names to other crowdsourced names in your 
-build.gradle. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
+`右键`放置一个上次查询方块，需要背包中有对应的方块物品
 
-Additional Resources: 
-=========================
-Community Documentation: https://docs.minecraftforge.net/en/latest/gettingstarted/
-LexManos' Install Video: https://youtu.be/8VEdtQLuLO0
-Forge Forums: https://forums.minecraftforge.net/
-Forge Discord: https://discord.minecraftforge.net/
+#### 建筑耗材
+复制任何方块都只消耗此材料，
+方块ID：`akatzumaworldedit:building_consumable`
+
+● 注意：因为只消耗此MOD的物品，会产生复制方块的问题 
+
+● `不想复制的方块`加入黑名单即可
+
+● `不想使用复制功能`的把`此方块`加入黑名单
+
+适用于指令`/a copy 、 /a stack`
+
+
+### 指令
+```java
+//格式
+/a 指令 <必填参数> [选填参数]
+```
+
+#### /a set 设置选区内方块
+`/a set <方块ID>`
+可以使用查询工具查看方块的状态并复制,[]内是方块的各种状态
+
+比如：`/a set minecraft:cherry_leaves[persistent=true]`
+
+放置一个不会枯萎的樱花树叶，默认放置的树叶是会枯萎的
+<br>
+
+- - -
+#### /a stack 堆叠
+默认根据玩家朝向东南西北堆叠，上下方向需要填入参数
+
+`/a stack <堆叠次数> [方向]`
+- <堆叠次数>： 数字即可，受选区范围限制
+- [方向]：可选参数`up、down`，
+
+<br>
+
+- - -
+
+#### /a copy 复制
+复制选区内的方块，使用`/a paste` 粘帖
+> 复制时候玩家的站位会影响粘帖的位置和翻转，粘帖时候会根据玩家朝向来粘帖
+* <font color='red'>注意</font>： 不会复制NBT属性，比如箱子里面的数据等，只复制方块状态
+
+<br>
+
+#### /a flip 翻转
+`/a flip [up]`
+
+* `[up]`（选填参数）上下翻转
+* 向下翻转：玩家站在`选区`**下方**复制，填入参数`up`
+* 向上翻转：玩家站在`选区`**上方**复制，填入参数`up`
+> 位置影响参考复制↑
+
+* 翻转复制的选区内容，不填参数默认左右翻转
+
+* 以玩家复制时候的位置为原点翻转
+
+
+
+<br>
+
+#### /a paste 粘帖
+* 会根据玩家朝向来旋转复制的内容粘帖
+
+<br>
+
+- - -
+
+#### /a replace 替换
+`/a replace <被替换的方块> <替换成的方块>`
+<br>
+- - -
+
+### 生成指令
+#### /a cyl  实心圆形/圆柱体
+`/a cyl <方块ID> <半径> <高度> [-h]`
+* `<半径>` 最小3
+* `<高度>` 最小1
+* `[x角度]` （选填参数）沿x轴旋转生成的圆，范围360至-360
+* `[z角度]` （选填参数）沿z轴旋转生成的圆，范围360至-360
+<br>
+- - -
+
+#### /a hcyl  空心圆形/圆柱体
+`/a hcyl <方块ID> <半径> <高度> [x角度] [z角度]`
+* `<半径>` 最小3
+* `<高度>` 最小1
+* `[x角度]` （选填参数）沿x轴旋转生成的圆，范围360至-360
+* `[z角度]` （选填参数）沿z轴旋转生成的圆，范围360至-360
+
+![hcyl.jpg](img/hcyl.jpg)
+
+  <br>
+- - -
+
+#### /a sphere  球
+`/a sphere <方块ID> <半径> [-h]`
+* `<半径>` 最小3
+* `[-h]` （选填参数）生成空心球，不填默认生成实心的
+<br>
+- - -
+
+#### /a ellipse  椭圆
+`/a ellipse <方块ID> <东西半径> <南北半径> <高度> [-h]`
+* `<东西半径>` 最小3，X轴
+* `<东西半径>` 最小3，Z轴
+* `<高度>`    最小3，Y轴
+* `[-h]` （选填参数）生成空心椭圆，不填默认生成实心的
+
+### 管理员指令
+#### /a add viplayer 添加高级玩家 
+`/a add viplayer <玩家名字>`
+
+#### /a del viplayer 删除高级玩家 
+`/a del viplayer <玩家名字>`
+
+
+
+### 更新日志
+v1.0.1
+- 添加圆柱体`/a cyl`指令
+- 添加球体`/a sphere`指令
+- 添加椭圆`/a ellipse`指令
+- 添加`/a pos1 /a pos2`指令

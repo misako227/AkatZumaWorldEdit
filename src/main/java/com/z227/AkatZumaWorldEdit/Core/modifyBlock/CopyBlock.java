@@ -39,7 +39,7 @@ public class CopyBlock {
         this.copyMap = new HashMap<>();
         this.pastePosMap = new HashMap<>();
         this.PMD = PMD;
-        this.permissionLevel = player.hasPermissions(2);;
+        this.permissionLevel = player.hasPermissions(2);
 
         this.copyVec3 = player.getDirection().getNormal();
     }
@@ -100,6 +100,7 @@ public class CopyBlock {
                         //检查黑名单
                         MutableComponent deBlockName = state.getBlock().getName();
                         if (!PlaceBlock.checkBlackList(player, n, deBlockName)) {
+                            this.copyMap=null;
                             return false;
                         }
                     }
@@ -157,6 +158,37 @@ public class CopyBlock {
         this.copyMap = flippedCopyMap;
         AkatZumaWorldEdit.sendAkatMessage(component, this.player);
     }
+
+
+//    public void rotate(float xAngle,float yAngle,float zAngle){
+//        Component component;
+//
+//        Matrix4f translationMatrix =  new Matrix4f().rotate(90, 0, 1, 0);
+////        if(xAngle != 0 ){
+////            translationMatrix.rotate(xAngle, 1, 0, 0);
+////        }
+////        if(zAngle != 0 ){
+////            translationMatrix.rotate(zAngle, 0, 0, 1);
+////        }
+//
+//        // 旋转copyMap
+//        Map<BlockPos, BlockState> rotateCopyMap = new HashMap<>();
+//        for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
+//            BlockPos pos = entry.getKey();
+//            int x = pos.getX();
+//            int y = pos.getY();
+//            int z = pos.getZ();
+//
+//            BlockState state = entry.getValue();
+//            Vector4f position = new Vector4f(x,y,z,1);
+//            position = translationMatrix.transform(position);
+//            rotateCopyMap.put(new BlockPos(Math.toIntExact(Math.round(position.x)), Math.toIntExact(Math.round(position.y)), Math.toIntExact(Math.round(position.z))), state);
+//        }
+//
+//        component = Component.translatable("chat.akatzuma.success.rotate");
+//        this.copyMap = rotateCopyMap;
+//        AkatZumaWorldEdit.sendAkatMessage(component, this.player);
+//    }
 
 
     public void pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap) {
@@ -219,9 +251,9 @@ public class CopyBlock {
         return map;
     }
 
-    public Map<String, BlockPos> getTempPastePosMap() {
-        return tempPastePosMap;
-    }
+//    public Map<String, BlockPos> getTempPastePosMap() {
+//        return tempPastePosMap;
+//    }
 
     public Map<BlockPos, BlockState> getCopyMap() {
         return copyMap;
@@ -235,11 +267,11 @@ public class CopyBlock {
         this.pasteVec3 = pasteVec3;
     }
 
-    public BlockPos getCopyPos1() {
-        return copyPos1;
-    }
-
-    public BlockPos getCopyPos2() {
-        return copyPos2;
-    }
+//    public BlockPos getCopyPos1() {
+//        return copyPos1;
+//    }
+//
+//    public BlockPos getCopyPos2() {
+//        return copyPos2;
+//    }
 }

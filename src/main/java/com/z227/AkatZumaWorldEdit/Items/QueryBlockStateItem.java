@@ -40,7 +40,7 @@ public class QueryBlockStateItem extends Item{
 
 //    @Override
 //    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-//
+//          ClientboundCommandsPacket
 //        return super.use(pLevel, pPlayer, pUsedHand);
 //    }
 

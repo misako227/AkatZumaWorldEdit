@@ -9,6 +9,7 @@ import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.CylinderCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.EllipseCommand;
+import com.z227.AkatZumaWorldEdit.Commands.shape.HollowCylinderCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.SphereCommand;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,11 +30,13 @@ public class CommandHandler {
         CopyCommand.register(dispatcher,commandbuildcontext);
         PasteCommand.register(dispatcher,commandbuildcontext);
         FlipCommand.register(dispatcher,commandbuildcontext);
+
         UndoCommand.register(dispatcher,commandbuildcontext);
         RedoCommand.register(dispatcher,commandbuildcontext);
         StackCommand.register(dispatcher,commandbuildcontext);
         ReplaceCommand.register(dispatcher,commandbuildcontext);
         CylinderCommand.register(dispatcher,commandbuildcontext);
+        HollowCylinderCommand.register(dispatcher,commandbuildcontext);
         SphereCommand.register(dispatcher,commandbuildcontext);
         EllipseCommand.register(dispatcher,commandbuildcontext);
         PosCommand.register(dispatcher,commandbuildcontext);

@@ -3,14 +3,13 @@ package com.z227.AkatZumaWorldEdit.Commands.copy;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 
 public class FlipCommand {
@@ -38,7 +37,7 @@ public class FlipCommand {
     public static void flip(CommandContext<CommandSourceStack> context,boolean up) {
 
         Player player = context.getSource().getPlayer();
-        ServerLevel serverlevel = context.getSource().getLevel();
+//        ServerLevel serverlevel = context.getSource().getLevel();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
         CopyBlock copyBlock = PMD.getCopyBlock();

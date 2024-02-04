@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.RotateBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +24,11 @@ public class ShapeBase {
     String shape;
     BlockPos playerPos;
     Map<BlockPos, BlockState> undoMap;
+    int xOrigin;
+    int yOrigin;
+    int zOrigin;
+    float xAngle;
+    float zAngle;
 
     public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow,String shape) {
         this.pos1 = PMD.getPos1();
@@ -38,11 +44,20 @@ public class ShapeBase {
         this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY(),player.getBlockZ());
         this.permissionLevel = player.hasPermissions(2);
         this.blockNum = 0;
+        this.xOrigin = this.playerPos.getX();
+        this.yOrigin = this.playerPos.getY();
+        this.zOrigin = this.playerPos.getZ();
+
 
     }
     public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int radiusZ,int height, boolean hollow,String shape) {
         this(PMD,level,player,blockState,radius,height,hollow,shape);
         this.radiusZ = radiusZ;
+    }
+    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow,String shape,float xOrigin,float zOrigin) {
+        this(PMD,level,player,blockState,radius,height,hollow,shape);
+        this.xAngle = xOrigin;
+        this.zAngle = zOrigin;
     }
 
     public boolean init(){
@@ -75,9 +90,9 @@ public class ShapeBase {
     }
 
     public void cyl(){
-        int xOrigin = this.playerPos.getX();
-        int yOrigin = this.playerPos.getY();
-        int zOrigin = this.playerPos.getZ();
+//        int xOrigin = this.playerPos.getX();
+//        int yOrigin = this.playerPos.getY();
+//        int zOrigin = this.playerPos.getZ();
 
         double step = 180.0 / (Math.PI * radius);
         for (int i = 0; i < this.height; i++) {
@@ -86,6 +101,7 @@ public class ShapeBase {
                     for (int z = -radius; z <= radius; z += 1) {
                         if (x * x + z * z <= radius * radius) {
                             BlockPos pos = new BlockPos(x + xOrigin, yOrigin+i, z + zOrigin);
+                            pos = RotateBlock.rotateCyl(xAngle, zAngle,pos, xOrigin,yOrigin ,zOrigin);
                             MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap);
                         }
                     }
@@ -124,8 +140,20 @@ public class ShapeBase {
         int clyX = Math.toIntExact(Math.round(tx));
         int clyZ = Math.toIntExact(Math.round(tz));
 
+//        int vx = clyX -  xOrigin;
+//        int vz = clyZ -  zOrigin;
+//
+//        Matrix4f translationMatrix =  new Matrix4f().rotate(45, 1, 0, 0);
+//        Vector4f position = new Vector4f(vx,1,vz,1);
+//        position = translationMatrix.transform(position);
+//        int tranX = (int)position.x + xOrigin;
+//        int tranY = (int)position.y + yOrigin;
+//        int tranZ = (int)position.z + zOrigin;
+
+
         BlockPos bp = new BlockPos(clyX, yOrigin, clyZ);
 //        BlockPos bp = new BlockPos(tranX,tranY,tranZ);
+        bp = RotateBlock.rotateCyl(xAngle,zAngle,bp, xOrigin,yOrigin ,zOrigin);
         MySetBlock.shapeSetBlock(this.world, this.player, bp, this.blockState, 2, this.undoMap);
     }
 
@@ -133,8 +161,10 @@ public class ShapeBase {
     public void calcCylCubePos(){
         switch (this.shape){
             case "cyl" -> {
-                this.pos1 = this.playerPos.offset(this.radius,0,this.radius);
-                this.pos2 = this.playerPos.offset(-this.radius,this.height-1,-this.radius);
+                BlockPos p1 = this.playerPos.offset(this.radius,0,this.radius);
+                BlockPos p2 = this.playerPos.offset(-this.radius,this.height-1,-this.radius);
+                this.pos1 = RotateBlock.rotateCyl(xAngle,zAngle,p1,xOrigin,yOrigin,zOrigin);
+                this.pos2 = RotateBlock.rotateCyl(xAngle,zAngle,p2,xOrigin,yOrigin,zOrigin);
             }
             case "sphere"->{
                 this.pos1 = this.playerPos.offset(this.radius-1,-this.radius+1,this.radius-1);
@@ -211,7 +241,7 @@ public class ShapeBase {
                 }
             }
         }
-        player.teleportTo(centerX,centerY+this.height,centerZ);
+        player.teleportTo(centerX,centerY+this.height+1,centerZ);
     }
 
     private boolean isPointInsideEllipsoid(int x, int y, int z, int xCenter, int yCenter, int zCenter,
