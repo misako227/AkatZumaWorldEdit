@@ -8,7 +8,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,13 +40,13 @@ public class QueryBlockStateItem extends Item{
     }
 
 
-//    @Override
-//    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-//        if(pLevel.isClientSide)return  super.use(pLevel, pPlayer, pUsedHand);
-//        System.out.println(pPlayer.getDirection().getNormal());
-//
-//        return super.use(pLevel, pPlayer, pUsedHand);
-//    }
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        if(pLevel.isClientSide)return  super.use(pLevel, pPlayer, pUsedHand);
+        System.out.println(pPlayer.getDirection().getNormal());
+
+        return super.use(pLevel, pPlayer, pUsedHand);
+    }
 
     //左键
     @Override

@@ -62,7 +62,7 @@ public class PreviewingRender {
                     VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
                     PoseStack stack = event.getPoseStack();
                     drawLineBox(vertexConsumer, stack, pStart, pEnd);
-//                    drawCopyBlock( copyBlock, stack, player);
+                    drawCopyBlock( copyBlock, stack, player);
                     return;
                 }
             }
@@ -129,11 +129,7 @@ public class PreviewingRender {
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         stack.pushPose();
         stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
-//        stack.translate( -pos.getX(), -pos.getY(), -pos.getZ());
-//        BlockState bs = Minecraft.getInstance().level.getBlockState(pStart);
-//        BakedModel bm = Minecraft.getInstance().getBlockRenderer().getBlockModel(bs);
-//        Level level = Minecraft.getInstance().level;
-//        ModelData md = bm.getModelData(level, pStart, bs, stack, ModelData.EMPTY);
+
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockState,
                 stack,

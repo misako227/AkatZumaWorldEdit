@@ -6,16 +6,21 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Half;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class CopyBlock {
     BlockPos playerCopyPos,playerPastePos, copyPos1,copyPos2;
@@ -134,10 +139,10 @@ public class CopyBlock {
         Component component;
 
         Vec3i flipVec3 = new Vec3i(1,1,1);
-        Rotation rotation = Rotation.NONE;
+//        Rotation rotation = Rotation.NONE;
         if(this.copyVec3.getX()==0){
             flipVec3 =   new Vec3i(-1,1,1);
-            rotation = Rotation.CLOCKWISE_180;
+//            rotation = Rotation.CLOCKWISE_180;
         }else{
             flipVec3 =   new Vec3i(1,1,-1);
 
@@ -150,7 +155,15 @@ public class CopyBlock {
         Map<BlockPos, BlockState> flippedCopyMap = new HashMap<>();
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
             BlockPos pos = entry.getKey();
-            BlockState state = entry.getValue().rotate(rotation);
+            BlockState state = entry.getValue();
+//            if(this.copyVec3.getX()==0)state = state.rotate(isFlipZFace(state));
+//            if(Y ){
+//                Half half = isFlipZHalf(state);
+//                if(half!=null)state = state.setValue(BlockStateProperties.HALF, half);
+//            }
+            state = isFlipZFace(state,Y);
+
+
 
             int x = pos.getX()*flipVec3.getX(),
                 y = pos.getY()*flipVec3.getY(),
@@ -163,9 +176,28 @@ public class CopyBlock {
         AkatZumaWorldEdit.sendAkatMessage(component, this.player);
     }
 
-//    public void isFlipZ(BlockState state){
-////        if(state.getOptionalValue(Property))
-//    }
+    public BlockState isFlipZFace(BlockState state,boolean Y){
+        BlockState tempState = state;
+        Optional<Direction> directionFace = state.getOptionalValue(HorizontalDirectionalBlock.FACING);
+        Optional<Half> directionHalf = state.getOptionalValue(BlockStateProperties.HALF);
+        if(!directionFace.equals(Optional.empty())) {
+            if (directionFace.get() == Direction.WEST || directionFace.get() == Direction.EAST) {
+                tempState = state.rotate(Rotation.CLOCKWISE_180);
+            }
+        }
+        if(Y) {
+            if (!directionHalf.equals(Optional.empty())) {
+                if (directionHalf.get() == Half.TOP) {
+                    tempState = state.setValue(BlockStateProperties.HALF, Half.BOTTOM);
+                }else{
+                    tempState = state.setValue(BlockStateProperties.HALF, Half.TOP);
+                }
+            }
+        }
+        return tempState;
+    }
+
+
 
 
 
