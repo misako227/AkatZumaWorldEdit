@@ -13,6 +13,11 @@ public class MySetBlock {
         world.setBlock(pos,blockState, flag);
     }
 
+    public static void setBlockNotUpdate(Level world, BlockPos pos,BlockState old, BlockState blockState) {
+        world.setBlock(pos,blockState, 16);
+        world.sendBlockUpdated(pos, old,blockState,16);
+    }
+
 
 
 

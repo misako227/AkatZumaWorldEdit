@@ -36,6 +36,7 @@ public class PosCommand
         Player player =  context.getSource().getPlayer();
         BlockPos pos = player.getOnPos();
         WoodAxeItem.clickPos(serverLevel,pos, player,b);
+
     }
 
 }

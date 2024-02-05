@@ -173,3 +173,4 @@ v1.0.1
 - 添加球体`/a sphere`指令
 - 添加椭圆`/a ellipse`指令
 - 添加`/a pos1 /a pos2`指令
+- `paste` `set` 修改为放置不更新相邻方块

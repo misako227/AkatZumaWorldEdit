@@ -5,23 +5,32 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.PosDirection;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Map;
+
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@OnlyIn(Dist.CLIENT)
 public class PreviewingRender {
 
     @SubscribeEvent
@@ -44,7 +53,7 @@ public class PreviewingRender {
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
-
+        CopyBlock copyBlock = PMD.getCopyBlock();
 
         if (pStart != null && pEnd != null) {
             for (Entity entity : Minecraft.getInstance().level.entitiesForRendering()) {
@@ -52,7 +61,8 @@ public class PreviewingRender {
                     //以下两项不知道做什么的，但是最好不要动 //builder
                     VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
                     PoseStack stack = event.getPoseStack();
-                    DrawLineBox(vertexConsumer, stack, pStart, pEnd);
+                    drawLineBox(vertexConsumer, stack, pStart, pEnd);
+//                    drawCopyBlock( copyBlock, stack, player);
                     return;
                 }
             }
@@ -60,7 +70,7 @@ public class PreviewingRender {
         }
     }
 
-    public static void DrawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
+    public static void drawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
         //paste
 //        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
 //        BlockPos cp1=null,cp2=null;
@@ -97,19 +107,7 @@ public class PreviewingRender {
         //渲染
         stack.pushPose();
         stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
-//        BlockState bs = Minecraft.getInstance().level.getBlockState(pStart);
-//        BakedModel bm = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(bs);
-//        Level level = Minecraft.getInstance().level;
-////        ModelData md = bm.getModelData(level, pStart, bs, stack, ModelData.EMPTY);
-//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-//                bs,
-//                stack,
-//                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
-//                15728880,
-//                OverlayTexture.NO_OVERLAY,
-//                ModelData.EMPTY,
-//                null
-//                );
+
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
@@ -122,5 +120,50 @@ public class PreviewingRender {
         RenderSystem.enableDepthTest();
 
 
+    }
+
+    public static void drawBlock(PoseStack stack,BlockPos pos, BlockState blockState){
+        //关闭深度检测
+        RenderSystem.disableDepthTest();
+
+        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        stack.pushPose();
+        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
+//        stack.translate( -pos.getX(), -pos.getY(), -pos.getZ());
+//        BlockState bs = Minecraft.getInstance().level.getBlockState(pStart);
+//        BakedModel bm = Minecraft.getInstance().getBlockRenderer().getBlockModel(bs);
+//        Level level = Minecraft.getInstance().level;
+//        ModelData md = bm.getModelData(level, pStart, bs, stack, ModelData.EMPTY);
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+                blockState,
+                stack,
+                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
+                15728880,
+//                OverlayTexture.NO_OVERLAY
+                OverlayTexture.pack(3,10)
+//                ModelData.EMPTY,
+//                null
+        );
+        stack.popPose();
+
+        RenderSystem.enableDepthTest();
+    }
+
+
+    public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
+        if(copyBlock != null){
+            copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
+            copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+            //计算玩家朝向旋转的角度
+            Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
+            for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getCopyMap().entrySet()){
+                BlockPos pos = entry.getKey();
+                //根据玩家朝向旋转复制内容
+                pos = pos.rotate(rotation);
+                pos = pos.offset(player.getOnPos());
+                BlockState state = entry.getValue().rotate(rotation);
+                drawBlock(stack, pos, state);
+            }
+        }
     }
 }

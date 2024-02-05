@@ -134,10 +134,13 @@ public class CopyBlock {
         Component component;
 
         Vec3i flipVec3 = new Vec3i(1,1,1);
+        Rotation rotation = Rotation.NONE;
         if(this.copyVec3.getX()==0){
             flipVec3 =   new Vec3i(-1,1,1);
+            rotation = Rotation.CLOCKWISE_180;
         }else{
             flipVec3 =   new Vec3i(1,1,-1);
+
         }
         if(Y)flipVec3 =   new Vec3i(1,-1,1);
         //修改Paste起始坐标
@@ -147,7 +150,8 @@ public class CopyBlock {
         Map<BlockPos, BlockState> flippedCopyMap = new HashMap<>();
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
             BlockPos pos = entry.getKey();
-            BlockState state = entry.getValue();
+            BlockState state = entry.getValue().rotate(rotation);
+
             int x = pos.getX()*flipVec3.getX(),
                 y = pos.getY()*flipVec3.getY(),
                 z = pos.getZ()*flipVec3.getZ();
@@ -158,6 +162,11 @@ public class CopyBlock {
         this.copyMap = flippedCopyMap;
         AkatZumaWorldEdit.sendAkatMessage(component, this.player);
     }
+
+//    public void isFlipZ(BlockState state){
+////        if(state.getOptionalValue(Property))
+//    }
+
 
 
 //    public void rotate(float xAngle,float yAngle,float zAngle){
@@ -206,7 +215,7 @@ public class CopyBlock {
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
 
             BlockPos pos = entry.getKey();
-            BlockState state = entry.getValue();
+            BlockState state = entry.getValue().rotate(rotation);
             //根据玩家朝向旋转复制内容
             pos = pos.rotate(rotation);
             //转到粘帖时的坐标系
@@ -216,9 +225,11 @@ public class CopyBlock {
                 isLowHeight=true;
                 continue;
             }
+            BlockState old = serverlevel.getBlockState(transfPos);
 
-            undoMap.put(transfPos,serverlevel.getBlockState(transfPos));
-            serverlevel.setBlock(transfPos, state, 2);
+            undoMap.put(transfPos,old);
+            MySetBlock.setBlockNotUpdate(serverlevel, transfPos, old, state);
+//            serverlevel.setBlock(transfPos, state, 2);
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),this.player);
         if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.ignore_low_hight"),this.player);
@@ -267,7 +278,15 @@ public class CopyBlock {
         this.pasteVec3 = pasteVec3;
     }
 
-//    public BlockPos getCopyPos1() {
+    public Vec3i getCopyVec3() {
+        return copyVec3;
+    }
+
+    public Vec3i getPasteVec3() {
+        return pasteVec3;
+    }
+
+    //    public BlockPos getCopyPos1() {
 //        return copyPos1;
 //    }
 //

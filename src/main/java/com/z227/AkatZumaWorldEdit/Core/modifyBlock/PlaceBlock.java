@@ -91,8 +91,11 @@ public class PlaceBlock {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
 
                     BlockPos v3 = new BlockPos(x, y, z);
-                    undoMap.put(v3,world.getBlockState(v3));
-                    world.setBlock(v3,blockState, 2);
+                    BlockState old =  world.getBlockState(v3);
+                    undoMap.put(v3,old);
+//                    world.setBlock(v3,blockState, 16);
+//                    world.sendBlockUpdated(v3, old,blockState,16);
+                    MySetBlock.setBlockNotUpdate(world,v3,old,blockState);
 
                 }
             }

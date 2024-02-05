@@ -46,16 +46,6 @@ public class CommandHandler {
 
     }
 
-//    //client 命令
-//    @SubscribeEvent
-//    public static void onServerStarting(RegisterClientCommandsEvent event) {
-//        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-//        CommandBuildContext commandbuildcontext = Commands.createValidationContext(VanillaRegistries.createLookup());
-//
-////        SetClientCommand.register(dispatcher,commandbuildcontext);
-//
-//
-//    }
 
 
 
