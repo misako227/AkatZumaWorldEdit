@@ -3,12 +3,14 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.utilities.AkatRecipe;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.LanguageDataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import java.util.List;
@@ -34,6 +36,12 @@ public class ModNetworkEvent {
 
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.WOOD_AXE.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Query_Item.get(), true);
+    }
+
+    @SubscribeEvent
+    public static void onCommonSetup(FMLCommonSetupEvent event) {
+//        event.enqueueWork(NetworkingHandle::register);
+        NetworkingHandle.register();
     }
 
 

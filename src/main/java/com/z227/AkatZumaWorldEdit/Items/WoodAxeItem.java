@@ -50,15 +50,15 @@ public class WoodAxeItem extends Item {
 //    }
 
     //@param bool true左键，false右键
-    public static void clickPos(Level leve, BlockPos pos,Player player, boolean bool) {
+    public static boolean clickPos(Level leve, BlockPos pos,Player player, boolean bool) {
         //超出最低高度
         if(pos.getY() < Config.LOWHeight.get()){
-            if(player.isLocalPlayer()){return;}
+            if(player.isLocalPlayer()){return false;}
                 Component component = Component.translatable("chat.item.wood_axe.left_error");
                 Component msg = Component.literal(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);
                 AkatZumaWorldEdit.sendAkatMessage(component,msg, player);
 
-            return;
+            return false;
         }
         //禁止选中基岩
         Block block = leve.getBlockState(pos).getBlock();
@@ -67,13 +67,13 @@ public class WoodAxeItem extends Item {
                     .append(block.getName()).withStyle(ChatFormatting.GREEN)
                     .append(Component.translatable(("chat.akatzuma.error.black_list")));
             AkatZumaWorldEdit.sendAkatMessage(component, player);
-            return;
+            return false;
         }
 
         Map<UUID, PlayerMapData> AWE =  AkatZumaWorldEdit.PlayerWEMap;
         //isFlag
         if(!AWE.get(player.getUUID()).isFlag()){
-            return;
+            return false;
         }
 
         PlayerMapData pwm = AWE.get(player.getUUID());
@@ -100,7 +100,7 @@ public class WoodAxeItem extends Item {
         msg = msg.replaceFirst("^BlockPos", "§5");
         //判断是客户端
 //        if(player.isLocalPlayer()){
-        if(player.isLocalPlayer())return;
+        if(player.isLocalPlayer())return false;
 
             if(pos2!=null){
                 Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos, pos2);
@@ -112,6 +112,7 @@ public class WoodAxeItem extends Item {
 
 //        }
         Util.logDebug(player,component.getString()+msg);
+        return true;
     }
 
     //左键

@@ -6,11 +6,13 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.SendToClient;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
 public class FlipCommand {
 
@@ -36,7 +38,7 @@ public class FlipCommand {
 
     public static void flip(CommandContext<CommandSourceStack> context,boolean up) {
 
-        Player player = context.getSource().getPlayer();
+        ServerPlayer player = context.getSource().getPlayer();
 //        ServerLevel serverlevel = context.getSource().getLevel();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
@@ -55,6 +57,8 @@ public class FlipCommand {
 
         // 设置标志位
         PMD.setFlag(true);
+        if(!up)NetworkingHandle.sendToClient(new SendToClient(12), player);
+        else NetworkingHandle.sendToClient(new SendToClient(13), player);
 
 
     }

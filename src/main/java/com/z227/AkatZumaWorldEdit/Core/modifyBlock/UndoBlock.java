@@ -12,7 +12,9 @@ public class UndoBlock {
         //遍历undoMap
         for (Map.Entry<BlockPos, BlockState> entry : undoMap.entrySet()) {
             redoMap.put(entry.getKey(),world.getBlockState(entry.getKey()));
-            world.setBlock(entry.getKey(),entry.getValue(), 2);
+//            world.setBlock(entry.getKey(),entry.getValue(), 2);
+            BlockState old = world.getBlockState(entry.getKey());
+            MySetBlock.setBlockNotUpdate(world,entry.getKey(),old,entry.getValue());
         }
     }
 
@@ -20,7 +22,9 @@ public class UndoBlock {
     public static void redoSetBlock( Level world, Map<BlockPos,BlockState> redoMap) {
         //遍历
         for (Map.Entry<BlockPos, BlockState> entry : redoMap.entrySet()) {
-            world.setBlock(entry.getKey(),entry.getValue(), 2);
+//            world.setBlock(entry.getKey(),entry.getValue(), 2);
+            BlockState old = world.getBlockState(entry.getKey());
+            MySetBlock.setBlockNotUpdate(world,entry.getKey(),old,entry.getValue());
         }
     }
 

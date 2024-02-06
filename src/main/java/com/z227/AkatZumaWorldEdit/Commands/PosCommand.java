@@ -4,12 +4,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.SendToClient;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PosCommand
 {
@@ -33,9 +35,13 @@ public class PosCommand
 
     private static void pos(CommandContext<CommandSourceStack> context,boolean b) {
         ServerLevel serverLevel = context.getSource().getLevel();
-        Player player =  context.getSource().getPlayer();
+        ServerPlayer player =  context.getSource().getPlayer();
         BlockPos pos = player.getOnPos();
-        WoodAxeItem.clickPos(serverLevel,pos, player,b);
+        if(WoodAxeItem.clickPos(serverLevel,pos, player,b)){
+            if(b)NetworkingHandle.sendToClient(new SendToClient(1), player);
+            else NetworkingHandle.sendToClient(new SendToClient(2), player);
+        }
+
 
     }
 

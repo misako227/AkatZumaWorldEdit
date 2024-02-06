@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,12 +61,12 @@ public class CopyBlock {
 
 
 
-    public boolean checkPosAddCopyMap(ServerLevel serverlevel, PlayerMapData PMD){
+    public boolean checkPosAddCopyMap(Level serverlevel, PlayerMapData PMD){
         BlockPos pos1 = this.copyPos1,
                  pos2 = this.copyPos2;
 
         Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
-        if (!this.permissionLevel) {
+        if (!this.permissionLevel && !serverlevel.isClientSide) {
             if(!PlaceBlock.cheakLevel(serverlevel,player))return false; //世界黑名单
             int areaValue = Config.DEFAULTValue.get();      //选区大小
 
@@ -98,7 +99,7 @@ public class CopyBlock {
                     BlockState state = serverlevel.getBlockState(pos);
                     BlockPos transfPos = new BlockPos(x-cx, y-cy, z-cz);
                     //判断有没有黑名单
-                    if (!this.permissionLevel){
+                    if (!this.permissionLevel && !serverlevel.isClientSide){
 //                        if(state==Blocks.AIR.defaultBlockState())continue;
                         String blockName = BlockStateString.getBlockName(state);
                         int n = PlaceBlock.getLimit(blockName, blackWhiteMap);  //比例值
@@ -173,19 +174,22 @@ public class CopyBlock {
         }
         component = Component.translatable("chat.akatzuma.success.flip");
         this.copyMap = flippedCopyMap;
-        AkatZumaWorldEdit.sendAkatMessage(component, this.player);
+        if(!player.isLocalPlayer())AkatZumaWorldEdit.sendAkatMessage(component, this.player);
     }
 
     public BlockState isFlipZFace(BlockState state,boolean Y){
         BlockState tempState = state;
         Optional<Direction> directionFace = state.getOptionalValue(HorizontalDirectionalBlock.FACING);
-        Optional<Half> directionHalf = state.getOptionalValue(BlockStateProperties.HALF);
+        //判断楼梯方向
         if(!directionFace.equals(Optional.empty())) {
             if (directionFace.get() == Direction.WEST || directionFace.get() == Direction.EAST) {
                 tempState = state.rotate(Rotation.CLOCKWISE_180);
             }
         }
+
+        //判断楼梯上下翻转
         if(Y) {
+            Optional<Half> directionHalf = state.getOptionalValue(BlockStateProperties.HALF);
             if (!directionHalf.equals(Optional.empty())) {
                 if (directionHalf.get() == Half.TOP) {
                     tempState = state.setValue(BlockStateProperties.HALF, Half.BOTTOM);
@@ -243,6 +247,7 @@ public class CopyBlock {
         if (!PlaceBlock.canPlaceBlock( pos1, pos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
             return;
         }
+        this.PMD.getUndoDataMap().push(undoMap);
 
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
 

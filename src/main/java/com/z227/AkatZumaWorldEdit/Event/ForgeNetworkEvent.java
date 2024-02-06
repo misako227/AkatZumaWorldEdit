@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -71,6 +72,12 @@ public class ForgeNetworkEvent {
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
         addTagsToMap(Config.VIPBLACKListBlock.get(), AkatZumaWorldEdit.VipBlockMap);
         AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
+
+        int defalutSize = AkatZumaWorldEdit.defaultBlockMap.size();
+        int vipSize = AkatZumaWorldEdit.VipBlockMap.size();
+        Util.logDebug("普通黑白名单："+AkatZumaWorldEdit.defaultBlockMap);
+        Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
+        AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defalutSize + "，vip黑白名单总数："+ vipSize);
     }
 
     public static void addTagsToMap(List<? extends String> input, Map output) {

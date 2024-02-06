@@ -52,16 +52,20 @@ public class Util {
 
     public static void logDebug(Player player, Component component){
         AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  component.getString());
-
+    }
+    public static void logDebug(String str){
+        AkatZumaWorldEdit.LOGGER.debug(str);
     }
     public static void logDebug(Player player, String str){
         AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  str);
-
     }
 //    public static void logInfo(String str){
 //        AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  str);
-//
 //    }
+
+    public static void logInfo(String str){
+        AkatZumaWorldEdit.LOGGER.info(str);
+    }
 
 
 //    //检测背包是否有指定物品，没有或者数量不够返回null，有则返回槽位：数量的Map

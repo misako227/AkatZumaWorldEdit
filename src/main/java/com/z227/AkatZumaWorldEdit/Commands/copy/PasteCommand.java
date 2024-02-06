@@ -62,7 +62,6 @@ public class PasteCommand {
 
         //undo
         Map<BlockPos, BlockState> undoMap  = new HashMap<>();
-        PMD.getUndoDataMap().push(undoMap);
 
         copyBlock.pasteBlock(serverlevel, undoMap);
 

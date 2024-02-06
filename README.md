@@ -168,6 +168,11 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 
 ### 更新日志
+v1.0.2
+- 修复楼梯的翻转
+- 添加圆的xz轴旋转
+- 添加复制时候的投影
+
 v1.0.1
 - 添加圆柱体`/a cyl`指令
 - 添加球体`/a sphere`指令

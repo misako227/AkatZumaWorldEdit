@@ -26,7 +26,7 @@ public class CylinderCommand {
                         .then(Commands.literal("cyl")
                                 .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
-                                                .then(Commands.argument("高度", IntegerArgumentType.integer(1))
+                                                .then(Commands.argument("高度", IntegerArgumentType.integer(1,500))
                                                 .executes((context)->{
                                                     setCyl(context,false,0,0);
                                                     return 1;

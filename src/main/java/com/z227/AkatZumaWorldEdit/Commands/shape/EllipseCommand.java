@@ -26,7 +26,7 @@ public class EllipseCommand {
                                 .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
                                         .then(Commands.argument("东西半径", IntegerArgumentType.integer(3))
                                             .then(Commands.argument("南北半径", IntegerArgumentType.integer(3))
-                                                .then(Commands.argument("高度", IntegerArgumentType.integer(3))
+                                                .then(Commands.argument("高度", IntegerArgumentType.integer(3,500))
                                                         .executes((context)->{
                                                             setEll(context,false);
                                                             return 1;
