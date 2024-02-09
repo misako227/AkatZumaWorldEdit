@@ -21,4 +21,16 @@ public class RotateBlock {
         return new BlockPos(tranX, tranY, tranZ);
     }
 
+//    public static BlockPos flipY(BlockPos pos){
+//        Matrix4f translationMatrix =  new Matrix4f().scale(1.0f, -1.0f, 1.0f);;
+////        matrixStack.scale(-1.0f, 1.0f, 1.0f); // 翻转x轴
+////        matrixStack.scale(1.0f, -1.0f, 1.0f); // 翻转y轴
+////        matrixStack.scale(1.0f, 1.0f, -1.0f); // 翻转z轴
+//
+//        Vector4f position = new Vector4f((Vector3fc) pos,1);
+//        position = translationMatrix.transform(position);
+//
+//        return new BlockPos((int)position.x, (int)position.y, (int)position.z);
+//    }
+
 }

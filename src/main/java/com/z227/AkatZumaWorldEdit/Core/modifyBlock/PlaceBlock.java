@@ -281,10 +281,8 @@ public class PlaceBlock {
 
             // 选区大小
             Vec3i vec3 = calculateCubeDimensions(pos1, pos2);
-            int volume  = deductNum;
-            if(deductNum == -1){
-                volume =  vec3.getX() * vec3.getY()* vec3.getZ();
-            }
+            int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
+
             MutableComponent deBlockName = blockState.getBlock().getName();
 
             // 选区大小
@@ -292,6 +290,9 @@ public class PlaceBlock {
                 return false;
             }
 
+            if(deductNum != -1){
+                volume  = deductNum;
+            }
 
 
             //区块是否加载

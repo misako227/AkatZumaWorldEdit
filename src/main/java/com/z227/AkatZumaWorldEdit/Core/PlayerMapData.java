@@ -20,6 +20,7 @@ public class PlayerMapData {
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
 
     private CopyBlock copyBlock;
+    private CopyBlock copyBlockClient;
 //    private StackBlock stackBlock;
 
 
@@ -95,7 +96,15 @@ public class PlayerMapData {
         this.copyBlock = copyBlock;
     }
 
-//    public StackBlock getStackBlock() {
+    public CopyBlock getCopyBlockClient() {
+        return copyBlockClient;
+    }
+
+    public void setCopyBlockClient(CopyBlock copyBlockClient) {
+        this.copyBlockClient = copyBlockClient;
+    }
+
+    //    public StackBlock getStackBlock() {
 //        return stackBlock;
 //    }
 //

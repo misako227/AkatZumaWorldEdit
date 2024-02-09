@@ -13,11 +13,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -157,11 +159,7 @@ public class CopyBlock {
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
-//            if(this.copyVec3.getX()==0)state = state.rotate(isFlipZFace(state));
-//            if(Y ){
-//                Half half = isFlipZHalf(state);
-//                if(half!=null)state = state.setValue(BlockStateProperties.HALF, half);
-//            }
+
             state = isFlipZFace(state,Y);
 
 
@@ -182,10 +180,43 @@ public class CopyBlock {
         Optional<Direction> directionFace = state.getOptionalValue(HorizontalDirectionalBlock.FACING);
         //判断楼梯方向
         if(!directionFace.equals(Optional.empty())) {
-            if (directionFace.get() == Direction.WEST || directionFace.get() == Direction.EAST) {
-                tempState = state.rotate(Rotation.CLOCKWISE_180);
+            Optional<StairsShape> stairsShape = state.getOptionalValue(BlockStateProperties.STAIRS_SHAPE);
+            if (this.copyVec3.getZ() == 0) {// X=1 or -1
+                if (directionFace.get().getAxis() == Direction.Axis.X ) {
+                    if(stairsShape.isPresent()){
+                        tempState = setStrairsShapeZ(stairsShape.get(),state,false);
+                    }else{
+                        tempState = state;
+                    }
+
+                } else {
+                    if(stairsShape.isPresent()){
+                        tempState = setStrairsShapeZ(stairsShape.get(),state,true);
+                        tempState = setDirectionFaceMirror(directionFace,tempState);
+                    }else{
+                        tempState = state.rotate(Rotation.CLOCKWISE_180);
+                    }
+
+                }
+
+            } else {//Z=1 or -1
+                if (directionFace.get().getAxis() == Direction.Axis.Z) {
+                    if(stairsShape.isPresent()){
+                        tempState = setStrairsShapeZ(stairsShape.get(),state,false);
+                    }else{
+                        tempState = state;
+                    }
+                } else {
+                    if(stairsShape.isPresent()){
+                        tempState = setStrairsShapeZ(stairsShape.get(),state,true);
+                        tempState = setDirectionFaceMirror(directionFace,tempState);
+                    }else{
+                        tempState = state.rotate(Rotation.CLOCKWISE_180);
+                    }
+                }
             }
         }
+
 
         //判断楼梯上下翻转
         if(Y) {
@@ -199,6 +230,33 @@ public class CopyBlock {
             }
         }
         return tempState;
+    }
+
+    public  BlockState setDirectionFaceMirror(Optional<Direction> face, BlockState state){
+        Vec3i vec3i = face.get().getNormal();
+        Direction  newDire = Direction.fromDelta(-vec3i.getX(),vec3i.getY(),-vec3i.getZ());
+        return state.setValue(HorizontalDirectionalBlock.FACING,newDire);
+    }
+
+    public  BlockState setStrairsShapeZ(StairsShape pProperty, BlockState state, boolean z){
+        switch (pProperty.getSerializedName()){
+            case "inner_left" -> {
+                return state.setValue(BlockStateProperties.STAIRS_SHAPE, StairsShape.INNER_RIGHT);
+            }
+            case "inner_right" -> {
+                return state.setValue(BlockStateProperties.STAIRS_SHAPE, StairsShape.INNER_LEFT);
+            }
+            case "outer_left" -> {
+                return state.setValue(BlockStateProperties.STAIRS_SHAPE, StairsShape.OUTER_RIGHT);
+            }
+            case "outer_right" -> {
+                return state.setValue(BlockStateProperties.STAIRS_SHAPE, StairsShape.OUTER_LEFT);
+            }
+            default -> {
+                if(z)return state.rotate(Rotation.CLOCKWISE_180);
+                return state;
+            }
+        }
     }
 
 
@@ -236,7 +294,7 @@ public class CopyBlock {
 //    }
 
 
-    public void pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap) {
+    public void pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap, boolean air) {
         boolean isLowHeight = false;
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
@@ -260,6 +318,9 @@ public class CopyBlock {
             //判断放置的高度是否超过最低高度，超过则忽略
             if(transfPos.getY()< Config.LOWHeight.get()){
                 isLowHeight=true;
+                continue;
+            }
+            if(!air && state== Blocks.AIR.defaultBlockState()){
                 continue;
             }
             BlockState old = serverlevel.getBlockState(transfPos);

@@ -42,7 +42,7 @@ public class ClientPacketHandle {
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         CopyBlock copyBlock = new CopyBlock(PMD, player);
         if(copyBlock.checkPosAddCopyMap(level, PMD)){
-            PMD.setCopyBlock(copyBlock);
+            PMD.setCopyBlockClient(copyBlock);
         }
     }
 
@@ -52,7 +52,7 @@ public class ClientPacketHandle {
 
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        CopyBlock copyBlock = PMD.getCopyBlock();
+        CopyBlock copyBlock = PMD.getCopyBlockClient();
         if(copyBlock != null){
             copyBlock.flip(up);
         }

@@ -11,9 +11,9 @@ public class UndoBlock {
     public static void undoSetBlock( Level world, Map<BlockPos,BlockState> undoMap, Map<BlockPos,BlockState> redoMap) {
         //遍历undoMap
         for (Map.Entry<BlockPos, BlockState> entry : undoMap.entrySet()) {
-            redoMap.put(entry.getKey(),world.getBlockState(entry.getKey()));
-//            world.setBlock(entry.getKey(),entry.getValue(), 2);
             BlockState old = world.getBlockState(entry.getKey());
+            redoMap.put(entry.getKey(),old);
+//            world.setBlock(entry.getKey(),entry.getValue(), 2);
             MySetBlock.setBlockNotUpdate(world,entry.getKey(),old,entry.getValue());
         }
     }

@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -15,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,13 +49,14 @@ public class PreviewingRender {
 //        if (!(heldItem.getItem() instanceof WoodAxeItem)) {
 //            return;
 //        }
-        if(AkatZumaWorldEdit.USEITEM.get(heldItem.getItem()) == null)return;
+        Item item = heldItem.getItem();
+        if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
 
         //获取方块坐标
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
-        CopyBlock copyBlock = PMD.getCopyBlock();
+        CopyBlock copyBlock = PMD.getCopyBlockClient();
 
         if (pStart != null && pEnd != null) {
             for (Entity entity : Minecraft.getInstance().level.entitiesForRendering()) {
@@ -62,7 +65,10 @@ public class PreviewingRender {
                     VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
                     PoseStack stack = event.getPoseStack();
                     drawLineBox(vertexConsumer, stack, pStart, pEnd);
-                    drawCopyBlock( copyBlock, stack, player);
+                    if(item instanceof ProjectorItem){
+                        drawCopyBlock( copyBlock, stack, player);
+                    }
+
                     return;
                 }
             }

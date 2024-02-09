@@ -106,7 +106,7 @@ public class ShapeBase {
                         }
                     }
                 }
-                player.teleportTo(xOrigin,yOrigin+this.height,zOrigin);
+                player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
             } else { //空心圆
                 for (double x = 0; x < 360; x += step) {
                     calcCylPos(xOrigin, yOrigin+i, zOrigin, x, this.radius);
@@ -115,7 +115,7 @@ public class ShapeBase {
                         for (double j = 0; j <= radius; j+=0.5) {
                             calcCylPos(xOrigin, yOrigin+i, zOrigin, x, j);
                         }
-                        player.teleportTo(xOrigin,yOrigin+this.height,zOrigin);
+                        player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
                     }
                 }
             }

@@ -18,6 +18,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 | /a paste      | 粘帖 |
 | /a flip      | 翻转复制的内容 |
 | /a replace      | 替换 |
+| /a line      | 连线 |
 | /a undo      | 撤销 |
 | /a redo      | 撤销undo |
 | /a cyl        | 实心圆形/圆柱体 |
@@ -111,7 +112,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 <br>
 
 #### /a paste 粘帖
+`/a flip [-a]`
 * 会根据玩家朝向来旋转复制的内容粘帖
+* `-a` （选填参数）粘帖的时候忽略空气
 
 <br>
 
@@ -119,6 +122,13 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 #### /a replace 替换
 `/a replace <被替换的方块> <替换成的方块>`
+<br>
+- - -
+
+#### /a line 连线
+`/a replace <方块ID>`
+
+在选区两点之间连一条线
 <br>
 - - -
 
@@ -172,9 +182,14 @@ v1.0.2
 - 修复楼梯的翻转
 - 添加圆的xz轴旋转
 - 添加复制时候的投影
+- 添加投影物品
+- 添加`/a line`指令
+- 粘帖时候添加忽略空气
+
 
 v1.0.1
-- 添加圆柱体`/a cyl`指令
+- 添加实心圆柱体`/a cyl`指令
+- 添加空心圆柱体`/a hcyl`指令
 - 添加球体`/a sphere`指令
 - 添加椭圆`/a ellipse`指令
 - 添加`/a pos1 /a pos2`指令

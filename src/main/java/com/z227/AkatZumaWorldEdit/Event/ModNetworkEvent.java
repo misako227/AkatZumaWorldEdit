@@ -36,6 +36,7 @@ public class ModNetworkEvent {
 
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.WOOD_AXE.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Query_Item.get(), true);
+        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Projector_Item.get(), true);
     }
 
     @SubscribeEvent
@@ -78,12 +79,6 @@ public class ModNetworkEvent {
         });
     }
 
-//    public static void addBlackWorldMap(List<? extends String> input, Map output){
-//        input.forEach(k ->{
-//            output.put(k,true);
-//        });
-//    }
 
-    //
 
 }

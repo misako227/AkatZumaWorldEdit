@@ -2,6 +2,8 @@ package com.z227.AkatZumaWorldEdit.utilities;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -25,5 +27,12 @@ public class SendCopyMessage {
         Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
         Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
         AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
+    }
+
+    public static void sendCommand(String command){
+        LocalPlayer Lplayer = Minecraft.getInstance().player;
+        if (Lplayer != null) {
+            Lplayer.connection.sendCommand(command);
+        }
     }
 }

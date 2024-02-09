@@ -25,16 +25,20 @@ public class PasteCommand {
             Commands.literal(AkatZumaWorldEdit.MODID)
                 .then(Commands.literal("paste")
                     .executes((context)->{
-                        paste(context);
+                        paste(context,true);
                         return 1;
                     }
-                )
-            )
+                ).then(Commands.literal("-a")
+                    .executes((context)->{
+                        paste(context,false);
+                        return 1;
+                    })
+            ))
         );
 
     }
 
-    public static void paste(CommandContext<CommandSourceStack> context) {
+    public static void paste(CommandContext<CommandSourceStack> context,boolean air){
 
         Player player = context.getSource().getPlayer();
 //        boolean playerPermission = context.getSource().hasPermission(2);
@@ -63,7 +67,7 @@ public class PasteCommand {
         //undo
         Map<BlockPos, BlockState> undoMap  = new HashMap<>();
 
-        copyBlock.pasteBlock(serverlevel, undoMap);
+        copyBlock.pasteBlock(serverlevel, undoMap, air);
 
         // 设置标志位
         PMD.setFlag(true);

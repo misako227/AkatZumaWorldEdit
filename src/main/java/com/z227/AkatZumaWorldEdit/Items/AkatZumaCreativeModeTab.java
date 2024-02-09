@@ -32,6 +32,7 @@ public class AkatZumaCreativeModeTab {
                 output.accept(AkatZumaWorldEdit.Query_Item.get());
                 output.accept(AkatZumaWorldEdit.WOOD_AXE.get());
                 output.accept(AkatZumaWorldEdit.Building_Consumable_Item.get());
+                output.accept(AkatZumaWorldEdit.Projector_Item.get());
             })
             .build()
     );

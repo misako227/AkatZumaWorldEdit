@@ -18,6 +18,13 @@ public class MySetBlock {
         world.sendBlockUpdated(pos, old,blockState,16);
     }
 
+    public static void setBlockNotUpdateAddUndo(Level world, BlockPos pos, BlockState blockState,Map undoMap) {
+        BlockState old = world.getBlockState(pos);
+        undoMap.putIfAbsent(pos, old);
+        world.setBlock(pos,blockState, 16);
+        world.sendBlockUpdated(pos, old,blockState,16);
+    }
+
 
 
 

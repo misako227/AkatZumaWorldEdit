@@ -40,9 +40,11 @@ public class CommandHandler {
         SphereCommand.register(dispatcher,commandbuildcontext);
         EllipseCommand.register(dispatcher,commandbuildcontext);
         PosCommand.register(dispatcher,commandbuildcontext);
+        LineCommand.register(dispatcher,commandbuildcontext);
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
+//        AddWhiteListBlockCommand.register(dispatcher,commandbuildcontext);
 
     }
 

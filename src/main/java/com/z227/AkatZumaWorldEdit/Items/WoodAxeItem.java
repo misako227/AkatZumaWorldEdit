@@ -9,7 +9,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,26 +35,29 @@ public class WoodAxeItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.test_item.desc1"));
-        pTooltipComponents.add( Component.translatable("item.test_item.desc2"));
+        pTooltipComponents.add( Component.translatable("item.wood_axe.desc1"));
+        pTooltipComponents.add( Component.translatable("item.wood_axe.desc2"));
+//        pTooltipComponents.add( Component.translatable("item.wood_axe.desc3"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }
 
 
     //右键空气
-//    @Override
-//    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 //        if(pLevel.isClientSide)return super.use(pLevel, pPlayer, pUsedHand);
-//
-//        return super.use(pLevel, pPlayer, pUsedHand);
-//
-//    }
+
+        BlockPos blockPos2 = pPlayer.getOnPos();
+        clickPos(pLevel,blockPos2, pPlayer,false );
+        return super.use(pLevel, pPlayer, pUsedHand);
+
+    }
 
     //@param bool true左键，false右键
     public static boolean clickPos(Level leve, BlockPos pos,Player player, boolean bool) {
         //超出最低高度
-        if(pos.getY() < Config.LOWHeight.get()){
+        if(!player.hasPermissions(2) && pos.getY() < Config.LOWHeight.get()){
             if(player.isLocalPlayer()){return false;}
                 Component component = Component.translatable("chat.item.wood_axe.left_error");
                 Component msg = Component.literal(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);

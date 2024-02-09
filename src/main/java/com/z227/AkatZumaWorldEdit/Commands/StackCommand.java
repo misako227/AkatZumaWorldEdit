@@ -46,7 +46,7 @@ public class StackCommand {
         );
     }
 
-    //0 = null, 2 = up, 4 = down
+    // direction 0 = null, 2 = up, 4 = down
     public static void stack(CommandContext<CommandSourceStack> context, int direction){
         int stackNum =  IntegerArgumentType.getInteger(context, "堆叠次数");
         ServerLevel serverlevel = context.getSource().getLevel();

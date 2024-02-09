@@ -3,10 +3,7 @@ package com.z227.AkatZumaWorldEdit;
 import com.mojang.logging.LogUtils;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
-import com.z227.AkatZumaWorldEdit.Items.AkatZumaCreativeModeTab;
-import com.z227.AkatZumaWorldEdit.Items.BuildingConsumable;
-import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
-import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.Items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -52,6 +49,7 @@ public class AkatZumaWorldEdit{
     public static final DeferredRegister<Item> ITEMS;
     public static final RegistryObject<Item> WOOD_AXE;
     public static final RegistryObject<Item> Query_Item;
+    public static final RegistryObject<Item> Projector_Item;
 
     public static final DeferredRegister<Block> BLOCKS;
     public static final RegistryObject<Block> Building_Consumable_Block;
@@ -62,6 +60,7 @@ public class AkatZumaWorldEdit{
         BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
         WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
         Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
+        Projector_Item = ITEMS.register("projector", () ->  new ProjectorItem(new Item.Properties().stacksTo(1)));
 
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
@@ -73,12 +72,12 @@ public class AkatZumaWorldEdit{
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);
         BLOCKS.register(bus);
+
 //        wat.register(FMLJavaModLoadingContext.get().getModEventBus());
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
         AkatZumaCreativeModeTab.TABS.register(bus);
 
-//        USEITEM.put(queryBlockStateItem.getDefaultInstance(), true);
 
 
     }

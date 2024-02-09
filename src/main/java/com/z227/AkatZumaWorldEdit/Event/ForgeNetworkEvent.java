@@ -3,11 +3,13 @@ package com.z227.AkatZumaWorldEdit.Event;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -120,8 +122,36 @@ public class ForgeNetworkEvent {
         }
         if(item instanceof WoodAxeItem){
             WoodAxeItem.clickPos(world,pos, player,true );
+        }
+        if(item instanceof ProjectorItem){
+            if(world.isClientSide){
+                LocalPlayer Lplayer = Minecraft.getInstance().player;
+                if (Lplayer != null) {
+                    Lplayer.connection.sendCommand("a copy");
+                }
+            }
 
         }
+    }
+
+    @SubscribeEvent
+    public static void leftClickAir(PlayerInteractEvent.LeftClickEmpty event) {
+
+        ItemStack itemStack =  event.getItemStack();
+        Item item = itemStack.getItem();
+        if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null) {
+            if(item instanceof WoodAxeItem){
+                player.connection.sendCommand("a pos1");
+            }
+            if(item instanceof ProjectorItem){
+                player.connection.sendCommand("a copy");
+            }
+
+        }
+
     }
 
 

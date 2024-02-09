@@ -25,8 +25,12 @@ public class LanguageDataGenerator {
             this.add("item.akatzumaworldedit.wood_axe","§b选区斧头");
             this.add("block.akatzumaworldedit.building_consumable","§b建筑耗材");
             this.add("item.akatzumaworldedit.building_consumable.desc","用于copy等指令消耗的材料\n(可穿戴到头部)");
-            this.add("item.test_item.desc1", "§a左键§f选取第一个点");
-            this.add("item.test_item.desc2", "§6右键§f选取第二个点");
+            this.add("item.wood_axe.desc1", "§a左键§9方块§f/§9空气§f选取第一个点");
+            this.add("item.wood_axe.desc2", "§6右键§9方块§f/§9空气§f选取第二个点");
+            this.add("item.akatzumaworldedit.projector","§b投影");
+            this.add("item.projector_item.desc1", "§a左键§f复制选区的建筑");
+            this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
+            this.add("item.projector_item.desc3", "手持此物品可查看复制的投影");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
             this.add("item.QueryBlockStateItem.desc1", "§a左键§f方块查询方块状态");
             this.add("item.QueryBlockStateItem.desc2", "§6右键§f放置一个查询的方块");
