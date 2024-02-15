@@ -27,6 +27,7 @@ public class ProjectorItem extends Item
         pTooltipComponents.add( Component.translatable("item.projector_item.desc1"));
         pTooltipComponents.add( Component.translatable("item.projector_item.desc2"));
         pTooltipComponents.add( Component.translatable("item.projector_item.desc3"));
+
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }

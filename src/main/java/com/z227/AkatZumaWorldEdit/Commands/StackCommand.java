@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.StackBlock;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -59,6 +60,7 @@ public class StackCommand {
         StackBlock stackBlock = new StackBlock(PMD,serverlevel,player,stackNum,direction);
         if(stackBlock.init()){
             stackBlock.stack(undoMap);
+            Util.recordPosLog(context.getInput(), player);
         }
 //        PMD.setStackBlock(stackBlock);
 

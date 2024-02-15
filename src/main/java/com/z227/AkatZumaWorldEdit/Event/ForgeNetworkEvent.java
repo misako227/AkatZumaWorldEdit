@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -75,11 +74,11 @@ public class ForgeNetworkEvent {
         addTagsToMap(Config.VIPBLACKListBlock.get(), AkatZumaWorldEdit.VipBlockMap);
         AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
 
-        int defalutSize = AkatZumaWorldEdit.defaultBlockMap.size();
+        int defaultSize = AkatZumaWorldEdit.defaultBlockMap.size();
         int vipSize = AkatZumaWorldEdit.VipBlockMap.size();
         Util.logDebug("普通黑白名单："+AkatZumaWorldEdit.defaultBlockMap);
         Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defalutSize + "，vip黑白名单总数："+ vipSize);
+        AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defaultSize + "，vip黑白名单总数："+ vipSize);
     }
 
     public static void addTagsToMap(List<? extends String> input, Map output) {
@@ -97,31 +96,24 @@ public class ForgeNetworkEvent {
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         Player player = event.getEntity();
-        ItemStack itemStack =  event.getItemStack();
-        Item item = itemStack.getItem();
+        if(player==null)return;
+        Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
         if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
         BlockPos pos =  event.getPos();
         Level world = event.getLevel();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+
+
         if(item instanceof QueryBlockStateItem){
-            BlockState blockState = world.getBlockState(pos);
-
-            PMD.setQueryBlockState(blockState);
-            if(player.isLocalPlayer()){
-                String blockStateStr = blockState.toString().replaceFirst("}", "")
-                        .replaceFirst("^Block\\{", "");
-
-                Component component = blockState.getBlock().getName().append(Component.literal(": "));
-                Component copy = SendCopyMessage.send(blockStateStr);
-                AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
-            }
+            queryBlock(world, pos, player, PMD);
             return;
 
         }
         if(item instanceof WoodAxeItem){
             WoodAxeItem.clickPos(world,pos, player,true );
+            return;
         }
         if(item instanceof ProjectorItem){
             if(world.isClientSide){
@@ -134,26 +126,20 @@ public class ForgeNetworkEvent {
         }
     }
 
-    @SubscribeEvent
-    public static void leftClickAir(PlayerInteractEvent.LeftClickEmpty event) {
 
-        ItemStack itemStack =  event.getItemStack();
-        Item item = itemStack.getItem();
-        if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
+    public static void queryBlock(Level world, BlockPos pos, Player player, PlayerMapData PMD){
+        BlockState blockState = world.getBlockState(pos);
 
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null) {
-            if(item instanceof WoodAxeItem){
-                player.connection.sendCommand("a pos1");
-            }
-            if(item instanceof ProjectorItem){
-                player.connection.sendCommand("a copy");
-            }
+        PMD.setQueryBlockState(blockState);
+        if(player.isLocalPlayer()){
+            String blockStateStr = blockState.toString().replaceFirst("}", "")
+                    .replaceFirst("^Block\\{", "");
 
+            Component component = blockState.getBlock().getName().append(Component.literal(": "));
+            Component copy = SendCopyMessage.send(blockStateStr);
+            AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
         }
-
     }
-
 
 
 

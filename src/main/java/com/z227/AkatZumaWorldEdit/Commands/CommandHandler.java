@@ -41,10 +41,10 @@ public class CommandHandler {
         EllipseCommand.register(dispatcher,commandbuildcontext);
         PosCommand.register(dispatcher,commandbuildcontext);
         LineCommand.register(dispatcher,commandbuildcontext);
+//        CurveCommand.register(dispatcher,commandbuildcontext);
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
-//        AddWhiteListBlockCommand.register(dispatcher,commandbuildcontext);
 
     }
 

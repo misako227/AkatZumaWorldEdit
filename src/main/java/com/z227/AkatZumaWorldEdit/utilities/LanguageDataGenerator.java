@@ -32,11 +32,20 @@ public class LanguageDataGenerator {
             this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
             this.add("item.projector_item.desc3", "手持此物品可查看复制的投影");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
-            this.add("item.QueryBlockStateItem.desc1", "§a左键§f方块查询方块状态");
-            this.add("item.QueryBlockStateItem.desc2", "§6右键§f放置一个查询的方块");
-            this.add("item.QueryBlockStateItem.desc3", "点击消息可以复制状态到粘贴板");
+            this.add("item.query_block_state.desc1", "§a左键§f方块查询方块状态");
+            this.add("item.query_block_state.desc2", "§6右键§f放置一个查询的方块");
+            this.add("item.query_block_state.desc4", "点击消息可以复制状态到粘贴板");
+            this.add("item.query_block_state.desc3", "§6ctrl+右键§f把选区设置为查询的方块(/a set)");
+            this.add("item.query_block_state.desc_block", "查询的方块：");
             this.add("chat.item.query_block_state.null", "§c 没有找到要复制的状态，请先使用左键查看状态");
             this.add("chat.item.query_block_state.not_air", "§c 要放置的位置有方块，请先清除方块");
+
+            this.add("key.akatzuma", "AkatZumaWorldEdit");
+            this.add("key.category.undo", "撤销");
+//            this.add("item.akatzumaworldedit.line_item","§b连线工具");
+//            this.add("item.line_item.desc_type", "当前模式：");
+//            this.add("chat.line_base.line", "对角线");
+
 
             this.add("chat.akatzuma.error.wait", "§c 请等待上次操作完成");
             this.add("chat.akatzuma.error.invalid_pos", "§c 无效的选区，请检查两个选区位置");
@@ -51,6 +60,8 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.not_permission_place", "§c 请检查是否有权限放置");
             this.add("chat.akatzuma.error.no_replace", "§c 没有找到要替换的方块");
             this.add("chat.akatzuma.error.black_world", "§c 当前世界在黑名单中，无法进行操作");
+            this.add("chat.akatzuma.error.too_fast", "§c 速度太快，请稍后再发送");
+            this.add("chat.akatzuma.error.line_too_short", "§c 选区太小，请扩大选区");
 
             this.add("chat.akatzuma.error.not_undo", "§c 没有要撤销的操作");
             this.add("chat.akatzuma.error.not_redo", "§c 没有要redo的操作");

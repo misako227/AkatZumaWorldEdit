@@ -34,17 +34,26 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 ### 说明
 * 所有功能都只扣除背包，撤销不会返还，也不会产生掉落物
+  <br>
+
+- - -
 
 ### 工具
 #### 选区工具
 使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。
 ![wood.jpg](img/wood.jpg)
 
+<br>
+
+- - -
 #### 查询工具
 `左键`查看方块状态，消息可以点击复制状态
 
 `右键`放置一个上次查询方块，需要背包中有对应的方块物品
 
+<br>
+
+- - -
 #### 建筑耗材方块(猫猫虫)
 ![bc.jpg](img/bc.jpg)
 
@@ -60,6 +69,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 适用于指令`/a copy 、 /a stack`
 
+<br>
+
+- - -
 
 ### 指令
 ```java
@@ -82,7 +94,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 `/a stack <堆叠次数> [方向]`
 - <堆叠次数>： 数字即可，受选区范围限制
-- [方向]：可选参数`up、down`，
+- [方向]：可选参数`up、down`
 
 <br>
 
@@ -125,10 +137,14 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 <br>
 - - -
 
-#### /a line 连线
+#### /a line 连线/对角线
 `/a replace <方块ID>`
 
 在选区两点之间连一条线
+
+长度限制：大于5
+
+高度限制：大于1
 <br>
 - - -
 
@@ -164,7 +180,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### /a ellipse  椭圆
 `/a ellipse <方块ID> <东西半径> <南北半径> <高度> [-h]`
 * `<东西半径>` 最小3，X轴
-* `<东西半径>` 最小3，Z轴
+* `<南北半径>` 最小3，Z轴
 * `<高度>`    最小3，Y轴
 * `[-h]` （选填参数）生成空心椭圆，不填默认生成实心的
 
@@ -176,6 +192,14 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 `/a del viplayer <玩家名字>`
 
 
+### Debug
+debug日志格式
+
+`[玩家名字][指令][玩家坐标][方块ID][选区坐标1][选区坐标2]`
+```log
+  [Dev][a set minecraft:birch_planks][BlockPos{x=-103, y=63, z=63}][Birch Planks=Block{minecraft:birch_planks}][BlockPos{x=-107, y=64, z=63}][BlockPos{x=-107, y=65, z=62}]
+```
+
 
 ### 更新日志
 v1.0.2
@@ -184,7 +208,8 @@ v1.0.2
 - 添加复制时候的投影
 - 添加投影物品
 - 添加`/a line`指令
-- 粘帖时候添加忽略空气
+- 添加粘帖时候忽略空气
+- 添加按键绑定
 
 
 v1.0.1

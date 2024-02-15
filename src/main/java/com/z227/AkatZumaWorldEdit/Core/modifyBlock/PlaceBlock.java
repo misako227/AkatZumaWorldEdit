@@ -229,6 +229,14 @@ public class PlaceBlock {
         return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
     }
 
+    public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int num, boolean permissionLevel, PlayerMapData PMD) {
+
+        if(!checkPos(pos1, pos2, player, PMD))return false;
+
+        //如果不是管理员
+        return canPlaceBlock(pos1, pos2, world, player, blockState, num, permissionLevel, PMD);
+    }
+
 
     public static boolean checkPos(BlockPos pos1, BlockPos pos2,Player player, PlayerMapData PMD){
         if(!cheakFlag(PMD,player)){

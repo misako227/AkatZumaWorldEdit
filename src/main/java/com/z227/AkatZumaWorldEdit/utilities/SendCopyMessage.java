@@ -23,11 +23,16 @@ public class SendCopyMessage {
     }
 
 
-    public static void sendSuccessMsg(BlockState blockState, Player player) {
+    public static void sendSuccessMsg(BlockState blockState, Player player,String command) {
         Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
         Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
         AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
+
+        Util.recordPosLog(blockState, player, command);
     }
+
+
+
 
     public static void sendCommand(String command){
         LocalPlayer Lplayer = Minecraft.getInstance().player;

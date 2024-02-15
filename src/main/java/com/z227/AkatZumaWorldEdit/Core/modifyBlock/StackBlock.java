@@ -134,6 +134,8 @@ public class StackBlock {
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);
         if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),this.player);
+
+
     }
 
 

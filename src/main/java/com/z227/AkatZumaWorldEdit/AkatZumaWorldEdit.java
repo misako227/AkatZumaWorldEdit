@@ -50,10 +50,12 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Item> WOOD_AXE;
     public static final RegistryObject<Item> Query_Item;
     public static final RegistryObject<Item> Projector_Item;
+//    public static final RegistryObject<Item> Line_Item;
 
     public static final DeferredRegister<Block> BLOCKS;
     public static final RegistryObject<Block> Building_Consumable_Block;
     public static final RegistryObject<Item> Building_Consumable_Item;
+
 
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
@@ -61,6 +63,7 @@ public class AkatZumaWorldEdit{
         WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
         Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
         Projector_Item = ITEMS.register("projector", () ->  new ProjectorItem(new Item.Properties().stacksTo(1)));
+//        Line_Item = ITEMS.register("line_item", () ->  new LineItem(new Item.Properties().stacksTo(1)));
 
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
@@ -91,6 +94,7 @@ public class AkatZumaWorldEdit{
 
     //发送消息
     public static void sendAkatMessage(Component component, Player player){
+
         player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
     }
 

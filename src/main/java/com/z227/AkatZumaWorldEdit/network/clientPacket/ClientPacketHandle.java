@@ -28,7 +28,7 @@ public class ClientPacketHandle {
     public static void setClientPos(boolean b){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        BlockPos pos = player.getOnPos();
+        BlockPos pos = BlockPos.containing(player.getEyePosition());
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         if(b)PMD.setPos1(pos);
         else PMD.setPos2(pos);

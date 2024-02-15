@@ -52,6 +52,9 @@ public class BlockStateString {
     public static String getBlockName(BlockState blockState) {
         return blockState.getBlock().toString().replace("Block{","").replace("}" ,"");
     }
+    public static String getStateName(BlockState blockState) {
+        return blockState.toString().replace("Block{","").replace("}" ,"");
+    }
 
     public static String getBlockName(Block block) {
         return block.toString().replace("Block{","").replace("}" ,"");

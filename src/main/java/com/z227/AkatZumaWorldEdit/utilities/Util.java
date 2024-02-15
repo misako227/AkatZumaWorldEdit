@@ -1,11 +1,20 @@
 package com.z227.AkatZumaWorldEdit.utilities;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Util {
@@ -59,12 +68,64 @@ public class Util {
     public static void logDebug(Player player, String str){
         AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  str);
     }
-//    public static void logInfo(String str){
-//        AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  str);
-//    }
+    public static String logString(String message) {
+        return "[" + message + "]";
+    }
+    public static void recordPosLog(BlockState blockState, Player player,String command) {
+        String playerCommand = logString(command);
+        String playerName = logString(player.getName().getString());
+        String playerPos = logString(player.getOnPos().toString());
+        String logBlockName = logString(blockState.getBlock().getName().getString() + "=" + blockState);
+        PlayerMapData PMD= Util.getPMD(player);
+        String pos1 = logString(String.valueOf(PMD.getPos1()));
+        String pos2 = logString(String.valueOf(PMD.getPos2()));
+        Util.logDebug(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
+    }
+
+    public static void recordPosLog(String str, Player player) {
+        String playerName = logString(player.getName().getString());
+        String playerPos = logString(player.getOnPos().toString());
+        String playerCommand = logString(str);
+        PlayerMapData PMD= Util.getPMD(player);
+        String pos1 = logString(String.valueOf(PMD.getPos1()));
+        String pos2 = logString(String.valueOf(PMD.getPos2()));
+        Util.logDebug(playerName+playerCommand+playerPos+pos1+pos2);
+    }
+
 
     public static void logInfo(String str){
         AkatZumaWorldEdit.LOGGER.info(str);
+    }
+
+    public static PlayerMapData getPMD(Player player){
+        return AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+    }
+
+    //添加查询的方块名称
+    public static void addBlockStateText(List<Component> pTooltipComponents){
+        LocalPlayer player =  Minecraft.getInstance().player;
+        if(player!=null){
+            PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+            Component component;
+            Block block;
+            if(PMD.getQueryBlockState()!=null){
+                block = PMD.getQueryBlockState().getBlock();
+            }else{
+                block = Blocks.AIR;
+            }
+            component = Component.translatable("item.query_block_state.desc_block")
+                    .append(block.getName())
+                    .withStyle(ChatFormatting.GREEN);
+            pTooltipComponents.add(component);
+        }
+    }
+
+    public static boolean isDownKey(int key){
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
+    }
+
+    public static boolean isDownCtrl(){
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 341);
     }
 
 

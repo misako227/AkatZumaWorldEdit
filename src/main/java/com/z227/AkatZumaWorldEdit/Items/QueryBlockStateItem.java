@@ -4,11 +4,15 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,40 +34,44 @@ public class QueryBlockStateItem extends Item{
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc1"));
-        pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc2"));
-        pTooltipComponents.add( Component.translatable("item.QueryBlockStateItem.desc3"));
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.add( Component.translatable("item.query_block_state.desc1"));
+        pTooltipComponents.add( Component.translatable("item.query_block_state.desc2"));
+        pTooltipComponents.add( Component.translatable("item.query_block_state.desc3"));
+        pTooltipComponents.add( Component.translatable("item.query_block_state.desc4"));
 
+        if(pLevel!=null && pLevel.isClientSide) Util.addBlockStateText(pTooltipComponents);
+
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
     }
 
 
-//    @Override
-//    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-//        return  super.use(pLevel, pPlayer, pUsedHand);
-//    }
+
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        if(pLevel.isClientSide){
+            if(Util.isDownCtrl()){
+                PlayerMapData PMD = Util.getPMD(pPlayer);
+                Component component;
+                if (PMD.getQueryBlockState() == null) {
+                    component = Component.translatable("chat.item.query_block_state.null");
+                    AkatZumaWorldEdit.sendAkatMessage(component, pPlayer);
+                    return super.use(pLevel, pPlayer, pUsedHand);
+                }
+
+                String blockName = BlockStateString.getStateName(PMD.getQueryBlockState());
+                SendCopyMessage.sendCommand("a set "+ blockName);
+            }
+
+        }
+
+        return  super.use(pLevel, pPlayer, pUsedHand);
+    }
 
     //左键
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
 
-
-//        Level world = player.level();
-//        BlockState blockState = world.getBlockState(pos);
-//        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-//        PMD.setQueryBlockState(blockState);
-//        if(player.isLocalPlayer()){
-//            String blockStateStr = blockState.toString().replaceFirst("}", "")
-//                    .replaceFirst("^Block\\{", "");
-//
-//            Component component = blockState.getBlock().getName().append(Component.literal(": "));
-//            Component copy = SendCopyMessage.send(blockStateStr);
-////            Component component = Component.translatable("chat.item.query_block_state.right");
-//            AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
-//
-//
-//        }
-//        player.getCooldowns().addCooldown(this, 10);
         return true;
     }
 
@@ -77,6 +85,22 @@ public class QueryBlockStateItem extends Item{
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         Component component;
+
+        if(world.isClientSide){
+            if(Util.isDownCtrl()){
+                if (PMD.getQueryBlockState() == null) {
+                    component = Component.translatable("chat.item.query_block_state.null");
+                    AkatZumaWorldEdit.sendAkatMessage(component, player);
+                    return InteractionResult.SUCCESS;
+                }
+
+                String blockName = BlockStateString.getStateName(PMD.getQueryBlockState());
+                SendCopyMessage.sendCommand("a set "+ blockName);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
         if(!world.isClientSide) {
             if (PMD.getQueryBlockState() == null) {
                 component = Component.translatable("chat.item.query_block_state.null");
@@ -91,6 +115,7 @@ public class QueryBlockStateItem extends Item{
             }
             if (!player.hasPermissions(2)) {
                 Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
+                if(PlaceBlock.checkVip(player))blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;;
                 MutableComponent descriptBlockName = PMD.getQueryBlockState().getBlock().getName();
                 String blockName = BlockStateString.getBlockName(PMD.getQueryBlockState());
                 int n = PlaceBlock.getLimit(blockName, blackWhiteMap);
@@ -98,7 +123,8 @@ public class QueryBlockStateItem extends Item{
                 if (!PlaceBlock.checkBlackList(player, n, descriptBlockName)) {
                     return InteractionResult.SUCCESS;
                 }
-                Map<Integer, Integer> blockInInvMap = PlaceBlock.checkInv(blockName, 1, 1, player, descriptBlockName);
+
+                Map<Integer, Integer> blockInInvMap = PlaceBlock.checkInv(blockName, n, 1, player, descriptBlockName);
 
                 //检查放置权限
                 if (!PlaceBlock.isPlaceBlock(world, player, placePos, PMD.getQueryBlockState())) {
@@ -117,6 +143,7 @@ public class QueryBlockStateItem extends Item{
              }
 
             world.setBlock(placePos, PMD.getQueryBlockState(), 16);
+//            world.gameEvent(GameEvent.BLOCK_PLACE, placePos, GameEvent.Context.of(player, PMD.getQueryBlockState()));
 //            player.getCooldowns().addCooldown(this, 10);
         }
         return InteractionResult.SUCCESS;

@@ -48,7 +48,7 @@ public class WoodAxeItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 //        if(pLevel.isClientSide)return super.use(pLevel, pPlayer, pUsedHand);
 
-        BlockPos blockPos2 = pPlayer.getOnPos();
+        BlockPos blockPos2 =BlockPos.containing(pPlayer.getEyePosition());
         clickPos(pLevel,blockPos2, pPlayer,false );
         return super.use(pLevel, pPlayer, pUsedHand);
 

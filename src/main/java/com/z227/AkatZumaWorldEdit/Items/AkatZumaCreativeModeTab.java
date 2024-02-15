@@ -10,16 +10,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class AkatZumaCreativeModeTab {
 
-//    @SubscribeEvent
-//    public static void buildContents(BuildCreativeModeTabContentsEvent event) {
-//
-//        // 添加到创造模式物品栏
-//        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-//            event.accept(AkatZumaWorldEdit.Query_Item);
-//            event.accept(AkatZumaWorldEdit.WOOD_AXE);
-//
-//        }
-//    }
     public static final DeferredRegister<net.minecraft.world.item.CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, AkatZumaWorldEdit.MODID);
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = TABS.register(AkatZumaWorldEdit.MODID,
         () -> CreativeModeTab.builder()
@@ -33,6 +23,7 @@ public class AkatZumaCreativeModeTab {
                 output.accept(AkatZumaWorldEdit.WOOD_AXE.get());
                 output.accept(AkatZumaWorldEdit.Building_Consumable_Item.get());
                 output.accept(AkatZumaWorldEdit.Projector_Item.get());
+//                output.accept(AkatZumaWorldEdit.Line_Item.get());
             })
             .build()
     );

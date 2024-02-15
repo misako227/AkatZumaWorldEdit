@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -331,6 +332,7 @@ public class CopyBlock {
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),this.player);
         if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.ignore_low_hight"),this.player);
+        Util.recordPosLog("/a paste",player);
     }
 
 

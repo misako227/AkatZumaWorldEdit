@@ -36,7 +36,7 @@ public class PosCommand
     private static void pos(CommandContext<CommandSourceStack> context,boolean b) {
         ServerLevel serverLevel = context.getSource().getLevel();
         ServerPlayer player =  context.getSource().getPlayer();
-        BlockPos pos = player.getOnPos();
+        BlockPos pos = BlockPos.containing(player.getEyePosition());
         if(WoodAxeItem.clickPos(serverLevel,pos, player,b)){
             if(b)NetworkingHandle.sendToClient(new SendToClient(1), player);
             else NetworkingHandle.sendToClient(new SendToClient(2), player);

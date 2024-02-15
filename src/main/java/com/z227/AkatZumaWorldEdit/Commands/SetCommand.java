@@ -4,16 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
-import net.minecraft.ChatFormatting;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,9 +59,10 @@ public class SetCommand {
             PMD.getUndoDataMap().push(undoMap);//添加到undo
             //放置方块
             PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
-            Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
-            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
-            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
+//            Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
+//            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
+//            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
+            SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
 
 
         }

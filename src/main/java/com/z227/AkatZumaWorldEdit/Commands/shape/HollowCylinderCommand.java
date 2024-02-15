@@ -27,30 +27,38 @@ public class HollowCylinderCommand{
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
                                                 .then(Commands.argument("高度", IntegerArgumentType.integer(1,500))
                                                         .executes((context)->{
-                                                            setCyl(context,true,0,0);
+                                                            setCyl(context,true,0,0,0);
                                                             return 1;
                                                         })
                                                         .then(Commands.argument("x角度", FloatArgumentType.floatArg(-360, 360))
                                                             .executes((context)->{
                                                                         float xAngle = FloatArgumentType.getFloat(context,"x角度");
-                                                                        setCyl(context,true,xAngle,0);
+                                                                        setCyl(context,true,xAngle,0,0);
                                                                         return 1;
                                                                     }
                                                             )
+//                                                            .then(Commands.argument("y角度", FloatArgumentType.floatArg(-360, 360))
+//                                                                    .executes((context)->{
+//                                                                                float xAngle = FloatArgumentType.getFloat(context,"x角度");
+//                                                                                float yAngle  = FloatArgumentType.getFloat(context,"y角度");
+//                                                                                setCyl(context,true,xAngle,yAngle,0);
+//                                                                                return 1;
+//                                                                            }
+//                                                                    )
                                                         .then(Commands.argument("z角度", FloatArgumentType.floatArg(-360, 360))
                                                                 .executes((context)->{
                                                                             float xAngle = FloatArgumentType.getFloat(context,"x角度");
+//                                                                            float yAngle  = FloatArgumentType.getFloat(context,"y角度");
                                                                             float zAngle  = FloatArgumentType.getFloat(context,"z角度");
-                                                                            setCyl(context,true,xAngle,zAngle);
+                                                                            setCyl(context,true,xAngle,0,zAngle);
                                                                             return 1;
                                                                         }
                                                                 )
                                                         )))))));
     }
 
-    public static void setCyl(CommandContext<CommandSourceStack> context,boolean hollow,float xAngle,float zAngle){
+    public static void setCyl(CommandContext<CommandSourceStack> context,boolean hollow,float xAngle,float yAngle,float zAngle){
         Player player = context.getSource().getPlayer();
-
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
@@ -59,10 +67,10 @@ public class HollowCylinderCommand{
         BlockState blockState =  blockInput.getState();
         ServerLevel serverlevel = context.getSource().getLevel();
 
-        ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState, radius, height, hollow, "cyl",xAngle,zAngle);
+        ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState, radius, height, hollow, "cyl",xAngle,yAngle,zAngle);
         if(shapeBase.init()){
             shapeBase.cyl();
-            SendCopyMessage.sendSuccessMsg(blockState,player);
+            SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
         }
         // 设置标志位
         PMD.setFlag(true);

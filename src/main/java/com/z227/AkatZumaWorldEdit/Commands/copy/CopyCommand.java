@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClient;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -46,6 +47,7 @@ public class CopyCommand {
             Component component = Component.translatable("chat.akatzuma.copyBlock.copy_success").append(String.valueOf(copyBlock.getCopyMap().size()));
             AkatZumaWorldEdit.sendAkatMessage(component,player);
             NetworkingHandle.sendToClient(new SendToClient(11), player);
+            Util.recordPosLog(context.getInput(),player);
         }
 
         // 设置标志位

@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -133,18 +134,32 @@ public class PreviewingRender {
         RenderSystem.disableDepthTest();
 
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+
+//        Minecraft mc = Minecraft.getInstance();
+//        BlockRenderDispatcher blockRenderDispatcher = mc.getBlockRenderer();
+//        BakedModel bakedModel = blockRenderDispatcher.getBlockModel(blockState);
+//        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+//        ModelBlockRenderer modelBlockRenderer = new ModelBlockRenderer(blockColors);
+
         stack.pushPose();
         stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
 
+//        modelBlockRenderer.tesselateBlock(mc.level,bakedModel, blockState, pos, stack,
+//                Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(RenderType.cutout()),
+//                false,
+//                RandomSource.create(),
+//                blockState.getSeed(pos),
+//                15728880
+//                );
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockState,
                 stack,
                 Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
                 15728880,
 //                OverlayTexture.NO_OVERLAY
-                OverlayTexture.pack(3,10)
-//                ModelData.EMPTY,
-//                null
+                OverlayTexture.pack(3,10),
+                ModelData.EMPTY,
+                null
         );
         stack.popPose();
 

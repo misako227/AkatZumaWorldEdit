@@ -12,7 +12,7 @@ public class PlayerMapData {
     private String name;
     private BlockPos pos1;
     private BlockPos pos2;
-//    private boolean vip;
+
     private boolean flag;
     private BlockState queryBlockState;
 
@@ -21,7 +21,7 @@ public class PlayerMapData {
 
     private CopyBlock copyBlock;
     private CopyBlock copyBlockClient;
-//    private StackBlock stackBlock;
+//    private LineBase lineBase;
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -37,6 +37,7 @@ public class PlayerMapData {
         this.flag = true;
         this.undoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
+//        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
     }
 
@@ -111,4 +112,6 @@ public class PlayerMapData {
 //    public void setStackBlock(StackBlock stackBlock) {
 //        this.stackBlock = stackBlock;
 //    }
+
+
 }
