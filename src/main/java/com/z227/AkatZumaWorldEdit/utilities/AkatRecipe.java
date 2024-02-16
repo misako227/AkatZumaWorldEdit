@@ -24,7 +24,7 @@ public class AkatRecipe extends RecipeProvider {
                 .pattern("#")
                 .pattern("X")
                 .unlockedBy("has_stick", has(Items.STICK))
-                .showNotification(false)
+                .showNotification(true)
                 .save(pWriter);
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, AkatZumaWorldEdit.WOOD_AXE.get())
                 .define('#', Items.WOODEN_AXE)
@@ -32,7 +32,7 @@ public class AkatRecipe extends RecipeProvider {
                 .pattern("#")
                 .pattern("X")
                 .unlockedBy("has_stick", has(Items.STICK))
-                .showNotification(false)
+                .showNotification(true)
                 .save(pWriter);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, AkatZumaWorldEdit.Building_Consumable_Item.get(),2)
@@ -41,6 +41,17 @@ public class AkatRecipe extends RecipeProvider {
                 .pattern("X")
                 .unlockedBy("has_stick", has(Items.STICK))
                 .showNotification(false)
+                .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, AkatZumaWorldEdit.Projector_Item.get())
+                .define('X', Items.IRON_INGOT)
+                .define('Y', Items.LAPIS_LAZULI)
+                .define('Z', Items.REDSTONE)
+                .pattern("XZX")
+                .pattern("XYX")
+                .pattern("XZX")
+                .unlockedBy("has_stick", has(Items.STICK))
+                .showNotification(true)
                 .save(pWriter);
     }
 }

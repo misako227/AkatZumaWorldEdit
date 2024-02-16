@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 @OnlyIn(Dist.CLIENT)
-public class ClientModEvet {
+public class ClientModEvent {
 
     @SubscribeEvent
     public static void registerKey(RegisterKeyMappingsEvent event){

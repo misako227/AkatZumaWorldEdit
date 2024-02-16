@@ -262,8 +262,8 @@ public class CopyBlock {
 
 
 
-
-
+//
+//
 //    public void rotate(float xAngle,float yAngle,float zAngle){
 //        Component component;
 //
@@ -289,6 +289,27 @@ public class CopyBlock {
 //            rotateCopyMap.put(new BlockPos(Math.toIntExact(Math.round(position.x)), Math.toIntExact(Math.round(position.y)), Math.toIntExact(Math.round(position.z))), state);
 //        }
 //
+//        component = Component.translatable("chat.akatzuma.success.rotate");
+//        this.copyMap = rotateCopyMap;
+//        AkatZumaWorldEdit.sendAkatMessage(component, this.player);
+//    }
+
+//    public void rotate(Level serverlevel){
+//        Component component;
+//
+//
+//        int cx = this.playerCopyPos.getX(),
+//            cy = this.playerCopyPos.getY(),
+//            cz = this.playerCopyPos.getZ();
+//
+//        Map<BlockPos, BlockState> rotateCopyMap = new HashMap<>();
+//        for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
+//            BlockPos pos = entry.getKey();
+//
+//
+//            BlockState state = entry.getValue();
+//            rotateCopyMap.put(RotateBlock.rotateCopyMapZ(this.playerCopyPos,pos,this.copyPos1,this.copyPos2), state);
+//        }
 //        component = Component.translatable("chat.akatzuma.success.rotate");
 //        this.copyMap = rotateCopyMap;
 //        AkatZumaWorldEdit.sendAkatMessage(component, this.player);

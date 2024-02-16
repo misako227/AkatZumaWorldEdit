@@ -26,16 +26,42 @@ public class RotateBlock {
         return new BlockPos(tranX, tranY, tranZ);
     }
 
-//    public static BlockPos flipY(BlockPos pos){
-//        Matrix4f translationMatrix =  new Matrix4f().scale(1.0f, -1.0f, 1.0f);;
-////        matrixStack.scale(-1.0f, 1.0f, 1.0f); // 翻转x轴
-////        matrixStack.scale(1.0f, -1.0f, 1.0f); // 翻转y轴
-////        matrixStack.scale(1.0f, 1.0f, -1.0f); // 翻转z轴
+
+
+//    public static BlockPos rotateCopyMapY(BlockPos playerCopyPos, BlockPos pos, BlockPos pos1,BlockPos pos2){
+//        int playerCopyX = playerCopyPos.getX();
+//        int playerCopyY = playerCopyPos.getY();
+//        int playerCopyZ = playerCopyPos.getZ();
 //
-//        Vector4f position = new Vector4f((Vector3fc) pos,1);
-//        position = translationMatrix.transform(position);
+//        float centerX = (pos1.getX() + pos2.getX()) / 2f;
+//        float centerY = (pos1.getY() + pos2.getY()) / 2f;
+//        float centerZ = (pos1.getZ() + pos2.getZ()) / 2f;
 //
-//        return new BlockPos((int)position.x, (int)position.y, (int)position.z);
+//        float newX = pos.getX() + playerCopyX - centerX,
+//              newY = pos.getY() + playerCopyY - centerY,
+//              newZ = pos.getZ() + playerCopyZ - centerZ;
+//
+//
+//        return new BlockPos((int)(-newZ+centerX-playerCopyX), (int)(newY+centerY-playerCopyY), (int)(newX+centerZ-playerCopyZ));
+//
+//    }
+//
+//    public static BlockPos rotateCopyMapZ(BlockPos playerCopyPos, BlockPos pos, BlockPos pos1,BlockPos pos2){
+//        int playerCopyX = playerCopyPos.getX();
+//        int playerCopyY = playerCopyPos.getY();
+//        int playerCopyZ = playerCopyPos.getZ();
+//
+//        float centerX = (pos1.getX() + pos2.getX()) / 2f;
+//        float centerY = (pos1.getY() + pos2.getY()) / 2f;
+//        float centerZ = (pos1.getZ() + pos2.getZ()) / 2f;
+//
+//        float newX = pos.getX() + playerCopyX - centerX,
+//                newY = pos.getY() + playerCopyY - centerY,
+//                newZ = pos.getZ() + playerCopyZ - centerZ;
+//
+//
+//        return new BlockPos((int)(-newY+centerX-playerCopyX), (int)(newX+centerY-playerCopyY), (int)(newZ+centerZ-playerCopyZ));
+//
 //    }
 
 }

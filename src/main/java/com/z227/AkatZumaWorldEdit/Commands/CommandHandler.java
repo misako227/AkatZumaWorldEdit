@@ -30,6 +30,7 @@ public class CommandHandler {
         CopyCommand.register(dispatcher,commandbuildcontext);
         PasteCommand.register(dispatcher,commandbuildcontext);
         FlipCommand.register(dispatcher,commandbuildcontext);
+//        RotateCommand.register(dispatcher,commandbuildcontext);
 
         UndoCommand.register(dispatcher,commandbuildcontext);
         RedoCommand.register(dispatcher,commandbuildcontext);

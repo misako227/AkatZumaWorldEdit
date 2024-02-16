@@ -38,6 +38,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 - - -
 
+### 快捷键
+`ctrl + u` 撤销（undo）
+
 ### 工具
 #### 选区工具
 使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。

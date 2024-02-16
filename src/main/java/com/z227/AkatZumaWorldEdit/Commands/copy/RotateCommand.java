@@ -4,9 +4,13 @@
 //import com.mojang.brigadier.arguments.FloatArgumentType;
 //import com.mojang.brigadier.context.CommandContext;
 //import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+//import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+//import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 //import net.minecraft.commands.CommandBuildContext;
 //import net.minecraft.commands.CommandSourceStack;
 //import net.minecraft.commands.Commands;
+//import net.minecraft.server.level.ServerLevel;
+//import net.minecraft.world.entity.player.Player;
 //
 //public class RotateCommand {
 //    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
@@ -29,11 +33,6 @@
 //                                            return 1;
 //                                                }
 //                                        )
-//                                .then(Commands.literal("-h")
-//                                                .executes((context)->{
-//                                                    rotate(context,0,0,1);
-//                                                    return 1;
-//                                                })
 //                                .then(Commands.argument("z角度", FloatArgumentType.floatArg(-360, 360))
 //                                        .executes((context)->{
 //                                            float xAngle = FloatArgumentType.getFloat(context,"x角度");
@@ -43,14 +42,18 @@
 //                                            return 1;
 //                                            }
 //                                        )
-//                        ))))
+//                        )))
 //        ));
 //
 //    }
 //
 //    public static void rotate(CommandContext<CommandSourceStack> context, float xAngle, float yAngle, float zAngle) {
-//        System.out.println(context.getCommand());
-//        System.out.println(context.getInput());
-//        System.out.println(context.getChild());
+//        Player player = context.getSource().getPlayer();
+//        ServerLevel serverlevel = context.getSource().getLevel();
+//        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+//        CopyBlock copyBlock = PMD.getCopyBlock();
+//        if(copyBlock!=null){
+//            copyBlock.rotate(serverlevel);
+//        }
 //    }
 //}
