@@ -44,6 +44,8 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ### 工具
 #### 选区工具
 使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。
+
+`左/右键`空气选择玩家头部位置的点位
 ![wood.jpg](img/wood.jpg)
 
 <br>
@@ -71,6 +73,15 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ● `不想使用复制功能`的把`此方块`加入黑名单
 
 适用于指令`/a copy 、 /a stack`
+
+<br>
+
+- - -
+
+#### 投影
+![pro1.png](img/pro1.png)
+
+![pro2.jpg](img/pro2.jpg)
 
 <br>
 
@@ -212,7 +223,7 @@ v1.0.2
 - 添加投影物品
 - 添加`/a line`指令
 - 添加粘帖时候忽略空气
-- 添加按键绑定
+- 添加快捷键`ctrl+u`撤销
 
 
 v1.0.1
