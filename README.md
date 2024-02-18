@@ -205,6 +205,11 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### /a del viplayer 删除高级玩家 
 `/a del viplayer <玩家名字>`
 
+#### /a add whitelist 添加黑白名单
+`/a add whitelist <数量> <方块ID>`
+
+`数量`：-1则为添加黑名单，大于0则是白名单
+
 
 ### Debug
 debug日志格式

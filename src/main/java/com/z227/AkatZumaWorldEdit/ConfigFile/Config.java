@@ -54,7 +54,7 @@ public class Config {
         BLACKListBlock = BUILDER.comment("""
                         \n黑名单方块，优先级：黑名单 > 白名单比例值 > *
                         优先级比白名单高,此名单中的方块均不允许放置，只填入名字即可，不需要前面的#""")
-                .defineListAllowEmpty("blackListBlock", List.of("minecraft:water","minecraft:tnt"), Config::validateBlackBlockName);
+                .defineListAllowEmpty("blackListBlock", List.of("minecraft:water","minecraft:tnt","akatzumaworldedit:building_consumable"), Config::validateBlackBlockName);
         BLACKListTags = BUILDER.comment("""
                         \n黑名单标签，此标签中的方块均不允许放置（默认添加了矿物、箱子、潜影盒的标签）
                         可以安装CraftTweaker使用指令/ct hand来查看手中方块的标签

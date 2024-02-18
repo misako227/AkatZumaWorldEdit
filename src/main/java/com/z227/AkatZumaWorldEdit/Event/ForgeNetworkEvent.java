@@ -71,7 +71,7 @@ public class ForgeNetworkEvent {
     @SubscribeEvent
     public static void ServerStarted(ServerStartedEvent event){
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
-        addTagsToMap(Config.VIPBLACKListBlock.get(), AkatZumaWorldEdit.VipBlockMap);
+        addTagsToMap(Config.VIPBLACKListTags.get(), AkatZumaWorldEdit.VipBlockMap);
         AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
 
         int defaultSize = AkatZumaWorldEdit.defaultBlockMap.size();
