@@ -208,8 +208,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### /a add whitelist 添加黑白名单
 `/a add whitelist <数量> <方块ID>`
 
-`数量`：-1则为添加黑名单，大于0则是白名单
+`数量`：-1则为添加黑名单，大于等于0则是白名单
 
+#### /a add vipwhitelist 添加黑白名单
+同上
 
 ### Debug
 debug日志格式
