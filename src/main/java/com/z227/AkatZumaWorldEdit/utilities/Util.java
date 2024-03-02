@@ -76,7 +76,7 @@ public class Util {
         String playerName = logString(player.getName().getString());
         String playerPos = logString(player.getOnPos().toString());
         String logBlockName = logString(blockState.getBlock().getName().getString() + "=" + blockState);
-        PlayerMapData PMD= Util.getPMD(player);
+        PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
         Util.logDebug(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
@@ -86,7 +86,7 @@ public class Util {
         String playerName = logString(player.getName().getString());
         String playerPos = logString(player.getOnPos().toString());
         String playerCommand = logString(str);
-        PlayerMapData PMD= Util.getPMD(player);
+        PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
         Util.logDebug(playerName+playerCommand+playerPos+pos1+pos2);

@@ -39,6 +39,8 @@ public class LanguageDataGenerator {
             this.add("item.query_block_state.desc_block", "查询的方块：");
             this.add("chat.item.query_block_state.null", "§c 没有找到要复制的状态，请先使用左键查看状态");
             this.add("chat.item.query_block_state.not_air", "§c 要放置的位置有方块，请先清除方块");
+            this.add("item.akatzumaworldedit.bind_inventory", "§b 绑定箱子工具");
+
 
             this.add("key.akatzuma", "AkatZumaWorldEdit");
             this.add("key.category.undo", "撤销");
@@ -81,6 +83,9 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.set.success", "已放置方块");
             this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");
             this.add("chat.action.copy", "点击复制: ");
+
+            this.add("hud.akatzuma.ctrl_scroll", "§actrl + 滚轮切换");
+            this.add("hud.akatzuma.ctrl_right", "§actrl + 右键§f绑定箱子");
         }
     }
 

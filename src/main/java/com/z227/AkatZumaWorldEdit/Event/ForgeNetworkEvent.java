@@ -1,11 +1,15 @@
 package com.z227.AkatZumaWorldEdit.Event;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -14,7 +18,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -23,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -45,6 +53,12 @@ public class ForgeNetworkEvent {
         String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
+
+        LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
+        bindPos.ifPresent(bp -> {
+            NetworkingHandle.sendToClient(new SendToClientCompoundTag(bp.getCompoundNBT()), (ServerPlayer) player);
+            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT());
+        });
 //        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
 
     }
@@ -66,6 +80,22 @@ public class ForgeNetworkEvent {
         String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
+//        CompoundTag invPosNBT = Util.getPMD(player).getInvPosNBT();
+//        Map<BlockState, int[]> invPosMap = Util.getPMD(player).getInvPosMap();
+//        if(!invPosNBT.isEmpty()){
+//            for (int i = 1; i < invPosNBT.size(); ++i) {
+//                int[] ints =  invPosNBT.getIntArray("pos" + i);
+//                BlockState blockState = Blocks.AIR.defaultBlockState();;
+//                if(ints.length == 3) {
+//                    BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
+//                    Level level = Minecraft.getInstance().level;
+//                    if (level.hasChunkAt(pos)) {
+//                        blockState = level.getBlockState(pos);
+//                    }
+//                }
+//                invPosMap.put(blockState,ints);
+//            }
+//        }
     }
 
     @SubscribeEvent
@@ -80,6 +110,33 @@ public class ForgeNetworkEvent {
         Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
         AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defaultSize + "，vip黑白名单总数："+ vipSize);
     }
+
+    @SubscribeEvent
+    public static void onAttachCapabilityEvent(AttachCapabilitiesEvent<Entity> event) {
+        Entity entity = event.getObject();
+        if (entity instanceof Player) {
+            event.addCapability(new ResourceLocation(AkatZumaWorldEdit.MODID), new BindInventoryPosCapability());
+        }
+    }
+
+    //玩家死亡后复制cap
+    @SubscribeEvent
+    public static void onPlayerCloned(PlayerEvent.Clone event) {
+        if (!event.isWasDeath()) {
+            LazyOptional<BindInventoryPos> oldSpeedCap = event.getOriginal().getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
+            LazyOptional<BindInventoryPos> newSpeedCap = event.getEntity().getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
+            if (oldSpeedCap.isPresent() && newSpeedCap.isPresent()) {
+                newSpeedCap.ifPresent((newCap) -> {
+                    oldSpeedCap.ifPresent((oldCap) -> {
+                        newCap.deserializeNBT(oldCap.serializeNBT());
+                    });
+                });
+            }
+        }
+    }
+
+
+
 
     public static void addTagsToMap(List<? extends String> input, Map output) {
         input.forEach(k ->{

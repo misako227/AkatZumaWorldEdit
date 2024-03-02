@@ -217,7 +217,8 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ### Debug
 debug日志格式
 
-`[玩家名字][指令][玩家坐标][方块ID][选区坐标1][选区坐标2]`
+`[玩家名字][玩家发送的指令][玩家坐标][方块ID][选区坐标1][选区坐标2]`
+部分指令在日志中没有`[方块ID]`这个参数
 ```log
   [Dev][a set minecraft:birch_planks][BlockPos{x=-103, y=63, z=63}][Birch Planks=Block{minecraft:birch_planks}][BlockPos{x=-107, y=64, z=63}][BlockPos{x=-107, y=65, z=62}]
 ```

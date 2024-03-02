@@ -40,13 +40,9 @@ public class ProjectorItem extends Item
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-
         if(pLevel.isClientSide){
             SendCopyMessage.sendCommand("a paste");
         }
-
-
-
         return  super.use(pLevel, pPlayer, pUsedHand);
     }
 

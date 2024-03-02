@@ -3,9 +3,14 @@ package com.z227.AkatZumaWorldEdit.Core;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PlayerMapData {
@@ -15,6 +20,10 @@ public class PlayerMapData {
 
     private boolean flag;
     private BlockState queryBlockState;
+
+    private CompoundTag invPosNBT;
+    private Map<int[], BlockState> invPosMap;
+    private int invPosIndex = 1;
 
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
@@ -37,6 +46,8 @@ public class PlayerMapData {
         this.flag = true;
         this.undoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
+        this.invPosNBT = new CompoundTag();
+        this.invPosMap = new LinkedHashMap<>();
 //        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
     }
@@ -114,4 +125,46 @@ public class PlayerMapData {
 //    }
 
 
+    public CompoundTag getInvPosNBT() {
+        return invPosNBT;
+    }
+
+    public void setInvPosNBT(CompoundTag invPosNBT) {
+        this.invPosNBT = invPosNBT;
+        if(!invPosNBT.isEmpty()){
+            for (int i = 1; i <= invPosNBT.size(); ++i) {
+                int[] ints =  invPosNBT.getIntArray("pos" + i);
+                BlockState blockState = Blocks.AIR.defaultBlockState();;
+                if(ints.length == 3) {
+                    BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
+                    Level level = Minecraft.getInstance().level;
+                    if (level !=null && level.hasChunkAt(pos)) {
+                        blockState = level.getBlockState(pos);
+                    }
+                }
+                this.invPosMap.put(ints, blockState);
+            }
+        }
+    }
+
+    public Map<int[], BlockState> getInvPosMap() {
+        return invPosMap;
+    }
+
+    public int getInvPosIndex() {
+        return invPosIndex;
+    }
+
+    public void setInvPosIndex(int invPosIndex) {
+        this.invPosIndex = invPosIndex;
+    }
+    public void addInvPosIndex() {
+        this.invPosIndex++;
+        if (this.invPosIndex > 5)this.invPosIndex=1;
+    }
+    public void deInvPosIndex() {
+        this.invPosIndex--;
+        if (this.invPosIndex < 1)this.invPosIndex=5;
+
+    }
 }

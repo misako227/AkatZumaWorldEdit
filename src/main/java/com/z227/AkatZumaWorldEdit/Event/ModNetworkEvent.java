@@ -37,6 +37,7 @@ public class ModNetworkEvent {
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.WOOD_AXE.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Query_Item.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Projector_Item.get(), true);
+//        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.BindInventory.get(), true);
 //        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Line_Item.get(), true);
     }
 

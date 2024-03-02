@@ -1,14 +1,19 @@
 package com.z227.AkatZumaWorldEdit.network.clientPacket;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientPacketHandle {
@@ -22,6 +27,18 @@ public class ClientPacketHandle {
             case 12 -> setClientFlip(false);    // flip
             case 13 -> setClientFlip(true);     // flip up
         }
+    }
+
+    //同步cap到客户端
+    public static void handle(CompoundTag tag) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
+        bindPos.ifPresent(bp -> {
+            bp.setCompoundNBT(tag);
+            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT());
+        });
+
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -2,9 +2,11 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -88,6 +90,28 @@ public class ClientEventRegister {
         }
 
     }
+
+    @SubscribeEvent
+    public static void InputEventKey(InputEvent.MouseScrollingEvent event) {
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null)return;
+
+        ItemStack itemstack = player.getMainHandItem();
+        if(itemstack.getItem() != AkatZumaWorldEdit.BindInventory.get())return;
+
+        if(Util.isDownCtrl()){
+            PlayerMapData PMD = Util.getPMD(player);
+            if(event.getScrollDelta() == -1.0){
+                PMD.addInvPosIndex();
+            }else{
+                PMD.deInvPosIndex();
+            }
+            event.setCanceled(true);
+//            System.out.println("ctrl");
+        }
+    }
+
 
 //    @SubscribeEvent
 //    public static void InputEventKey(PlayerInteractEvent.RightClickEmpty event) {
