@@ -46,6 +46,9 @@ public class AkatZumaWorldEdit{
     public static Map<String, Boolean> VipPlayerMap = new HashMap<>();      //vip玩家
     public static Map<String, Boolean> BlackWorldMap = new HashMap<>();
 
+    public static boolean loadSopBackpacks = false;
+    public static boolean loadSopStorage = false;
+
     public static final DeferredRegister<Item> ITEMS;
     public static final RegistryObject<Item> WOOD_AXE;
     public static final RegistryObject<Item> Query_Item;

@@ -1,19 +1,28 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 public class BindInventoryItem extends Item {
 
@@ -23,9 +32,26 @@ public class BindInventoryItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.projector_item.desc1"));
-
+        pTooltipComponents.add(Component.translatable("hud.akatzuma.right"));
+        pTooltipComponents.add(Component.translatable("hud.akatzuma.ctrl_right"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player player, InteractionHand pUsedHand) {
+        if(pLevel.isClientSide){
+            if(player.getCooldowns().isOnCooldown(this)){
+                return super.use(pLevel, player, pUsedHand);
+            }
+            if(Util.isDownCtrl()) {
+                PlayerMapData PMD = Util.getPMD(player);
+                player.getCooldowns().addCooldown(this, 40);
+                SendCopyMessage.sendCommand("a other tp");
+                PMD.updateInvPosMap(player);
+            }
+        }
+
+        return super.use(pLevel, player, pUsedHand);
     }
 
     @Override
@@ -34,35 +60,55 @@ public class BindInventoryItem extends Item {
         Player player = context.getPlayer();
 
         if(context.getLevel().isClientSide) {
-            Map<int[], BlockState> invPosMap = Util.getPMD(player).getInvPosMap();
-            if(Util.isDownCtrl()){
-//                LocalPlayer lplayer = Minecraft.getInstance().player;
 
-                System.out.println(invPosMap);
-                Util.getPMD(player).addInvPosIndex();
+            if(player.getCooldowns().isOnCooldown(this)){
+                return InteractionResult.SUCCESS;
             }
-//            StorageBlockEntity storageBlockEntity = (StorageBlockEntity) context.getLevel().getBlockEntity(context.getClickedPos());
-//
-//            StorageWrapper sw = storageBlockEntity.getStorageWrapper();
-////            int slotsize = sw.getInventoryHandler().getBaseSlotLimit(); //堆叠数量
-////            System.out.println(slotsize);
-//            System.out.println(sw.getInventoryHandler().getSlots());//槽位
-//
-//            ItemStack is = sw.getInventoryHandler().getSlotStack(0);
-//
-//            ItemStack is2 = sw.getInventoryHandler().getSlotStack(10);
-//            System.out.println();
-//            System.out.println(is.getHoverName().getString()+ "数量："+is.getCount());
-//            System.out.println(is2.getHoverName().getString()+ "数量："+is2.getCount());
 
+            BlockPos blockPos = context.getClickedPos();
+            BlockState blockState = context.getLevel().getBlockState(blockPos);
+            Block block = blockState.getBlock();
+            PlayerMapData PMD = Util.getPMD(player);
+            if(Util.isDownCtrl()){
 
-//            LazyOptional<BindInventoryPos> bindPos = lplayer.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
-//            bindPos.ifPresent(bp -> {
-//                System.out.println(bp);
-//                System.out.println(bp.getCompoundNBT());
-//            });
+                player.getCooldowns().addCooldown(this, 40);
+                SendCopyMessage.sendCommand("a other tp");
+                PMD.updateInvPosMap(player);
+
+            }else{
+                //ctrl+右键 传送到绑定的坐标
+                player.getCooldowns().addCooldown(this, 20);
+
+                if(block instanceof ChestBlock || block instanceof BarrelBlock){
+                    String command = "a other bind " + getPos(blockPos);
+
+                    SendCopyMessage.sendCommand(command);
+                    PMD.setInvPosMap(blockPos,player);
+                    return InteractionResult.SUCCESS;
+                }else if(Util.isLoadSopStorage()){
+                    if(block instanceof WoodStorageBlockBase){
+                        String command = "a other bind "+ getPos(blockPos);
+                        SendCopyMessage.sendCommand(command);
+
+                        PMD.setInvPosMap(blockPos,player);
+                        return InteractionResult.SUCCESS;
+                    }
+
+                }
+
+                Component component = Component.translatable("chat.akatzuma.error.bind_pos");
+                AkatZumaWorldEdit.sendAkatMessage(component,player);
+
+                return InteractionResult.SUCCESS;
+
+            }
 
         }
         return InteractionResult.SUCCESS;
     }
+
+    public static String getPos(BlockPos pos ){
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
+    }
+
 }

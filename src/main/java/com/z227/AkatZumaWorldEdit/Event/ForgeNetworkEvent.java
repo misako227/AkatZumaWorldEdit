@@ -50,14 +50,13 @@ public class ForgeNetworkEvent {
     @SubscribeEvent
     public static void Login(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        String playerName = player.getName().getString();
 //        System.out.println("登录："+ playerName);
-        AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
+        AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData());
 
         LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
         bindPos.ifPresent(bp -> {
             NetworkingHandle.sendToClient(new SendToClientCompoundTag(bp.getCompoundNBT()), (ServerPlayer) player);
-            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT());
+            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT(),player);
         });
 //        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
 
@@ -75,27 +74,12 @@ public class ForgeNetworkEvent {
     //玩家加入服务器，仅在客户端触发
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void LogginIn(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void clientLoginIn(ClientPlayerNetworkEvent.LoggingIn event) {
         LocalPlayer player = event.getPlayer();
-        String playerName = player.getName().getString();
+
 //        System.out.println("登录："+ playerName);
-        AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData(playerName));
-//        CompoundTag invPosNBT = Util.getPMD(player).getInvPosNBT();
-//        Map<BlockState, int[]> invPosMap = Util.getPMD(player).getInvPosMap();
-//        if(!invPosNBT.isEmpty()){
-//            for (int i = 1; i < invPosNBT.size(); ++i) {
-//                int[] ints =  invPosNBT.getIntArray("pos" + i);
-//                BlockState blockState = Blocks.AIR.defaultBlockState();;
-//                if(ints.length == 3) {
-//                    BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
-//                    Level level = Minecraft.getInstance().level;
-//                    if (level.hasChunkAt(pos)) {
-//                        blockState = level.getBlockState(pos);
-//                    }
-//                }
-//                invPosMap.put(blockState,ints);
-//            }
-//        }
+        AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData());
+
     }
 
     @SubscribeEvent
@@ -109,6 +93,7 @@ public class ForgeNetworkEvent {
         Util.logDebug("普通黑白名单："+AkatZumaWorldEdit.defaultBlockMap);
         Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
         AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defaultSize + "，vip黑白名单总数："+ vipSize);
+        Util.setLoadSop();
     }
 
     @SubscribeEvent

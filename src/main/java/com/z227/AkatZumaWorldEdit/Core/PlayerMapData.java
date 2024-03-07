@@ -3,18 +3,18 @@ package com.z227.AkatZumaWorldEdit.Core;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerMapData {
-    private String name;
+
     private BlockPos pos1;
     private BlockPos pos2;
 
@@ -22,8 +22,10 @@ public class PlayerMapData {
     private BlockState queryBlockState;
 
     private CompoundTag invPosNBT;
-    private Map<int[], BlockState> invPosMap;
-    private int invPosIndex = 1;
+    private Map<String, BlockState> invPosMap;
+    private BlockPos invPos;
+//    private int invPosIndex = 1;
+//    LazyOptional<BindInventoryPos> bindPosCapability;
 
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
@@ -41,24 +43,17 @@ public class PlayerMapData {
     }
 
 
-    public PlayerMapData(String name) {
-        this.name = name;
+    public PlayerMapData() {
+
         this.flag = true;
         this.undoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.invPosNBT = new CompoundTag();
-        this.invPosMap = new LinkedHashMap<>();
+        this.invPosMap = new HashMap<>();
 //        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BlockPos getPos1() {
         return pos1;
@@ -76,13 +71,6 @@ public class PlayerMapData {
         this.pos2 = pos2;
     }
 
-//    public boolean isVip() {
-//        return vip;
-//    }
-
-//    public void setVip(boolean vip) {
-//        this.vip = vip;
-//    }
 
     public boolean isFlag() {
         return flag;
@@ -116,55 +104,71 @@ public class PlayerMapData {
         this.copyBlockClient = copyBlockClient;
     }
 
-    //    public StackBlock getStackBlock() {
-//        return stackBlock;
-//    }
-//
-//    public void setStackBlock(StackBlock stackBlock) {
-//        this.stackBlock = stackBlock;
-//    }
+    public BlockPos getInvPos() {
+        return invPos;
+    }
 
+    public void setInvPos(BlockPos invPos) {
+        this.invPos = invPos;
+    }
 
     public CompoundTag getInvPosNBT() {
         return invPosNBT;
     }
 
-    public void setInvPosNBT(CompoundTag invPosNBT) {
+    public void setInvPosNBT(CompoundTag invPosNBT, Player player) {
         this.invPosNBT = invPosNBT;
-        if(!invPosNBT.isEmpty()){
-            for (int i = 1; i <= invPosNBT.size(); ++i) {
-                int[] ints =  invPosNBT.getIntArray("pos" + i);
-                BlockState blockState = Blocks.AIR.defaultBlockState();;
-                if(ints.length == 3) {
-                    BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
-                    Level level = Minecraft.getInstance().level;
-                    if (level !=null && level.hasChunkAt(pos)) {
-                        blockState = level.getBlockState(pos);
-                    }
+        if(!this.invPosNBT.isEmpty()){
+            int[] ints =  invPosNBT.getIntArray("pos");
+            BlockState blockState = Blocks.AIR.defaultBlockState();;
+            if(ints.length == 3) {
+                BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
+                Level level = player.level();
+                if (level !=null && level.hasChunkAt(pos)) {
+                    blockState = level.getBlockState(pos);
                 }
-                this.invPosMap.put(ints, blockState);
             }
+            this.invPosMap.put("pos" , blockState);
+//            for (int i = 1; i <= invPosNBT.size(); ++i) {
+//                int[] ints =  invPosNBT.getIntArray("pos" + i);
+//                BlockState blockState = Blocks.AIR.defaultBlockState();;
+//                if(ints.length == 3) {
+//                    BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
+//                    Level level = player.level();
+//                    if (level !=null && level.hasChunkAt(pos)) {
+//                        blockState = level.getBlockState(pos);
+//                    }
+//                }
+//                this.invPosMap.put("pos" + i, blockState);
+//            }
+
+
         }
+
     }
 
-    public Map<int[], BlockState> getInvPosMap() {
+    public Map<String, BlockState> getInvPosMap() {
         return invPosMap;
     }
 
-    public int getInvPosIndex() {
-        return invPosIndex;
+    public void setInvPosMap(BlockPos pos, Player player) {
+        this.invPosNBT.putIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+        BlockState blockState = Blocks.AIR.defaultBlockState();
+        Level level = player.level();
+//        if (level.hasChunkAt(pos)) {
+//            blockState = level.getBlockState(pos);
+//        }
+        this.invPosMap.put("pos", level.getBlockState(pos));
     }
 
-    public void setInvPosIndex(int invPosIndex) {
-        this.invPosIndex = invPosIndex;
+    public void updateInvPosMap(Player player) {
+        int[] intPos = invPosNBT.getIntArray("pos");
+        if(intPos.length==3){
+            BlockPos pos = new BlockPos(intPos[0],intPos[1],intPos[2]);
+            Level level = player.level();
+            this.invPosMap.put("pos", level.getBlockState(pos));
+        }
     }
-    public void addInvPosIndex() {
-        this.invPosIndex++;
-        if (this.invPosIndex > 5)this.invPosIndex=1;
-    }
-    public void deInvPosIndex() {
-        this.invPosIndex--;
-        if (this.invPosIndex < 1)this.invPosIndex=5;
 
-    }
+
 }

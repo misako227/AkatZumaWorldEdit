@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.RemoveItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.level.BlockEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PlaceBlock {
@@ -171,47 +174,57 @@ public class PlaceBlock {
     //@param volume 扣除的总数量
     //@param player 玩家
     //@param deBlockName 扣除物品的显示名
-    public static Map<Integer, Integer> checkInv(String blockName, int n, int volume, Player player, MutableComponent deBlockName) {
+    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, MutableComponent deBlockName) {
+        List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
+        Map<Integer, Integer> chestMap;
 
-            int sum = blockInInvMap.values().stream().mapToInt(Integer::intValue).sum();
+        temp.add(blockInInvMap);
+
+        int sum = Util.sum(blockInInvMap);
             //要扣除的数量
-            int num = (int) Math.ceil((double) volume / n);
-            MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
-                    .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num)
-                    .append(Component.translatable("chat.akatzuma.error.current_num").append(":"+sum))
-                    ;
-            if (blockInInvMap.isEmpty()) {
-                AkatZumaWorldEdit.sendAkatMessage(component, player);
+        int num = (int) Math.ceil((double) volume / n);
+        MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
+                .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num)
+                .append(Component.translatable("chat.akatzuma.error.current_num"))
+                ;
+
+        //背包如果不够
+        if (sum < num) {
+            chestMap = Util.findBlockInBindInv(player, blockName);
+            int chestSum = Util.sum(chestMap);
+            //如果玩家背包不够，遍历绑定的箱子到temp
+            sum = sum + chestSum;
+            if(sum < num){
+                AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
                 return null;
             }
-            //背包如果不够
-            if (sum < num) {
-                AkatZumaWorldEdit.sendAkatMessage(component, player);
-                return null;
-            }
+            temp.add(chestMap);
+        }
 
-
-        return blockInInvMap;
+        return temp;
     }
 
-    public static void removeItemInPlayerInv(Map<Integer, Integer> blockInInvMap, int n, int volume, Player player) {
+    //@param n 扣除的比例
+    //@param volume 扣除的总数量
+    public static void removeItemInPlayerInv(List<Map<Integer, Integer>>blockInInvMap, int n, int volume, Player player) {
         if(n==0||volume==0)return;
         //要扣除的数量
-        int num = (int) Math.ceil((double) volume / n);
+        int sum = (int) Math.ceil((double) volume / n);
         //遍历
-        for (Map.Entry<Integer, Integer> entry : blockInInvMap.entrySet()) {
-            int slot = entry.getKey();
-            int num1 = entry.getValue();
+        for (int i = 0; i < blockInInvMap.size(); i++){
+            switch (i){
+                case 0://玩家背包
+                    sum = RemoveItem.removePlayerItem(blockInInvMap.get(i), player, sum);
+                    break;
+                case 1:
+                    sum = RemoveItem.removeBindPosItem(blockInInvMap.get(i), player, sum);
+                    break;
+                    //todo
 
-            if (num1 >= num) {
-                player.getInventory().removeItem(slot, num);
-                break;
-            } else {
-                player.getInventory().removeItem(slot, num1);
-                num = num - num1;
             }
-            if (num <= 0) break;
+
+
         }
 
 
@@ -313,7 +326,7 @@ public class PlaceBlock {
 
             String blockName = BlockStateString.getBlockName(blockState);
             int n = getLimit(blockName, blackWhiteMap);  //比例值
-            Map<Integer, Integer> blockInInvMap = null;
+            List<Map<Integer, Integer>> blockInInvMap = null;
 
 
             //检查黑名单
@@ -323,8 +336,8 @@ public class PlaceBlock {
 
 
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0){
-
+            if(checkInventory && n > 0 ){
+//&& !player.isCreative()
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
                 blockInInvMap = checkInv(blockName,n,volume,player,deBlockName);
                 if(blockInInvMap==null)return false;

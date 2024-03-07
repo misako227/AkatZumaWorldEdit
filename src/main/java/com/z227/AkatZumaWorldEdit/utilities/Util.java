@@ -2,16 +2,29 @@ package com.z227.AkatZumaWorldEdit.utilities;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
+import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.items.IItemHandler;
+import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +54,28 @@ public class Util {
 //        return temp;
 //    }
 
+    public static Map<Integer,Integer> findBlockInContainer(Level level, BlockPos pos, String blockName){
+
+        BlockEntity be =  level.getBlockEntity(pos);
+        LazyOptional<IItemHandler> itemHandler = be.getCapability(ForgeCapabilities.ITEM_HANDLER);
+        Map<Integer,Integer> temp = new HashMap<>();
+        itemHandler.ifPresent(container -> {
+            int size = container.getSlots();
+            for(int i = 0; i < size; ++i) {
+                ItemStack invItem = container.getStackInSlot(i);
+                if (!invItem.isEmpty() ) {
+                    String itemName = invItem.getDescriptionId().replace("block.","").replace("." ,":");
+                    int count = invItem.getCount();
+                    if (itemName.equals(blockName)){
+                        temp.put(i, count);
+                    }
+                }
+            }
+        });
+
+        return temp;
+    }
+
 
     //遍历玩家背包，返回一个map为物品的槽位和数量
     public static Map<Integer,Integer> findBlockInPlayerInv(Player player, String blockName){
@@ -57,6 +92,53 @@ public class Util {
             }
         }
         return temp;
+    }
+
+    //遍历绑定的箱子
+    public static Map<Integer,Integer> findBlockInBindInv(Player player, String blockName){
+        Map<Integer,Integer> temp = new HashMap<>();
+
+        LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
+        if (bindPos.isPresent()){
+            BindInventoryPos bp = bindPos.orElse(null);
+            CompoundTag tag =  bp.getCompoundNBT();
+
+            int[] intPos = tag.getIntArray("pos");
+            if(intPos.length == 3){
+                BlockPos pos = new BlockPos(intPos[0], intPos[1], intPos[2]);
+                Level level = player.level();
+                //区块未加载
+                if (!level.hasChunkAt(pos)) {
+                    return temp;
+                }
+                Util.getPMD(player).setInvPos(pos);
+
+                BlockState blockState = level.getBlockState(pos);
+                Block block = blockState.getBlock();
+                if(block instanceof ChestBlock || block instanceof BarrelBlock){
+                    temp = findBlockInContainer(level, pos, blockName);
+                    return temp;
+                }
+
+                if(Util.isLoadSopStorage()){
+                    if(block instanceof WoodStorageBlockBase){
+                        temp = findBlockInContainer(level, pos, blockName);
+                        return temp;
+                    }
+                }
+
+
+            }
+
+        }
+
+        return temp;
+    }
+
+
+    public static int sum(Map<Integer, Integer> map) {
+        if(map.isEmpty()) return 0;
+        return map.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     public static void logDebug(Player player, Component component){
@@ -127,6 +209,28 @@ public class Util {
     public static boolean isDownCtrl(){
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 341);
     }
+
+    public static boolean isLoadSopBackpacks(){
+        return AkatZumaWorldEdit.loadSopBackpacks;
+    }
+
+    public static boolean isLoadSopStorage(){
+        return AkatZumaWorldEdit.loadSopStorage;
+    }
+
+
+    public static void setLoadSop() {
+        if(ModList.get().isLoaded("sophisticatedbackpacks")){
+            AkatZumaWorldEdit.loadSopBackpacks = true;
+        }
+        if(ModList.get().isLoaded("sophisticatedstorage")){
+            AkatZumaWorldEdit.loadSopStorage = true;
+        }
+
+
+    }
+
+
 
 
 //    //检测背包是否有指定物品，没有或者数量不够返回null，有则返回槽位：数量的Map

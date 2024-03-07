@@ -124,7 +124,11 @@ public class QueryBlockStateItem extends Item{
                     return InteractionResult.SUCCESS;
                 }
 
-                Map<Integer, Integer> blockInInvMap = PlaceBlock.checkInv(blockName, n, 1, player, descriptBlockName);
+                List<Map<Integer, Integer>>  blockInInvMap = null;
+                if(!player.isCreative()){
+                    blockInInvMap = PlaceBlock.checkInv(blockName, n, 1, player, descriptBlockName);
+                }
+
 
                 //检查放置权限
                 if (!PlaceBlock.isPlaceBlock(world, player, placePos, PMD.getQueryBlockState())) {
@@ -132,11 +136,17 @@ public class QueryBlockStateItem extends Item{
                     AkatZumaWorldEdit.sendAkatMessage(component,player);
                     return InteractionResult.SUCCESS;
                 }
-                if (blockInInvMap == null) {
+                if (blockInInvMap == null && !player.isCreative()) {
                     return InteractionResult.SUCCESS;
                 }
+
+
                 //扣除背包
-                PlaceBlock.removeItemInPlayerInv(blockInInvMap, 1, 1, player);
+                if(blockInInvMap!=null){
+                    PlaceBlock.removeItemInPlayerInv(blockInInvMap, 1, 1, player);
+                }
+
+
                 component = Component.translatable("chat.akatzuma.set.success")
                         .append(descriptBlockName.withStyle(ChatFormatting.GREEN));
                 AkatZumaWorldEdit.sendClientMessage(component, player);

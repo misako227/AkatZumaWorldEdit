@@ -36,7 +36,7 @@ public class ClientPacketHandle {
         LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
         bindPos.ifPresent(bp -> {
             bp.setCompoundNBT(tag);
-            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT());
+            Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT(),player);
         });
 
     }

@@ -8,28 +8,20 @@ public class BindInventoryPos {
 
     private CompoundTag compoundNBT;
 
+
     public BindInventoryPos() {
         this.compoundNBT = new CompoundTag();
+        compoundNBT.putIntArray("pos", new int[]{});
     }
 
 
     public CompoundTag serializeNBT() {
-//        CompoundTag compoundNBT = new CompoundTag();
-        for(int i = 1; i <= 5; ++i){
-            compoundNBT.putIntArray("pos"+i, new int[]{i,i+1,i+2});
-        }
-
-        return compoundNBT;
+        return this.compoundNBT;
     }
 
 
     public void deserializeNBT(CompoundTag nbt) {
         this.compoundNBT = nbt;
-
-//        for(int i = 1; i <= 5; ++i){
-//            this.invPosMap.put("pos"+i, nbt.getIntArray("pos"+i));
-//        }
-
     }
 
     public CompoundTag getCompoundNBT() {
@@ -39,4 +31,6 @@ public class BindInventoryPos {
     public void setCompoundNBT(CompoundTag compoundNBT) {
         this.compoundNBT = compoundNBT;
     }
+
+
 }

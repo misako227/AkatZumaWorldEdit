@@ -83,7 +83,7 @@ public class WoodAxeItem extends Item {
 
         PlayerMapData pwm = AWE.get(player.getUUID());
         if(pwm == null){
-            AWE.put(player.getUUID(), new PlayerMapData(player.getName().getString()));
+            AWE.put(player.getUUID(), new PlayerMapData());
         }
 
         if(bool)pwm.setPos1(pos);

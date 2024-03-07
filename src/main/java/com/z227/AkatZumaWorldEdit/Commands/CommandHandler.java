@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Commands.admin.DelVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
+import com.z227.AkatZumaWorldEdit.Commands.otherCommand.BindInvPosCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.CylinderCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.EllipseCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.HollowCylinderCommand;
@@ -42,6 +43,7 @@ public class CommandHandler {
         EllipseCommand.register(dispatcher,commandbuildcontext);
         PosCommand.register(dispatcher,commandbuildcontext);
         LineCommand.register(dispatcher,commandbuildcontext);
+        BindInvPosCommand.register(dispatcher,commandbuildcontext);
 //        CurveCommand.register(dispatcher,commandbuildcontext);
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);

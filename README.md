@@ -4,7 +4,7 @@
 
 [语雀文档地址](https://www.yuque.com/u39444834/dgakrb/gt2eg4whuq7hcvwf?singleDoc#)
 
-作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、Akashiya_yukina
+作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、[くじょう-アイ](https://center.mcmod.cn/131109/)
 
 MCMOD：https://www.mcmod.cn/class/13584.html
 
@@ -53,9 +53,14 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 - - -
 #### 查询工具
+![query.png](img/query.png)
+
 `左键`查看方块状态，消息可以点击复制状态
 
 `右键`放置一个上次查询方块，需要背包中有对应的方块物品
+
+`ctrl+右键` 执行`/a set `指令， 方块为上次查询的方块
+
 
 <br>
 
@@ -225,6 +230,10 @@ debug日志格式
 
 
 ### 更新日志
+v1.0.3
+- 添加绑定箱子、木头、精妙存储
+- 添加创造模式不再检测背包
+
 v1.0.2
 - 修复楼梯的翻转
 - 添加圆的xz轴旋转
