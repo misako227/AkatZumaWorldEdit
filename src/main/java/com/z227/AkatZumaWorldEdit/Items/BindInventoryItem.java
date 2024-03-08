@@ -70,13 +70,13 @@ public class BindInventoryItem extends Item {
             Block block = blockState.getBlock();
             PlayerMapData PMD = Util.getPMD(player);
             if(Util.isDownCtrl()){
-
+                //ctrl+右键
                 player.getCooldowns().addCooldown(this, 40);
                 SendCopyMessage.sendCommand("a other tp");
                 PMD.updateInvPosMap(player);
-
+                return InteractionResult.SUCCESS;
             }else{
-                //ctrl+右键 传送到绑定的坐标
+                //右键 绑定箱子
                 player.getCooldowns().addCooldown(this, 20);
 
                 if(block instanceof ChestBlock || block instanceof BarrelBlock){

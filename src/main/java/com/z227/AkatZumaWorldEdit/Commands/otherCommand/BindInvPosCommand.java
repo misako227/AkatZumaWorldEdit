@@ -68,15 +68,6 @@ public class BindInvPosCommand {
             bindPos(player, pos);
             PMD.setInvPosMap(pos,player);
             return;
-//            bindPos.ifPresent(bp -> {
-//                CompoundTag tag = bp.getCompoundNBT();
-//                tag.putIntArray("pos"+index, new int[]{pos.getX(),pos.getY(),pos.getZ()});
-//                bp.setCompoundNBT(tag);
-//                System.out.println(bp.getCompoundNBT());
-//                Component mess = Component.translatable("chat.akatzuma.success.bind_pos");
-//                AkatZumaWorldEdit.sendAkatMessage(mess,player);
-//                return;
-//            });
         }else if(Util.isLoadSopStorage()) {
             if (block instanceof WoodStorageBlockBase) {
                 bindPos(player, pos);
@@ -117,6 +108,8 @@ public class BindInvPosCommand {
                 return;
             }
             player.teleportTo(pos.getX()+0.5, pos.getY(), pos.getZ()+0.5);
+            component = Component.translatable("chat.akatzuma.success.tp");
+            AkatZumaWorldEdit.sendAkatMessage(component, player);
 
         }
 

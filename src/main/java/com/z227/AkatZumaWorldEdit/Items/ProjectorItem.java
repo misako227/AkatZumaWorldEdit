@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Items;
 
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -27,6 +28,7 @@ public class ProjectorItem extends Item
         pTooltipComponents.add( Component.translatable("item.projector_item.desc1"));
         pTooltipComponents.add( Component.translatable("item.projector_item.desc2"));
         pTooltipComponents.add( Component.translatable("item.projector_item.desc3"));
+        pTooltipComponents.add( Component.translatable("item.projector_item.desc4"));
 
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
@@ -39,17 +41,39 @@ public class ProjectorItem extends Item
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player player, InteractionHand pUsedHand) {
         if(pLevel.isClientSide){
+            if(player.getCooldowns().isOnCooldown(this)){
+                return super.use(pLevel, player, pUsedHand);
+            }
+            player.getCooldowns().addCooldown(this, 10);
+
+            if(Util.isDownCtrl()){
+                SendCopyMessage.sendCommand("a paste -a");
+                return super.use(pLevel, player, pUsedHand);
+            }
+
             SendCopyMessage.sendCommand("a paste");
         }
-        return  super.use(pLevel, pPlayer, pUsedHand);
+        return super.use(pLevel, player, pUsedHand);
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if(context.getLevel().isClientSide){
+            Player player = context.getPlayer();
+            if(player.getCooldowns().isOnCooldown(this)){
+                return InteractionResult.SUCCESS;
+            }
+            player.getCooldowns().addCooldown(this, 10);
+
+            if(Util.isDownCtrl()){
+                SendCopyMessage.sendCommand("a paste -a");
+                return InteractionResult.SUCCESS;
+            }
+
             SendCopyMessage.sendCommand("a paste");
+
         }
 
         return InteractionResult.SUCCESS;

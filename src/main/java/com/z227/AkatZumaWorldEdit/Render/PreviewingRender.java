@@ -55,6 +55,7 @@ public class PreviewingRender {
 
         //获取方块坐标
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+//        if(PMD==null)return;
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
         CopyBlock copyBlock = PMD.getCopyBlockClient();

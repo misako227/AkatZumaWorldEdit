@@ -135,6 +135,7 @@ public class ForgeNetworkEvent {
 
     }
 
+    //左键点击方块
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         Player player = event.getEntity();
@@ -149,9 +150,10 @@ public class ForgeNetworkEvent {
 
 
         if(item instanceof QueryBlockStateItem){
+            if(player.getCooldowns().isOnCooldown(item))return;
+            player.getCooldowns().addCooldown(item, 10);
             queryBlock(world, pos, player, PMD);
             return;
-
         }
         if(item instanceof WoodAxeItem){
             WoodAxeItem.clickPos(world,pos, player,true );
@@ -159,11 +161,15 @@ public class ForgeNetworkEvent {
         }
         if(item instanceof ProjectorItem){
             if(world.isClientSide){
+                if(player.getCooldowns().isOnCooldown(item))return;
+                player.getCooldowns().addCooldown(item, 10);
+
                 LocalPlayer Lplayer = Minecraft.getInstance().player;
                 if (Lplayer != null) {
                     Lplayer.connection.sendCommand("a copy");
                 }
             }
+            return;
 
         }
     }

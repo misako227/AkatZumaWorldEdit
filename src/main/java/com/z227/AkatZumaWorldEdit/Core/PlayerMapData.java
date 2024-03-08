@@ -24,8 +24,9 @@ public class PlayerMapData {
     private CompoundTag invPosNBT;
     private Map<String, BlockState> invPosMap;
     private BlockPos invPos;
-//    private int invPosIndex = 1;
-//    LazyOptional<BindInventoryPos> bindPosCapability;
+    // 1 = curious，2 = sop backpack，3 = 玩家背包
+    private byte sopBackpackFlag = 2;
+
 
     private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
@@ -50,6 +51,7 @@ public class PlayerMapData {
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
+        this.queryBlockState = Blocks.AIR.defaultBlockState();
 //        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
     }
@@ -110,6 +112,14 @@ public class PlayerMapData {
 
     public void setInvPos(BlockPos invPos) {
         this.invPos = invPos;
+    }
+
+    public byte getSopBackpackFlag() {
+        return sopBackpackFlag;
+    }
+
+    public void setSopBackpackFlag(byte sopBackpackLocation) {
+        this.sopBackpackFlag = sopBackpackLocation;
     }
 
     public CompoundTag getInvPosNBT() {

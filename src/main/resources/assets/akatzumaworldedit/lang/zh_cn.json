@@ -12,7 +12,8 @@
   "item.akatzumaworldedit.projector": "§b投影",
   "item.projector_item.desc1": "§a左键§f复制选区的建筑",
   "item.projector_item.desc2": "§6右键§f粘帖建筑",
-  "item.projector_item.desc3": "手持此物品可查看复制的投影",
+  "item.projector_item.desc3": "§6ctrl+右键§f忽略空气粘帖(/a paste -a)",
+  "item.projector_item.desc4": "手持此物品可查看复制的投影",
   "item.akatzumaworldedit.query_blockstate_item": "§b查询方块状态",
   "item.query_block_state.desc1": "§a左键§f方块查询方块状态",
   "item.query_block_state.desc2": "§6右键§f放置一个查询的方块",
@@ -58,6 +59,7 @@
   "hud.akatzuma.right": "§6右键§f绑定箱子",
   "hud.akatzuma.ctrl_right": "§6ctrl+右键§f传送到绑定的坐标上",
   "chat.akatzuma.success.bind_pos": "§a 绑定成功",
+  "chat.akatzuma.success.tp": "§a 传送成功",
   "chat.akatzuma.error.bind_pos": "§c 绑定失败，不支持的容器",
   "chat.akatzuma.error.void_pos": "§c 无效坐标",
   "chat.akatzuma.error.open_gui_fail": "§c 打开GUI失败"

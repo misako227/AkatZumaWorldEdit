@@ -20,6 +20,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -50,6 +51,10 @@ public class QueryBlockStateItem extends Item{
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         if(pLevel.isClientSide){
+            if(pPlayer.getCooldowns().isOnCooldown(this)){
+                return super.use(pLevel, pPlayer, pUsedHand);
+            }
+            pPlayer.getCooldowns().addCooldown(this, 20);
             if(Util.isDownCtrl()){
                 PlayerMapData PMD = Util.getPMD(pPlayer);
                 Component component;
@@ -64,7 +69,6 @@ public class QueryBlockStateItem extends Item{
             }
 
         }
-
         return  super.use(pLevel, pPlayer, pUsedHand);
     }
 
@@ -88,6 +92,10 @@ public class QueryBlockStateItem extends Item{
 
         if(world.isClientSide){
             if(Util.isDownCtrl()){
+                if(player.getCooldowns().isOnCooldown(this)){
+                    return InteractionResult.SUCCESS;
+                }
+                player.getCooldowns().addCooldown(this, 20);
                 if (PMD.getQueryBlockState() == null) {
                     component = Component.translatable("chat.item.query_block_state.null");
                     AkatZumaWorldEdit.sendAkatMessage(component, player);
@@ -99,10 +107,10 @@ public class QueryBlockStateItem extends Item{
             }
 
             return InteractionResult.SUCCESS;
-        }
-
-        if(!world.isClientSide) {
-            if (PMD.getQueryBlockState() == null) {
+        }else{
+            //服务端
+            BlockState blockState = PMD.getQueryBlockState();
+            if (blockState == null || blockState == Blocks.AIR.defaultBlockState()) {
                 component = Component.translatable("chat.item.query_block_state.null");
                 AkatZumaWorldEdit.sendAkatMessage(component, player);
                 return InteractionResult.SUCCESS;

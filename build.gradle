@@ -130,6 +130,10 @@ repositories {
         url "https://cursemaven.com"
         content { includeGroup "curse.maven" }
     }
+    maven { //mirror
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
 
 }
 
@@ -144,6 +148,9 @@ dependencies {
 //    compileOnly fg.deobf("blank:sophisticatedcore:0.5.+")
     implementation fg.deobf("curse.maven:sophisticatedcore-618298:4859680")
     implementation fg.deobf("curse.maven:sophisticatedstorage-619320:4859704")
+    implementation fg.deobf("curse.maven:sophisticatedbackpacks-422301:4859687")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
+
 
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings

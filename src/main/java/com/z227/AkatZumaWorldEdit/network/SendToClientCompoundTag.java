@@ -1,7 +1,7 @@
 package com.z227.AkatZumaWorldEdit.network;
 
 
-import com.z227.AkatZumaWorldEdit.network.clientPacket.ClientPacketHandle;
+import com.z227.AkatZumaWorldEdit.network.clientPacket.ClientIntPacketHandle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -27,7 +27,7 @@ public class SendToClientCompoundTag {
 
     public void handler(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ClientPacketHandle.handle(this.tag);
+            ClientIntPacketHandle.handle(this.tag);
         });
         ctx.get().setPacketHandled(true);
     }

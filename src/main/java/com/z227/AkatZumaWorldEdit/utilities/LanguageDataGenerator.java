@@ -30,7 +30,8 @@ public class LanguageDataGenerator {
             this.add("item.akatzumaworldedit.projector", "§b投影");
             this.add("item.projector_item.desc1", "§a左键§f复制选区的建筑");
             this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
-            this.add("item.projector_item.desc3", "手持此物品可查看复制的投影");
+            this.add("item.projector_item.desc3", "§6ctrl+右键§f忽略空气粘帖(/a paste -a)");
+            this.add("item.projector_item.desc4", "手持此物品可查看复制的投影");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
             this.add("item.query_block_state.desc1", "§a左键§f方块查询方块状态");
             this.add("item.query_block_state.desc2", "§6右键§f放置一个查询的方块");
@@ -40,7 +41,6 @@ public class LanguageDataGenerator {
             this.add("chat.item.query_block_state.null", "§c 没有找到要复制的状态，请先使用左键查看状态");
             this.add("chat.item.query_block_state.not_air", "§c 要放置的位置有方块，请先清除方块");
             this.add("item.akatzumaworldedit.bind_inventory", "§b绑定箱子工具");
-
 
             this.add("key.akatzuma", "AkatZumaWorldEdit");
             this.add("key.category.undo", "撤销");
@@ -84,6 +84,7 @@ public class LanguageDataGenerator {
             this.add("hud.akatzuma.right", "§6右键§f绑定箱子");
             this.add("hud.akatzuma.ctrl_right", "§6ctrl+右键§f传送到绑定的坐标上");
             this.add("chat.akatzuma.success.bind_pos", "§a 绑定成功");
+            this.add("chat.akatzuma.success.tp", "§a 传送成功");
             this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，不支持的容器");
             this.add("chat.akatzuma.error.void_pos", "§c 无效坐标");
             this.add("chat.akatzuma.error.open_gui_fail", "§c 打开GUI失败");

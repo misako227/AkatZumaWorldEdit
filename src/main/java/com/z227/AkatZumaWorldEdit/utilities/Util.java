@@ -11,6 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,11 +25,19 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
+import net.p3pp3rf1y.sophisticatedbackpacks.api.CapabilityBackpackWrapper;
+import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
+import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
+import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotResult;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Util {
 
@@ -91,6 +100,77 @@ public class Util {
                 }
             }
         }
+        return temp;
+    }
+
+    public static Map<Integer,Integer> findSopBackpack(String blockName, ItemStack itemStack){
+        Map<Integer,Integer> sopBackpackMap = new HashMap<>();
+        LazyOptional<IBackpackWrapper> lazyBackpackWrapper = itemStack.getCapability(CapabilityBackpackWrapper.getCapabilityInstance());
+        if(lazyBackpackWrapper.isPresent()){
+            IBackpackWrapper backpackWrapper = lazyBackpackWrapper.orElse(null);
+            InventoryHandler inventoryHandler = backpackWrapper.getInventoryHandler();
+            int slots = inventoryHandler.getSlots();
+            for(int i = 0; i < slots; i++){
+                ItemStack invItemStack = inventoryHandler.getSlotStack(i);
+                if (!invItemStack.isEmpty() ) {
+                    String itemName = invItemStack.getDescriptionId().replace("block.","").replace("." ,":");
+                    int count = invItemStack.getCount();
+                    if (itemName.equals(blockName)){
+                        sopBackpackMap.put(i, count);
+                    }
+                }
+            }
+        }
+        return sopBackpackMap;
+    }
+
+    public static Map<Integer,Integer> findBlockInSopBackpack(Player player, String blockName){
+        Map<Integer,Integer> temp = new HashMap<>();
+        if(!Util.isLoadSopBackpacks()) return temp;
+
+        PlayerMapData PMD = Util.getPMD(player);
+
+        if(Util.isLoadCurios()){//查找饰品栏第一个背包栏
+            LazyOptional<ICuriosItemHandler> curiosHandler = player.getCapability(CuriosCapability.INVENTORY);
+            if(curiosHandler.isPresent()){
+                ICuriosItemHandler curios = curiosHandler.orElse(null);
+                Optional<SlotResult> optionalSlotResult = curios.findCurio("back",0);
+                if(optionalSlotResult.isPresent()){
+                    ItemStack itemStack = optionalSlotResult.get().stack();
+
+                    if(itemStack.getItem() instanceof BackpackItem){
+                        temp = findSopBackpack(blockName, itemStack);
+                        PMD.setSopBackpackFlag((byte) 1);
+                        return temp;
+                    }
+
+                }
+            }
+        }
+        //查找玩家胸甲和背包第一个格子
+        Inventory playerInv = player.getInventory();
+
+        List<ItemStack> armorList =playerInv.armor;
+        if(armorList.size() > 2){//查找玩家胸甲栏
+            ItemStack itemStack =  armorList.get(2);
+            if(itemStack.getItem() instanceof BackpackItem){
+                temp = findSopBackpack(blockName, itemStack);
+                PMD.setSopBackpackFlag((byte) 2);
+                return temp;
+            }
+        }
+        //查找玩家背包第9个格子
+        int slots = playerInv.getContainerSize();
+        if(slots > 9){
+            ItemStack itemStack = playerInv.getItem(9);
+            if(itemStack.getItem() instanceof BackpackItem){
+                temp = findSopBackpack(blockName, itemStack);
+                PMD.setSopBackpackFlag((byte) 3);
+                return temp;
+            }
+        }
+
+
         return temp;
     }
 
@@ -218,6 +298,9 @@ public class Util {
         return AkatZumaWorldEdit.loadSopStorage;
     }
 
+    public static boolean isLoadCurios() {
+        return AkatZumaWorldEdit.loadCurios;
+    }
 
     public static void setLoadSop() {
         if(ModList.get().isLoaded("sophisticatedbackpacks")){
@@ -226,6 +309,10 @@ public class Util {
         if(ModList.get().isLoaded("sophisticatedstorage")){
             AkatZumaWorldEdit.loadSopStorage = true;
         }
+        if(ModList.get().isLoaded("curios")){
+            AkatZumaWorldEdit.loadCurios = true;
+        }
+
 
 
     }

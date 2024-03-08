@@ -1,6 +1,6 @@
 package com.z227.AkatZumaWorldEdit.network;
 
-import com.z227.AkatZumaWorldEdit.network.clientPacket.ClientPacketHandle;
+import com.z227.AkatZumaWorldEdit.network.clientPacket.ClientIntPacketHandle;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -25,7 +25,7 @@ public class SendToClient {
 
     public void handler(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ClientPacketHandle.handle(this.message);
+            ClientIntPacketHandle.handle(this.message);
         });
         ctx.get().setPacketHandled(true);
     }

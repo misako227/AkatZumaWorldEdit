@@ -48,6 +48,7 @@ public class AkatZumaWorldEdit{
 
     public static boolean loadSopBackpacks = false;
     public static boolean loadSopStorage = false;
+    public static boolean loadCurios = false;
 
     public static final DeferredRegister<Item> ITEMS;
     public static final RegistryObject<Item> WOOD_AXE;

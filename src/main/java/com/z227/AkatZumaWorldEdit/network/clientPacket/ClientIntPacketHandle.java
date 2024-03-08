@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientPacketHandle {
+public class ClientIntPacketHandle {
 
     public static void handle(int message) {
 //        Util.logInfo("Client收到的数据：" + message);

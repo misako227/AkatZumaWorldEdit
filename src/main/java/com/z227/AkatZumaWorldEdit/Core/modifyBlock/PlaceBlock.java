@@ -178,6 +178,7 @@ public class PlaceBlock {
         List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
         Map<Integer, Integer> chestMap;
+        Map<Integer, Integer> sopBackpackMap;
 
         temp.add(blockInInvMap);
 
@@ -191,15 +192,27 @@ public class PlaceBlock {
 
         //背包如果不够
         if (sum < num) {
-            chestMap = Util.findBlockInBindInv(player, blockName);
-            int chestSum = Util.sum(chestMap);
-            //如果玩家背包不够，遍历绑定的箱子到temp
-            sum = sum + chestSum;
+            //如果玩家背包不够，遍历精妙背包
+            sopBackpackMap = Util.findBlockInSopBackpack(player, blockName);
+            int sopBackpackSum = Util.sum(sopBackpackMap);
+            temp.add(sopBackpackMap);
+
+            sum = sum + sopBackpackSum;
+            //如果(玩家背包+精妙背包)不够，遍历绑定的箱子到temp
             if(sum < num){
-                AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
-                return null;
+                //遍历绑定的箱子
+                chestMap = Util.findBlockInBindInv(player, blockName);
+                int chestSum = Util.sum(chestMap);
+
+                sum = sum + chestSum;
+                if(sum < num){
+                    //如果玩家(背包+精妙背包+绑定的箱子)还不够，返回null
+                    AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
+                    return null;
+                }
+                temp.add(chestMap);
             }
-            temp.add(chestMap);
+
         }
 
         return temp;
@@ -217,10 +230,13 @@ public class PlaceBlock {
                 case 0://玩家背包
                     sum = RemoveItem.removePlayerItem(blockInInvMap.get(i), player, sum);
                     break;
-                case 1:
+                case 1://精妙背包
+                    sum = RemoveItem.removeSopBackpackItem(blockInInvMap.get(i), player, sum);
+                    break;
+                case 2://绑定的箱子
                     sum = RemoveItem.removeBindPosItem(blockInInvMap.get(i), player, sum);
                     break;
-                    //todo
+
 
             }
 

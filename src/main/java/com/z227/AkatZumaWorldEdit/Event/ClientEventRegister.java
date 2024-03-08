@@ -2,15 +2,22 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
+import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.SendToServer;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -43,7 +50,10 @@ public class ClientEventRegister {
             85,
             "key.akatzuma");
 
-    @OnlyIn(Dist.CLIENT)
+
+
+
+    //左键单击空气
     @SubscribeEvent
     public static void leftClickAir(PlayerInteractEvent.LeftClickEmpty event) {
 
@@ -55,13 +65,31 @@ public class ClientEventRegister {
         if (player != null) {
             if(item instanceof WoodAxeItem ){
                 player.connection.sendCommand("a pos1");
+                return;
             }
             if(item instanceof ProjectorItem){
                 player.connection.sendCommand("a copy");
+                return;
+            }
+            //查询空气
+            if(item instanceof QueryBlockStateItem){
+                PlayerMapData PMD = Util.getPMD(player);
+                NetworkingHandle.INSTANCE.sendToServer(new SendToServer(0));
+                BlockState blockState = Blocks.AIR.defaultBlockState();
+                PMD.setQueryBlockState(blockState);
+                String blockStateStr = blockState.toString().replaceFirst("}", "")
+                        .replaceFirst("^Block\\{", "");
+
+                Component component = blockState.getBlock().getName().append(Component.literal(": "));
+                Component copy = SendCopyMessage.send(blockStateStr);
+                AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
+                return;
             }
 
         }
     }
+
+
 
 
 
