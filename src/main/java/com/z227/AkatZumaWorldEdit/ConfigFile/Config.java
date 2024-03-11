@@ -13,6 +13,7 @@ public class Config {
     public static ForgeConfigSpec.IntValue UNDOLimit;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> BLACKListWorld;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> VIPPlayerList;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> ReplaceBlockList;
 
     public static ForgeConfigSpec.IntValue DEFAULTValue;
     public static ForgeConfigSpec.IntValue VIPValue;
@@ -36,6 +37,11 @@ public class Config {
                 世界黑名单，格式为"世界名/维度名"，世界名是创建世界时候的名字
                 "主世界/minecraft:overworld"，"下界/minecraft:the_nether"，"末地/minecraft:the_end\"""")
                 .defineListAllowEmpty("blackListWorld", List.of("新的世界/minecraft:the_nether"), Config::validateWorldName);
+        ReplaceBlockList = BUILDER.comment("""
+                使用本MOD的‘建筑耗材’方块代替的方块列表，比如空气、水等不能获取的方块可以填入，会扣除对应数量的‘建筑耗材’方块
+                如果白名单中也有这个方块则会按比例扣除‘建筑耗材’方块， 否则比例为1：1，推荐只填入不能获取的方块
+                会先检查黑名单""")
+                .defineListAllowEmpty("replaceBlockList", List.of("minecraft:water"), Config::validateBlackBlockName);
         BUILDER.pop();
 
         BUILDER.comment("普通玩家").push("Default");

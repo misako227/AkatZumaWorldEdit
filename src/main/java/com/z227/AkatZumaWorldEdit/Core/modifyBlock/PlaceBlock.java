@@ -168,6 +168,20 @@ public class PlaceBlock {
 
     }
 
+    public static String isReplaceToBuildItem(Player player, String blockName, Map<String,Integer> blackWhiteMap){
+        if(!AkatZumaWorldEdit.ReplaceBlockMap.containsKey(blockName))return blockName;
+        BlockState buildBlockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+        String buildItemName = BlockStateString.getBlockName(buildBlockState);
+        int n = getLimit(blockName, blackWhiteMap);  //比例值
+        if(!checkBlackList(player,n, buildBlockState.getBlock().getName())){
+            return blockName;
+        }
+
+        return buildItemName;
+
+    }
+
+
     //检查背包是否足够，返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
     //@param blockName 扣除的物品名 minecraft:block
     //@param n 扣除的比例
@@ -350,10 +364,18 @@ public class PlaceBlock {
                 return false;
             }
 
+            //检查是否替换成本MOD的建筑耗材方块
+            blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
+            if(blockName.equals("akatzumaworldedit:building_consumable") ){
+                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+            }
+
+
 
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 ){
-//&& !player.isCreative()
+            if(checkInventory && n > 0 && !player.isCreative()){
+//            if(checkInventory && n > 0){
+//
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
                 blockInInvMap = checkInv(blockName,n,volume,player,deBlockName);
                 if(blockInInvMap==null)return false;

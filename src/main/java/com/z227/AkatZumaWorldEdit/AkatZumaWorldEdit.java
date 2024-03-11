@@ -45,6 +45,7 @@ public class AkatZumaWorldEdit{
     public static Map<String, Integer> VipBlockMap = new HashMap<>();      //vip黑白名单方块
     public static Map<String, Boolean> VipPlayerMap = new HashMap<>();      //vip玩家
     public static Map<String, Boolean> BlackWorldMap = new HashMap<>();
+    public static Map<String, Boolean> ReplaceBlockMap = new HashMap<>();
 
     public static boolean loadSopBackpacks = false;
     public static boolean loadSopStorage = false;

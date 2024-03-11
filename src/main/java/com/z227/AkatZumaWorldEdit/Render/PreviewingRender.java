@@ -79,25 +79,7 @@ public class PreviewingRender {
     }
 
     public static void drawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
-        //paste
-//        CopyBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getCopyBlock();
-//        BlockPos cp1=null,cp2=null;
-//        if(copyBlock!=null){
-//            if(copyBlock.getTempPastePosMap()!=null){
-//                cp1 = copyBlock.getTempPastePosMap().get("startPos");
-//                cp2 = copyBlock.getTempPastePosMap().get("endPos");
-//            }
-//        }
 
-        //stack
-//        StackBlock copyBlock = AkatZumaWorldEdit.PlayerWEMap.get(Minecraft.getInstance().player.getUUID()).getStackBlock();
-//        BlockPos cp1=null,cp2=null;
-//        if(copyBlock!=null){
-//            if(copyBlock.getMaxPos1()!=null){
-//                cp1 = copyBlock.getMaxPos1();
-//                cp2 = copyBlock.getMaxPos2();
-//            }
-//        }
 
         //渲染
         //关闭深度检测
@@ -119,10 +101,7 @@ public class PreviewingRender {
         LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
         LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
-//        if(cp1!=null){
-//            LevelRenderer.renderLineBox(stack, vertexConsumer, cp1.getX(),cp1.getY(),cp1.getZ(),cp1.getX()+1,cp1.getY()+1,cp1.getZ()+1, 150, 10, 200, 1);
-//            LevelRenderer.renderLineBox(stack, vertexConsumer, cp2.getX(),cp2.getY(),cp2.getZ(),cp2.getX()+1,cp2.getY()+1, cp2.getZ()+1, 100, 200, 100, 1);
-//        }
+
 
         stack.popPose();
         RenderSystem.enableDepthTest();
@@ -167,6 +146,28 @@ public class PreviewingRender {
         RenderSystem.enableDepthTest();
     }
 
+//    public static void drawLiquid(PoseStack stack,BlockPos pos, BlockState blockState, VertexConsumer vertexConsumer){
+//        //关闭深度检测
+//        RenderSystem.disableDepthTest();
+//
+//        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+//        FluidState fluidState= blockState.getFluidState();
+//
+//
+//        stack.pushPose();
+//        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
+//        Minecraft.getInstance().getBlockRenderer().renderLiquid(pos,
+//                Minecraft.getInstance().level,
+//                vertexConsumer,
+//                blockState,
+//                fluidState
+//                );
+//
+//        stack.popPose();
+//
+//        RenderSystem.enableDepthTest();
+//    }
+
 
     public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
         if(copyBlock != null){
@@ -181,6 +182,12 @@ public class PreviewingRender {
                 pos = pos.offset(player.getOnPos());
                 BlockState state = entry.getValue().rotate(rotation);
                 drawBlock(stack, pos, state);
+//                if(state.getFluidState().isEmpty()){
+//                    drawBlock(stack, pos, state);
+//                }else{
+//                    drawLiquid(stack,pos, state, vertexConsumer);
+//                }
+
             }
         }
     }

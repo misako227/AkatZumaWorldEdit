@@ -59,6 +59,8 @@ public class ModNetworkEvent {
         addBlackWhiteToMap(Config.VIPBLACKListBlock.get(), false,AkatZumaWorldEdit.VipBlockMap);
         updateVipPlayerMap(Config.VIPPlayerList.get(), AkatZumaWorldEdit.VipPlayerMap);
         updateVipPlayerMap(Config.BLACKListWorld.get(), AkatZumaWorldEdit.BlackWorldMap);//世界黑名单
+        updateVipPlayerMap(Config.ReplaceBlockList.get(), AkatZumaWorldEdit.ReplaceBlockMap);//添加替换的方块到Map
+
 
     }
 

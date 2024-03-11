@@ -50,6 +50,12 @@ public class AddVipPlayerCommand {
                                                                     addBlock(context,true);
                                                                     return 1;
                                                                 }))))
+                                        .then(Commands.literal("replaceList")
+                                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                                .executes((context)->{
+                                                                    addreplaceList(context);
+                                                                    return 1;
+                                                                })))
 
                         )
 
@@ -124,6 +130,30 @@ public class AddVipPlayerCommand {
         AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName + ":" + num);
 
 
+    }
+
+    public static void addreplaceList(CommandContext<CommandSourceStack> context){
+        Player player = context.getSource().getPlayer();
+        BlockState block = BlockStateArgument.getBlock(context, "block").getState();
+
+
+        ForgeConfigSpec.ConfigValue<List<? extends String>> replaceList = Config.ReplaceBlockList;
+
+
+        Set<String> set = new LinkedHashSet<>(replaceList.get());
+        String blockName = BlockStateString.getBlockName(block);
+
+        set.add(blockName);
+
+        replaceList.set(set.stream().toList());
+        replaceList.save();
+        AkatZumaWorldEdit.ReplaceBlockMap.put(blockName,true);
+
+        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+                .append(component).withStyle(ChatFormatting.GREEN)
+                .append(blockName), player);
+        AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName);
     }
 
 
