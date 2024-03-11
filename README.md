@@ -238,7 +238,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 `数量`：-1则为添加黑名单，大于等于0则是白名单
 
-#### /a add vipwhitelist 添加黑白名单
+#### /a add vipwhitelist 添加高级玩家的黑白名单
 同上
 
 ### Debug
