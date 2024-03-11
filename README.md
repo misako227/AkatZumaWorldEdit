@@ -90,7 +90,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### 建筑耗材方块(猫猫虫)
 ![bc.jpg](img/bc.jpg)
 
-复制任何方块都只消耗此材料,可带到头部
+* 复制任何方块都只消耗此材料,可带到头部
+
+* 也可以在配置文件中添加要替换的方块，比如`空气、水`等不能获取的方块可以填入，会扣除对应数量的‘建筑耗材’方块
 
 方块ID：`akatzumaworldedit:building_consumable`
 
@@ -240,6 +242,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 #### /a add vipwhitelist 添加高级玩家的黑白名单
 同上
+
+#### /a add replaceList 添加替换的方块列表
+`/a add replaceList <方块ID>`
 
 ### Debug
 debug日志格式
