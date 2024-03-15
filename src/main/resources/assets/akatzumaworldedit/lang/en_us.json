@@ -1,0 +1,9 @@
+{
+  "chat.akatzuma.error.not_viplayer": "没有找到:",
+  "chat.akatzuma.success.add_viplayer": "添加成功:",
+  "chat.akatzuma.success.del_viplayer": "删除成功:",
+  "chat.item.wood_axe.left": "left:",
+  "chat.item.wood_axe.right": "right:",
+  "item.akatzumaworldedit.query_blockstate_item": "§bquery block state",
+  "item.akatzumaworldedit.wood_axe": "§bwooden axe"
+}

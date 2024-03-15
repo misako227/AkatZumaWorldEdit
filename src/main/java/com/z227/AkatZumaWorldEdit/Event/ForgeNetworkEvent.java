@@ -79,7 +79,7 @@ public class ForgeNetworkEvent {
 
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData());
-
+        Util.setLoadSop();
     }
 
     @SubscribeEvent
@@ -188,6 +188,13 @@ public class ForgeNetworkEvent {
             AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
         }
     }
+
+//    @SubscribeEvent
+//    public static void onRightClickAir(PlayerInteractEvent.RightClickEmpty event) {
+//
+//        System.out.println(event.getEntity().getMainHandItem());
+//        System.out.println(event.getSide());
+//    }
 
 
 

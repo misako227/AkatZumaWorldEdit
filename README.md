@@ -199,7 +199,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 * `<高度>` 最小1
 * `[x角度]` （选填参数）沿x轴旋转生成的圆，范围360至-360
 * `[z角度]` （选填参数）沿z轴旋转生成的圆，范围360至-360
+
 <br>
+
 - - -
 
 #### /a hcyl  空心圆形/圆柱体
@@ -211,14 +213,17 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 ![hcyl.jpg](img/hcyl.jpg)
 
-  <br>
+<br>
+
 - - -
 
 #### /a sphere  球
 `/a sphere <方块ID> <半径> [-h]`
 * `<半径>` 最小3
 * `[-h]` （选填参数）生成空心球，不填默认生成实心的
+
 <br>
+
 - - -
 
 #### /a ellipse  椭圆
@@ -227,6 +232,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 * `<南北半径>` 最小3，Z轴
 * `<高度>`    最小3，Y轴
 * `[-h]` （选填参数）生成空心椭圆，不填默认生成实心的
+
+<br>
+
+- - -
 
 ### 管理员指令
 #### /a add viplayer 添加高级玩家 

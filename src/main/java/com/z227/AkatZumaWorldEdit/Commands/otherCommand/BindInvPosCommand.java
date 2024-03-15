@@ -6,20 +6,29 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 
 public class BindInvPosCommand {
@@ -64,17 +73,22 @@ public class BindInvPosCommand {
         Block block =  serverlevel.getBlockState(pos).getBlock();
 
         Component component = Component.translatable("chat.akatzuma.error.bind_pos");
-        if(block instanceof ChestBlock || block instanceof BarrelBlock){
-            bindPos(player, pos);
-            PMD.setInvPosMap(pos,player);
-            return;
-        }else if(Util.isLoadSopStorage()) {
-            if (block instanceof WoodStorageBlockBase) {
+        boolean isRight = isRightClickBlock(player, pos);
+        if(isRight){
+            if(block instanceof ChestBlock || block instanceof BarrelBlock){
                 bindPos(player, pos);
                 PMD.setInvPosMap(pos,player);
                 return;
+            }else if(Util.isLoadSopStorage()) {
+                if (block instanceof WoodStorageBlockBase) {
+                    bindPos(player, pos);
+                    PMD.setInvPosMap(pos,player);
+                    return;
+                }
             }
         }
+
+
 
         AkatZumaWorldEdit.sendAkatMessage(component,player);
     }
@@ -82,15 +96,17 @@ public class BindInvPosCommand {
     public static void bindPos(Player player,BlockPos pos){
         LazyOptional<BindInventoryPos> bindPos = player.getCapability(BindInventoryPosCapability.BIND_INV_POS_CAP);
         if (bindPos.isPresent()) {
-            BindInventoryPos bp = bindPos.orElse(null);
-            CompoundTag tag = bp.getCompoundNBT();
-            tag.putIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
-            bp.deserializeNBT(tag);
+                BindInventoryPos bp = bindPos.orElse(null);
+                CompoundTag tag = bp.getCompoundNBT();
+                tag.putIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+                bp.deserializeNBT(tag);
+                NetworkingHandle.sendToClient(new SendToClientCompoundTag(bp.getCompoundNBT()), (ServerPlayer) player);
 
-            Component component = Component.translatable("chat.akatzuma.success.bind_pos");
-            AkatZumaWorldEdit.sendAkatMessage(component, player);
+                Component component = Component.translatable("chat.akatzuma.success.bind_pos");
+                AkatZumaWorldEdit.sendAkatMessage(component, player);
 
-        }
+            }
+
     }
 
     public static void tpBind(CommandContext<CommandSourceStack> context){
@@ -113,8 +129,17 @@ public class BindInvPosCommand {
 
         }
 
+    }
 
 
+    public static Boolean isRightClickBlock(Player player, BlockPos blockPos){
+
+//        BlockHitResult blockHitResult = new BlockHitResult(blockPos, Direction.UP, blockPos,false);
+        Vec3 vec3 = new Vec3(blockPos.getX(),blockPos.getY(),blockPos.getZ());
+        PlayerInteractEvent.RightClickBlock rightClickBlock = new PlayerInteractEvent.RightClickBlock(player, InteractionHand.MAIN_HAND,blockPos,BlockHitResult.miss(vec3, Direction.UP,blockPos));
+
+        MinecraftForge.EVENT_BUS.post(rightClickBlock);
+        return !rightClickBlock.isCanceled();
     }
 
 

@@ -116,57 +116,39 @@ public class PreviewingRender {
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
 //        Minecraft mc = Minecraft.getInstance();
-//        BlockRenderDispatcher blockRenderDispatcher = mc.getBlockRenderer();
-//        BakedModel bakedModel = blockRenderDispatcher.getBlockModel(blockState);
-//        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-//        ModelBlockRenderer modelBlockRenderer = new ModelBlockRenderer(blockColors);
+
+//        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+//        ModelData modelData = Minecraft.getInstance().level.getModelDataManager().getAt(pos);
 
         stack.pushPose();
         stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
 
-//        modelBlockRenderer.tesselateBlock(mc.level,bakedModel, blockState, pos, stack,
-//                Minecraft.getInstance().renderBuffers().crumblingBufferSource().getBuffer(RenderType.cutout()),
-//                false,
-//                RandomSource.create(),
-//                blockState.getSeed(pos),
-//                15728880
-//                );
+
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockState,
                 stack,
-                Minecraft.getInstance().renderBuffers().crumblingBufferSource(),
+                Minecraft.getInstance().renderBuffers().bufferSource(),
+
+//                15728640,
                 15728880,
-//                OverlayTexture.NO_OVERLAY
+
+//                OverlayTexture.NO_OVERLAY,
                 OverlayTexture.pack(3,10),
+
                 ModelData.EMPTY,
+//                modelData,
+
+//                RenderType.cutoutMipped()
                 null
         );
+
+        RenderSystem.enableCull();
         stack.popPose();
 
         RenderSystem.enableDepthTest();
     }
 
-//    public static void drawLiquid(PoseStack stack,BlockPos pos, BlockState blockState, VertexConsumer vertexConsumer){
-//        //关闭深度检测
-//        RenderSystem.disableDepthTest();
-//
-//        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-//        FluidState fluidState= blockState.getFluidState();
-//
-//
-//        stack.pushPose();
-//        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
-//        Minecraft.getInstance().getBlockRenderer().renderLiquid(pos,
-//                Minecraft.getInstance().level,
-//                vertexConsumer,
-//                blockState,
-//                fluidState
-//                );
-//
-//        stack.popPose();
-//
-//        RenderSystem.enableDepthTest();
-//    }
+
 
 
     public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
@@ -181,14 +163,16 @@ public class PreviewingRender {
                 pos = pos.rotate(rotation);
                 pos = pos.offset(player.getOnPos());
                 BlockState state = entry.getValue().rotate(rotation);
-                drawBlock(stack, pos, state);
-//                if(state.getFluidState().isEmpty()){
-//                    drawBlock(stack, pos, state);
-//                }else{
-//                    drawLiquid(stack,pos, state, vertexConsumer);
-//                }
+//                drawBlock(stack, pos, state);
+                if(!state.getFluidState().isEmpty()){
+                    RenderLiquidBlock.drawLiquid(stack,pos, state);
+
+                }else{
+                    drawBlock(stack, pos, state);
+                }
 
             }
         }
     }
 }
+

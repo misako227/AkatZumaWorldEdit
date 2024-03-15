@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -61,6 +62,15 @@ public class ModNetworkEvent {
         updateVipPlayerMap(Config.BLACKListWorld.get(), AkatZumaWorldEdit.BlackWorldMap);//世界黑名单
         updateVipPlayerMap(Config.ReplaceBlockList.get(), AkatZumaWorldEdit.ReplaceBlockMap);//添加替换的方块到Map
 
+        List<String> backpackList = new ArrayList<>();
+        backpackList.add("sophisticatedbackpacks:backpack");
+        backpackList.add("sophisticatedbackpacks:iron_backpack");
+        backpackList.add("sophisticatedbackpacks:gold_backpack");
+        backpackList.add("sophisticatedbackpacks:diamond_backpack");
+        backpackList.add("sophisticatedbackpacks:netherite_backpack");
+        backpackList.add("sophisticatedbackpacks:copper_backpack");
+        addBlackWhiteToMap(backpackList, false,AkatZumaWorldEdit.defaultBlockMap);
+        addBlackWhiteToMap(backpackList, false,AkatZumaWorldEdit.VipBlockMap);
 
     }
 
@@ -73,7 +83,7 @@ public class ModNetworkEvent {
             if(matcher==null) return;
             if(b)tempKey = matcher.group(2) +  ":" + matcher.group(3);
             else tempKey = matcher.group(1) +  ":" + matcher.group(2);
-            output.put(tempKey, b?Integer.parseInt(matcher.group(1)) : -1);
+            output.put(tempKey, b ? Integer.parseInt(matcher.group(1)) : -1);
 
         });
     }

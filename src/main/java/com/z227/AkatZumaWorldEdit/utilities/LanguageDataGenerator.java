@@ -85,7 +85,7 @@ public class LanguageDataGenerator {
             this.add("hud.akatzuma.ctrl_right", "§6ctrl+右键§f传送到绑定的坐标上");
             this.add("chat.akatzuma.success.bind_pos", "§a 绑定成功");
             this.add("chat.akatzuma.success.tp", "§a 传送成功");
-            this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，不支持的容器");
+            this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，请检查是否有权限或是否支持这个容器");
             this.add("chat.akatzuma.error.void_pos", "§c 无效坐标");
             this.add("chat.akatzuma.error.open_gui_fail", "§c 打开GUI失败");
         }

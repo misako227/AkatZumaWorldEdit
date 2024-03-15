@@ -83,14 +83,14 @@ public class BindInventoryItem extends Item {
                     String command = "a other bind " + getPos(blockPos);
 
                     SendCopyMessage.sendCommand(command);
-                    PMD.setInvPosMap(blockPos,player);
+//                    PMD.setInvPosMap(blockPos,player);
                     return InteractionResult.SUCCESS;
                 }else if(Util.isLoadSopStorage()){
                     if(block instanceof WoodStorageBlockBase){
                         String command = "a other bind "+ getPos(blockPos);
                         SendCopyMessage.sendCommand(command);
 
-                        PMD.setInvPosMap(blockPos,player);
+//                        PMD.setInvPosMap(blockPos,player);
                         return InteractionResult.SUCCESS;
                     }
 

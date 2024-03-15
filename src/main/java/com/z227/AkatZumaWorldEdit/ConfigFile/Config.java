@@ -65,7 +65,7 @@ public class Config {
                         \n黑名单标签，此标签中的方块均不允许放置（默认添加了矿物、箱子、潜影盒的标签）
                         可以安装CraftTweaker使用指令/ct hand来查看手中方块的标签
                         只需要填入最后一个:前后的值即可，不需要填入前缀tag:blocks""")
-                .defineListAllowEmpty("blackListTags", List.of("forge:ores","forge:storage_blocks","forge:chests","minecraft:shulker_boxes"), Config::validateTagsName);
+                .defineListAllowEmpty("blackListTags", List.of("forge:ores","forge:storage_blocks","forge:chests","minecraft:shulker_boxes","forge:barrels","minecraft:guarded_by_piglins"), Config::validateTagsName);
         BUILDER.pop();
 
         BUILDER.comment("高级玩家").push("VipSettings");
@@ -90,7 +90,7 @@ public class Config {
                         \n黑名单标签，此标签中的方块均不允许放置（默认添加了矿物、箱子、潜影盒的标签）
                         可以安装CraftTweaker使用指令/ct hand来查看手中方块的标签
                         只需要填入最后一个:前后的值即可，不需要填入前缀tag:blocks""")
-                .defineListAllowEmpty("blackListTags", List.of("forge:ores","forge:storage_blocks","forge:chests","minecraft:shulker_boxes"), Config::validateTagsName);
+                .defineListAllowEmpty("blackListTags", List.of("forge:ores","forge:storage_blocks","forge:chests","minecraft:shulker_boxes","forge:barrels","minecraft:guarded_by_piglins"), Config::validateTagsName);
         BUILDER.pop();
 
     }
