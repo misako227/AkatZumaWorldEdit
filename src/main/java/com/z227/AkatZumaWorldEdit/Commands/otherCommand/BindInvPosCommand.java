@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit.Commands.otherCommand;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
@@ -61,7 +62,13 @@ public class BindInvPosCommand {
         ServerLevel serverlevel = context.getSource().getLevel();
         PlayerMapData PMD = Util.getPMD(player);
 //        int index =  IntegerArgumentType.getInteger(context, "index");
-        BlockPos pos = BlockPosArgument.getBlockPos(context, "pos");
+        BlockPos pos = null;
+        try {
+            pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
+
 
         //区块未加载
         if (!serverlevel.hasChunkAt(pos)) {

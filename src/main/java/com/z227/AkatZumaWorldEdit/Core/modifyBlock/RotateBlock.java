@@ -12,6 +12,8 @@ public class RotateBlock {
 //        int vy = pos.getY() -  yOrigin;
         int vz = pos.getZ() -  zOrigin;
 
+
+
         Matrix4f translationMatrix =  new Matrix4f().rotate(xAngle, 1, 0, 0);
 //        if(yAngle != 0)translationMatrix.rotate(yAngle, 0, 1, 0);
         if(zAngle != 0)translationMatrix.rotate(zAngle, 0, 0, 1);

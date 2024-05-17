@@ -112,17 +112,14 @@ public class PreviewingRender {
     public static void drawBlock(PoseStack stack,BlockPos pos, BlockState blockState){
         //关闭深度检测
         RenderSystem.disableDepthTest();
-
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        stack.pushPose();
+        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
 
 //        Minecraft mc = Minecraft.getInstance();
 
 //        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 //        ModelData modelData = Minecraft.getInstance().level.getModelDataManager().getAt(pos);
-
-        stack.pushPose();
-        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
-
 
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
                 blockState,
@@ -134,6 +131,7 @@ public class PreviewingRender {
 
 //                OverlayTexture.NO_OVERLAY,
                 OverlayTexture.pack(3,10),
+//                OverlayTexture.NO_OVERLAY,
 
                 ModelData.EMPTY,
 //                modelData,

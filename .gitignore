@@ -25,6 +25,3 @@ src/generated
 
 # Files from Forge MDK
 forge*changelog.txt
-copy.bat
-run-data/config/fml.toml
-zh.txt
