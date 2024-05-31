@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -45,7 +46,9 @@ public class ClientIntPacketHandle {
     public static void setClientPos(boolean b){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        BlockPos pos = BlockPos.containing(player.getEyePosition());
+        Vec3 vec3 = player.getEyePosition();
+//        BlockPos pos = BlockPos.containing(player.getEyePosition());
+        BlockPos pos = new BlockPos(vec3.x,vec3.y,vec3.z);
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         if(b)PMD.setPos1(pos);
         else PMD.setPos2(pos);
@@ -54,7 +57,7 @@ public class ClientIntPacketHandle {
     public static void setClientCopyMap(){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        Level level = player.level();
+        Level level = player.getLevel();
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         CopyBlock copyBlock = new CopyBlock(PMD, player);

@@ -373,8 +373,8 @@ public class PlaceBlock {
 
 
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative()){
-//            if(checkInventory && n > 0){
+//            if(checkInventory && n > 0 && !player.isCreative()){
+            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
                 blockInInvMap = checkInv(blockName,n,volume,player,deBlockName);

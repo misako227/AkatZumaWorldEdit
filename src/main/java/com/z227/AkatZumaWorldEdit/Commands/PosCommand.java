@@ -12,6 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public class PosCommand
 {
@@ -36,7 +37,8 @@ public class PosCommand
     private static void pos(CommandContext<CommandSourceStack> context,boolean b) {
         ServerLevel serverLevel = context.getSource().getLevel();
         ServerPlayer player =  context.getSource().getPlayer();
-        BlockPos pos = BlockPos.containing(player.getEyePosition());
+        Vec3 vec3 = player.getEyePosition();
+        BlockPos pos = new BlockPos(vec3.x,vec3.y,vec3.z);
         if(WoodAxeItem.clickPos(serverLevel,pos, player,b)){
             if(b)NetworkingHandle.sendToClient(new SendToClient(1), player);
             else NetworkingHandle.sendToClient(new SendToClient(2), player);

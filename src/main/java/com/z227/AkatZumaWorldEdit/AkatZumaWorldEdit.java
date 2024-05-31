@@ -32,6 +32,7 @@ public class AkatZumaWorldEdit{
     public static final String MODID = "akatzumaworldedit";
 //    public static final String MODNAME = "AkatZumaWorldEdit";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static final AkatZumaCreativeModeTab CREATIVE_MODE_TAB = new AkatZumaCreativeModeTab();
 
 
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
@@ -68,15 +69,15 @@ public class AkatZumaWorldEdit{
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
         BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-        WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1)));
-        Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
-        Projector_Item = ITEMS.register("projector", () ->  new ProjectorItem(new Item.Properties().stacksTo(1)));
-        BindInventory = ITEMS.register("bind_inventory", () ->  new BindInventoryItem(new Item.Properties().stacksTo(1)));
+        WOOD_AXE = ITEMS.register("wood_axe", () -> new WoodAxeItem(new Item.Properties().stacksTo(1).tab(CREATIVE_MODE_TAB)));
+        Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1).tab(CREATIVE_MODE_TAB)));
+        Projector_Item = ITEMS.register("projector", () ->  new ProjectorItem(new Item.Properties().stacksTo(1).tab(CREATIVE_MODE_TAB)));
+        BindInventory = ITEMS.register("bind_inventory", () ->  new BindInventoryItem(new Item.Properties().stacksTo(1).tab(CREATIVE_MODE_TAB)));
 //        Line_Item = ITEMS.register("line_item", () ->  new LineItem(new Item.Properties().stacksTo(1)));
 
 //        Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of(Material.DIRT).requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
-        Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
+        Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties().tab(CREATIVE_MODE_TAB)));
 
     }
 
@@ -89,7 +90,7 @@ public class AkatZumaWorldEdit{
 //        wat.register(FMLJavaModLoadingContext.get().getModEventBus());
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
-        AkatZumaCreativeModeTab.TABS.register(bus);
+//        AkatZumaCreativeModeTab.TABS.register(bus);
 
 
 

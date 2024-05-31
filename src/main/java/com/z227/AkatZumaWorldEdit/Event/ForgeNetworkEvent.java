@@ -142,7 +142,8 @@ public class ForgeNetworkEvent {
         if(player==null)return;
         Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
-        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
+
+//        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
         BlockPos pos =  event.getPos();
         Level world = event.getLevel();
@@ -166,7 +167,8 @@ public class ForgeNetworkEvent {
 
                 LocalPlayer Lplayer = Minecraft.getInstance().player;
                 if (Lplayer != null) {
-                    Lplayer.connection.sendCommand("a copy");
+//                    Lplayer.connection.sendCommand("a copy");
+                    net.minecraftforge.client.ClientCommandHandler.runCommand("a copy");
                 }
             }
             return;

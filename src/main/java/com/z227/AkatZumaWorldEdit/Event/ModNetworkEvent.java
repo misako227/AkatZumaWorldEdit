@@ -4,10 +4,7 @@ package com.z227.AkatZumaWorldEdit.Event;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
-import com.z227.AkatZumaWorldEdit.utilities.AkatRecipe;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
-import com.z227.AkatZumaWorldEdit.utilities.LanguageDataGenerator;
-import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -21,14 +18,14 @@ import java.util.regex.Matcher;
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID,bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModNetworkEvent {
 
-    @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
-        var gen = event.getGenerator();
-        var packOutput = gen.getPackOutput();
-        gen.addProvider(event.includeClient(), new LanguageDataGenerator.EnglishLanguageProvider(packOutput));
-        gen.addProvider(event.includeClient(), new LanguageDataGenerator.ChineseLanguageProvider(packOutput));
-        gen.addProvider(event.includeServer(), new AkatRecipe(packOutput));
-    }
+//    @SubscribeEvent
+//    public static void onGatherData(GatherDataEvent event) {
+//        var gen = event.getGenerator();
+//        var packOutput = gen.getOutputFolder();
+//        gen.addProvider(event.includeClient(), new LanguageDataGenerator.EnglishLanguageProvider(packOutput));
+//        gen.addProvider(event.includeClient(), new LanguageDataGenerator.ChineseLanguageProvider(packOutput));
+//        gen.addProvider(event.includeServer(), new AkatRecipe(packOutput));
+//    }
 
 
     @SubscribeEvent

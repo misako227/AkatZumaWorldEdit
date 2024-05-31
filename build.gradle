@@ -6,9 +6,9 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-version = '1.0'
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+version = '1.0.3'
+group = 'com.z227.AkatZumaWorldEdit' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'akatzumaworldedit'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -126,6 +126,15 @@ repositories {
      flatDir {
          dir 'lib'
      }
+
+    maven {
+        url "https://cursemaven.com"
+        content { includeGroup "curse.maven" }
+    }
+    maven { //mirror
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
 }
 
 dependencies {
@@ -134,7 +143,12 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.3.0'
 
-    compileOnly fg.deobf("blank:joml:1.10.5")
+    implementation  fg.deobf("blank:joml:1.10.5")
+
+    implementation fg.deobf("curse.maven:sophisticatedcore-618298:4808232")
+    implementation fg.deobf("curse.maven:sophisticatedstorage-619320:4808064")
+    implementation fg.deobf("curse.maven:sophisticatedbackpacks-422301:4808058")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.4.1")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

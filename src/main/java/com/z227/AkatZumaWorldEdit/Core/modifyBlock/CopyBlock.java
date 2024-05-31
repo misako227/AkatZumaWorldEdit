@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -235,7 +236,7 @@ public class CopyBlock {
 
     public  BlockState setDirectionFaceMirror(Optional<Direction> face, BlockState state){
         Vec3i vec3i = face.get().getNormal();
-        Direction  newDire = Direction.fromDelta(-vec3i.getX(),vec3i.getY(),-vec3i.getZ());
+        Direction  newDire = fromDelta(-vec3i.getX(),vec3i.getY(),-vec3i.getZ());
         return state.setValue(HorizontalDirectionalBlock.FACING,newDire);
     }
 
@@ -414,4 +415,34 @@ public class CopyBlock {
 //    public BlockPos getCopyPos2() {
 //        return copyPos2;
 //    }
+
+
+    @Nullable
+    public static Direction fromDelta(int pX, int pY, int pZ) {
+        if (pX == 0) {
+            if (pY == 0) {
+                if (pZ > 0) {
+                    return Direction.SOUTH;
+                }
+
+                if (pZ < 0) {
+                    return Direction.NORTH;
+                }
+            } else if (pZ == 0) {
+                if (pY > 0) {
+                    return Direction.UP;
+                }
+
+                return Direction.DOWN;
+            }
+        } else if (pY == 0 && pZ == 0) {
+            if (pX > 0) {
+                return Direction.EAST;
+            }
+
+            return Direction.WEST;
+        }
+
+        return null;
+    }
 }

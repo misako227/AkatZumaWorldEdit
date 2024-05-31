@@ -3,9 +3,9 @@ package com.z227.AkatZumaWorldEdit.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BuildingConsumable extends Block implements Equipable {
+public class BuildingConsumable extends Block implements Wearable {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BuildingConsumable(Properties properties) {

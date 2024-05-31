@@ -133,7 +133,7 @@ public class PlayerMapData {
             BlockState blockState = Blocks.AIR.defaultBlockState();;
             if(ints.length == 3) {
                 BlockPos pos = new BlockPos(ints[0], ints[1], ints[2]);
-                Level level = player.level();
+                Level level = player.getLevel();
                 if (level !=null && level.hasChunkAt(pos)) {
                     blockState = level.getBlockState(pos);
                 }
@@ -164,7 +164,7 @@ public class PlayerMapData {
     public void setInvPosMap(BlockPos pos, Player player) {
         this.invPosNBT.putIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
         BlockState blockState = Blocks.AIR.defaultBlockState();
-        Level level = player.level();
+        Level level = player.getLevel();
 //        if (level.hasChunkAt(pos)) {
 //            blockState = level.getBlockState(pos);
 //        }
@@ -175,7 +175,7 @@ public class PlayerMapData {
         int[] intPos = invPosNBT.getIntArray("pos");
         if(intPos.length==3){
             BlockPos pos = new BlockPos(intPos[0],intPos[1],intPos[2]);
-            Level level = player.level();
+            Level level = player.getLevel();
             this.invPosMap.put("pos", level.getBlockState(pos));
         }
     }
