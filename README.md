@@ -247,10 +247,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### /a add whitelist 添加黑白名单
 `/a add whitelist <数量> <方块ID>`
 
-`数量`：-1则为添加黑名单，大于等于0则是白名单
+`数量`：-1则为添加黑名单，大于0则是白名单，等于0则此方块放置时不扣除数量（无限制）
 
 #### /a add vipwhitelist 添加高级玩家的黑白名单
-同上
+-1则为添加黑名单
 
 #### /a add replaceList 添加替换的方块列表
 `/a add replaceList <方块ID>`
