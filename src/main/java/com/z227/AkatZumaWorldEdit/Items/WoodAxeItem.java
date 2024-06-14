@@ -38,6 +38,7 @@ public class WoodAxeItem extends Item {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add( Component.translatable("item.wood_axe.desc1"));
         pTooltipComponents.add( Component.translatable("item.wood_axe.desc2"));
+        pTooltipComponents.add( Component.translatable("item.query_block_state.desc3"));
 //        pTooltipComponents.add( Component.translatable("item.wood_axe.desc3"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 

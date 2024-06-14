@@ -38,7 +38,7 @@ public class SendCopyMessage {
         LocalPlayer Lplayer = Minecraft.getInstance().player;
         if (Lplayer != null) {
 //            Lplayer.connection.sendCommand(command);
-            net.minecraftforge.client.ClientCommandHandler.runCommand(command);
+            Lplayer.commandSigned(command, Component.literal("[").append(AkatZumaWorldEdit.Akat));
         }
     }
 }

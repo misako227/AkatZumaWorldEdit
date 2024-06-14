@@ -64,14 +64,14 @@ public class ClientEventRegister {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             if(item instanceof WoodAxeItem ){
-//                player.connection.sendCommand("a pos1");todo
-                net.minecraftforge.client.ClientCommandHandler.runCommand("a pos1");
+
+                SendCopyMessage.sendCommand("a pos1");
 
                 return;
             }
             if(item instanceof ProjectorItem){
-                net.minecraftforge.client.ClientCommandHandler.runCommand("a copy");
 //                player.connection.sendCommand("a copy");
+                SendCopyMessage.sendCommand("a copy");
                 return;
             }
             //查询空气

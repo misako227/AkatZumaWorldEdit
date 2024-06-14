@@ -78,6 +78,7 @@ public class AkatZumaWorldEdit{
 //        Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of(Material.DIRT).requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties().tab(CREATIVE_MODE_TAB)));
+//        Building_Consumable_Item = ITEMS.register("building_consumable",()-> new ArmorItem(Building_Consumable_Block.get(), EquipmentSlotType.HEAD, new Item.Properties().tab(CREATIVE_MODE_TAB)));
 
     }
 

@@ -63,4 +63,8 @@ public class BuildingConsumable extends Block implements Wearable {
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.HEAD;
     }
+
+    public EquipmentSlot getSlot() {
+        return EquipmentSlot.HEAD;
+    }
 }

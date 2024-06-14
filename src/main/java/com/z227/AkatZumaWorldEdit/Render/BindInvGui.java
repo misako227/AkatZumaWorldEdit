@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -88,7 +87,7 @@ public class BindInvGui {
         int height = gui.getMinecraft().getWindow().getGuiScaledHeight();
 //        guiGraphics.drawString(gui.getFont(),desc1, 3, height - gui.getFont().lineHeight-2, 0xffffff);     // ctrl+滚轮
         drawString(gui.getFont(),poseStack, HUDdesc1.getString(), 3, height - (gui.getFont().lineHeight * 2) - 4, 0xffffff, true);     // 右键
-        drawString(gui.getFont(),poseStack, HUDdesc2.toString(), 3, height - gui.getFont().lineHeight-2, 0xffffff,true);     // ctrl+右键
+        drawString(gui.getFont(),poseStack, HUDdesc2.getString(), 3, height - gui.getFont().lineHeight-2, 0xffffff,true);     // ctrl+右键
 //        gui.getMinecraft().gui.
 
     });
@@ -124,15 +123,19 @@ public class BindInvGui {
     }
 
 
-    public static int drawString(Font pFont, PoseStack pose, @Nullable String pText, float pX, float pY, int pColor, boolean pDropShadow) {
-        if (pText == null) {
-            return 0;
-        } else {
-            MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-            int i = pFont.drawInBatch(pText, (float)pX, (float)pY, pColor, pDropShadow, pose.last().pose(), multibuffersource$buffersource,pFont.isBidirectional(),  0, 15728880);
-//            this.flushIfUnmanaged();
-            return i;
-        }
+//    public static int drawString(Font pFont, PoseStack pose, @Nullable String pText, float pX, float pY, int pColor, boolean pDropShadow) {
+//        if (pText == null) {
+//            return 0;
+//        } else {
+//            MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//            int i = pFont.drawInBatch(pText, (float)pX, (float)pY, pColor, pDropShadow, pose.last().pose(), multibuffersource$buffersource,pFont.isBidirectional(),  0, 15728880);
+////            this.flushIfUnmanaged();
+//            return i;
+//        }
+//    }
+    public static void drawString(Font pFont, PoseStack pose, @Nullable String pText, float pX, float pY, int pColor, boolean pDropShadow) {
+        pFont.draw(pose, pText, pX, pY, pColor);
+
     }
 
     public static void drawCenteredString(Font pFont, PoseStack pose, String pText, int pX, int pY, int pColor) {
