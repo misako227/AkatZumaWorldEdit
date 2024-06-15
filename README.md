@@ -182,7 +182,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 
 #### /a line 连线/对角线
-`/a replace <方块ID>`
+`/a line <方块ID>`
 
 在选区两点之间连一条线
 
@@ -255,7 +255,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ```
 
 #### /a add vipwhitelist 添加高级玩家的黑白名单
--1则为添加黑名单
+同上，-1则为添加黑名单
 
 #### /a add replaceList 添加替换的方块列表
 `/a add replaceList <方块ID>`
