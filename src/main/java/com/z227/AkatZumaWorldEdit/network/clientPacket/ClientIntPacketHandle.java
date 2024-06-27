@@ -23,9 +23,12 @@ public class ClientIntPacketHandle {
         switch (message){
             case 1 -> setClientPos(true);       // /a pos1
             case 2 -> setClientPos(false);      // /a pos2
+            case 3 -> setClientPosToTempPos(true); // 发送/a pos1 失败
+            case 4 -> setClientPosToTempPos(false);   // 发送/a pos2 失败
             case 11 -> setClientCopyMap();      // copy
             case 12 -> setClientFlip(false);    // flip
             case 13 -> setClientFlip(true);     // flip up
+
         }
     }
 
@@ -49,6 +52,14 @@ public class ClientIntPacketHandle {
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         if(b)PMD.setPos1(pos);
         else PMD.setPos2(pos);
+    }
+
+    public static void setClientPosToTempPos(boolean b){
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        PlayerMapData PMD = Util.getPMD(player);
+        if(b)PMD.setPos1(PMD.getTempPos());
+        else PMD.setPos2(PMD.getTempPos());
     }
 
     public static void setClientCopyMap(){

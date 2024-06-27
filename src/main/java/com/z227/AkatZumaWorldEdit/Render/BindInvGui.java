@@ -2,17 +2,22 @@ package com.z227.AkatZumaWorldEdit.Render;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Items.BindInventoryItem;
+import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,10 +36,32 @@ public class BindInvGui {
     public static final IGuiOverlay InvPosHUD = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player == null) return;
-        ItemStack itemstack = player.getMainHandItem();
-        if(itemstack.getItem() != AkatZumaWorldEdit.BindInventory.get())return;
+        Item item = player.getMainHandItem().getItem();
 
         PlayerMapData PMD = Util.getPMD(player);
+        if(item instanceof BindInventoryItem){
+            renderInvPosHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, Util.getPMD(player));
+            return;
+        };
+        if(item instanceof QueryBlockStateItem){
+            renderQueryItemHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, Util.getPMD(player));
+            return;
+        };
+
+
+
+
+    });
+
+    @SubscribeEvent
+    public static void onRenderText(RegisterGuiOverlaysEvent event){
+
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(),"inv_pos_hud", InvPosHUD);
+//        event.registerAboveAll("inv_pos_hud", InvPosHUD);
+
+    }
+
+    public static void renderInvPosHUD(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight, PlayerMapData PMD) {
         Map<String, BlockState> invPosMap = PMD.getInvPosMap();
         CompoundTag tag = PMD.getInvPosNBT();
 //        int index = PMD.getInvPosIndex();
@@ -79,15 +106,37 @@ public class BindInvGui {
         guiGraphics.drawString(gui.getFont(),HUDdesc1, 3, height - (gui.getFont().lineHeight * 2) - 4, 0xffffff);     // 右键
         guiGraphics.drawString(gui.getFont(),HUDdesc2, 3, height - gui.getFont().lineHeight-2, 0xffffff);     // ctrl+右键
 
+    }
 
-    });
+    public static void renderQueryItemHUD(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight, PlayerMapData PMD) {
+        int y = guiGraphics.guiHeight() - 65;
+        int center = guiGraphics.guiWidth() / 2;
+        int posx = center / 2;
 
-    @SubscribeEvent
-    public static void onRenderText(RegisterGuiOverlaysEvent event){
+        int queryFlag = PMD.getQueryFlag();
+        BlockState blockState1 = PMD.getQueryBlockState();
+        BlockState blockState2 = PMD.getReplaceBlockState();
 
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(),"inv_pos_hud", InvPosHUD);
-//        event.registerAboveAll("inv_pos_hud", InvPosHUD);
+        Component mode_name;
+        if(queryFlag == 1){
+            mode_name = Component.translatable("hud.akatzuma.query_mode_1").withStyle(ChatFormatting.GREEN);
+        }else{
+            mode_name = Component.translatable("hud.akatzuma.query_mode_2").withStyle(ChatFormatting.GOLD);
+        }
 
+        Component mode = Component.translatable("hud.akatzuma.query_mode").append(mode_name);
+        Component query_block1 = Component.translatable("hud.akatzuma.query_block1").append(blockState1.getBlock().getName().withStyle(ChatFormatting.GREEN));
+
+        guiGraphics.drawCenteredString(gui.getFont(), mode, posx, y-15, 0xffffff );
+        guiGraphics.renderItem(blockState1.getBlock().asItem().getDefaultInstance(),center , y-25-gui.getFont().lineHeight);
+        guiGraphics.drawCenteredString(gui.getFont(), query_block1, center, y-15, 0xffffff );
+
+        if(queryFlag == 2){
+            int px = center + center/2;
+            Component query_block2 = Component.translatable("hud.akatzuma.query_block2").append(blockState2.getBlock().getName().withStyle(ChatFormatting.GOLD));
+            guiGraphics.drawCenteredString(gui.getFont(), query_block2, px, y-15, 0xffffff );
+            guiGraphics.renderItem(blockState2.getBlock().asItem().getDefaultInstance(), px, y-25-gui.getFont().lineHeight);
+        }
     }
 
 }

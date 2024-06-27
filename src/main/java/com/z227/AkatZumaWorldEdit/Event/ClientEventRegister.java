@@ -6,13 +6,14 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
-import com.z227.AkatZumaWorldEdit.network.SendToServer;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +27,7 @@ import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -51,7 +53,12 @@ public class ClientEventRegister {
             "key.akatzuma");
 
 
+//    @SubscribeEvent
+//    public static void leftClickAir(TickEvent.ClientTickEvent event) {
+//        System.out.println(Minecraft.getInstance().options.keyAttack.isDown());
+//    }
 
+//
 
     //左键单击空气
     @SubscribeEvent
@@ -74,9 +81,14 @@ public class ClientEventRegister {
             //查询空气
             if(item instanceof QueryBlockStateItem){
                 PlayerMapData PMD = Util.getPMD(player);
-                NetworkingHandle.INSTANCE.sendToServer(new SendToServer(0));
+//                NetworkingHandle.INSTANCE.sendToServer(new SendToServer(0));
                 BlockState blockState = Blocks.AIR.defaultBlockState();
-                PMD.setQueryBlockState(blockState);
+                if(Util.isDownCtrl()){
+                    PMD.setReplaceBlockState(blockState);
+                }else{
+                    PMD.setQueryBlockState(blockState);
+                }
+
                 String blockStateStr = blockState.toString().replaceFirst("}", "")
                         .replaceFirst("^Block\\{", "");
 
@@ -96,6 +108,9 @@ public class ClientEventRegister {
 
     @SubscribeEvent
     public static void onKeyboardInput(InputEvent.Key event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null)return;
+
         if (UNDO_KEY.consumeClick()) {
             if(lastTime == -1){
                 SendCopyMessage.sendCommand("a undo");
@@ -112,31 +127,122 @@ public class ClientEventRegister {
                     AkatZumaWorldEdit.sendAkatMessage(component,Lplayer);
                 }
             }
+            return;
+        }
 
+        ItemStack itemstack = player.getMainHandItem();
+        Item item = itemstack.getItem();
+        if(item instanceof WoodAxeItem){
+            sendScrollEndPos(player,event);
+        }
+
+
+    }
+
+
+
+    @SubscribeEvent
+    public static void InputEventKey(InputEvent.MouseScrollingEvent event) {
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null)return;
+
+        ItemStack itemstack = player.getMainHandItem();
+        Item item = itemstack.getItem();
+        if(item instanceof QueryBlockStateItem){
+            scrollQuery(player, event);
+            return;
+        }
+
+        if(item instanceof WoodAxeItem){
+            scrollAddPos(player, event);
+        }
+
+
+    }
+
+    public static void sendScrollEndPos(LocalPlayer player, InputEvent.Key event) {
+        PlayerMapData PMD = Util.getPMD(player);
+        if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL && event.getAction() == GLFW.GLFW_PRESS){
+
+        }
+
+        if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL){
+            BlockPos pos1 = PMD.getPos1();
+            if(event.getAction() == GLFW.GLFW_PRESS){
+                PMD.setTempPos(pos1);
+            }
+            if(event.getAction() == GLFW.GLFW_RELEASE){
+                if(pos1 == null) return;
+                SendCopyMessage.sendCommand("a pos1 " + Util.getPos(pos1));
+                return;
+            }
+
+        }
+        if(event.getKey() == GLFW.GLFW_KEY_LEFT_ALT){
+            BlockPos pos2 = PMD.getPos2();
+            if(event.getAction() == GLFW.GLFW_PRESS){
+                PMD.setTempPos(pos2);
+            }
+            if(event.getAction() == GLFW.GLFW_RELEASE){
+                if(pos2 == null) return;
+                SendCopyMessage.sendCommand("a pos2 " + Util.getPos(pos2));
+                return;
+            }
+
+        }
+    }
+
+    public static void scrollQuery(LocalPlayer player, InputEvent.MouseScrollingEvent event){
+        if(Util.isDownCtrl() && Util.isDownLAlt()){
+            PlayerMapData PMD = Util.getPMD(player);
+            BlockState blockState1 = PMD.getQueryBlockState();
+            BlockState blockState2 = PMD.getReplaceBlockState();
+            //互换
+            PMD.setQueryBlockState(blockState2);
+            PMD.setReplaceBlockState(blockState1);
+            event.setCanceled(true);
+            return;
+        }
+
+        //切换查询模式
+        if(Util.isDownCtrl()){
+            PlayerMapData PMD = Util.getPMD(player);
+            PMD.setQueryFlag();
+            event.setCanceled(true);
+        }
+    }
+
+    public static void scrollAddPos(LocalPlayer player, InputEvent.MouseScrollingEvent event){
+        PlayerMapData PMD = Util.getPMD(player);
+        if(Util.isDownCtrl()){
+            BlockPos pos1 = PMD.getPos1();
+            if(pos1 == null) return;
+            PMD.setPos1(addPos(pos1, event.getScrollDelta(), player));
+
+            event.setCanceled(true);
+            return;
+        }
+        if(Util.isDownLAlt()){
+            BlockPos pos2 = PMD.getPos2();
+            if(pos2 == null) return;
+            PMD.setPos2(addPos(pos2, event.getScrollDelta(), player));
+            event.setCanceled(true);
+        }
+    }
+
+
+    public static BlockPos addPos(BlockPos pos, double scroll, LocalPlayer player) {
+        Vec3i playerNormal = PlayerUtil.getPlayerNormal(player);
+        if(scroll == 1){
+            return pos.offset(playerNormal);
+        }else{
+            return pos.offset(-playerNormal.getX(), -playerNormal.getY(), -playerNormal.getZ());
         }
 
     }
 
-//    @SubscribeEvent
-//    public static void InputEventKey(InputEvent.MouseScrollingEvent event) {
-//
-//        LocalPlayer player = Minecraft.getInstance().player;
-//        if (player == null)return;
-//
-//        ItemStack itemstack = player.getMainHandItem();
-//        if(itemstack.getItem() != AkatZumaWorldEdit.BindInventory.get())return;
-//
-//        if(Util.isDownCtrl()){
-//            PlayerMapData PMD = Util.getPMD(player);
-//            if(event.getScrollDelta() == -1.0){
-//                PMD.addInvPosIndex();
-//            }else{
-//                PMD.deInvPosIndex();
-//            }
-//            event.setCanceled(true);
-////            System.out.println("ctrl");
-//        }
-//    }
+
 
 
 

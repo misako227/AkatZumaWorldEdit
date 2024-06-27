@@ -14,7 +14,7 @@ import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class SetCommand {
 
     public static void setBlock(CommandContext<CommandSourceStack> context) {
 
-        Player player = context.getSource().getPlayer();
+        ServerPlayer player = context.getSource().getPlayer();
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
@@ -52,6 +52,8 @@ public class SetCommand {
         BlockState blockState =  blockInput.getState();
         boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
+
+//        Boolean permission = PermissionAPI.getPermission(player, PermissionEventRegister.use_set);
 
         //判断权限，背包等
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){

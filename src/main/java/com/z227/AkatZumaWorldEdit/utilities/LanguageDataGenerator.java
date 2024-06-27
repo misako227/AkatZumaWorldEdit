@@ -27,6 +27,8 @@ public class LanguageDataGenerator {
             this.add("item.akatzumaworldedit.building_consumable.desc", "用于copy等指令消耗的材料\n(可穿戴到头部)");
             this.add("item.wood_axe.desc1", "§a左键§9方块§f/§9空气§f选取第一个点");
             this.add("item.wood_axe.desc2", "§6右键§9方块§f/§9空气§f选取第二个点");
+            this.add("item.wood_axe.desc3", "§eCtrl+滚轮§f扩大/缩小选区位置1");
+            this.add("item.wood_axe.desc4", "§eAlt +滚轮§f扩大/缩小选区位置2");
             this.add("item.akatzumaworldedit.projector", "§b投影");
             this.add("item.projector_item.desc1", "§a左键§f复制选区的建筑");
             this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
@@ -34,9 +36,15 @@ public class LanguageDataGenerator {
             this.add("item.projector_item.desc4", "手持此物品可查看复制的投影");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
             this.add("item.query_block_state.desc1", "§a左键§f方块查询方块状态");
-            this.add("item.query_block_state.desc2", "§6右键§f放置一个查询的方块");
-            this.add("item.query_block_state.desc4", "点击消息可以复制状态到粘贴板");
-            this.add("item.query_block_state.desc3", "§6ctrl+右键§f把选区设置为查询的方块(/a set)");
+            this.add("item.query_block_state.desc2", "§aCtrl+左键§f设置替换方块状态");
+            this.add("item.query_block_state.desc3", "§6右键§f放置/替换成查询的方块");
+            this.add("item.query_block_state.desc4", "§6Ctrl+右键§f把选区设置/替换为查询的方块");
+            this.add("item.query_block_state.desc5", "§eCtrl+滚轮§f切换模式");
+            this.add("item.query_block_state.desc6", "§eCtrl+Alt+滚轮§f切换两个方块位置");
+
+
+
+
             this.add("item.query_block_state.desc_block", "查询的方块：");
             this.add("chat.item.query_block_state.null", "§c 没有找到要复制的状态，请先使用左键查看状态");
             this.add("chat.item.query_block_state.not_air", "§c 要放置的位置有方块，请先清除方块");
@@ -83,6 +91,14 @@ public class LanguageDataGenerator {
             this.add("hud.akatzuma.ctrl_scroll", "§actrl+滚轮§f切换");
             this.add("hud.akatzuma.right", "§6右键§f绑定箱子");
             this.add("hud.akatzuma.ctrl_right", "§6ctrl+右键§f传送到绑定的坐标上");
+
+            this.add("hud.akatzuma.query_mode", "模式：");
+            this.add("hud.akatzuma.query_mode_1", "放置");
+            this.add("hud.akatzuma.query_mode_2", "替换");
+            this.add("hud.akatzuma.query_block1", "方块：");
+            this.add("hud.akatzuma.query_block2", "替换：");
+
+
             this.add("chat.akatzuma.success.bind_pos", "§a 绑定成功");
             this.add("chat.akatzuma.success.tp", "§a 传送成功");
             this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，请检查是否有权限或是否支持这个容器");

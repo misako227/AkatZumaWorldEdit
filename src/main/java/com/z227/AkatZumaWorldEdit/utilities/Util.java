@@ -289,6 +289,9 @@ public class Util {
     public static boolean isDownCtrl(){
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 341);
     }
+    public static boolean isDownLAlt(){
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 342);
+    }
 
     public static boolean isLoadSopBackpacks(){
         return AkatZumaWorldEdit.loadSopBackpacks;
@@ -315,6 +318,10 @@ public class Util {
 
 
 
+    }
+
+    public static String getPos(BlockPos pos ){
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
     }
 
 

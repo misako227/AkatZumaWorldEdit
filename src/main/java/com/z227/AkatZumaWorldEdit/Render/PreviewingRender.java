@@ -125,7 +125,6 @@ public class PreviewingRender {
                 blockState,
                 stack,
                 Minecraft.getInstance().renderBuffers().bufferSource(),
-
 //                15728640,
                 15728880,
 
@@ -136,8 +135,8 @@ public class PreviewingRender {
                 ModelData.EMPTY,
 //                modelData,
 
-//                RenderType.cutoutMipped()
                 null
+//                RenderType.cutout()
         );
 
         RenderSystem.enableCull();

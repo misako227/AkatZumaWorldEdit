@@ -34,6 +34,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -121,6 +122,20 @@ public class ForgeNetworkEvent {
     }
 
 
+    //取消玩家在空中挖掘时的减速
+    @SubscribeEvent (priority = EventPriority.LOW)
+    public static void handleBreakSpeedEvent(PlayerEvent.BreakSpeed event) {
+
+        if (event.isCanceled()) {
+            return;
+        }
+        Player player = event.getEntity();
+        if (!player.onGround()) {
+            event.setNewSpeed(Math.max(event.getNewSpeed(), event.getOriginalSpeed() * 5.0F));
+        }
+    }
+
+
 
 
     public static void addTagsToMap(List<? extends String> input, Map output) {
@@ -149,10 +164,15 @@ public class ForgeNetworkEvent {
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
 
+
+
         if(item instanceof QueryBlockStateItem){
-            if(player.getCooldowns().isOnCooldown(item))return;
-            player.getCooldowns().addCooldown(item, 10);
-            queryBlock(world, pos, player, PMD);
+            if(world.isClientSide){
+                if(player.getCooldowns().isOnCooldown(item))return;
+                player.getCooldowns().addCooldown(item, 10);
+                queryBlock(world, pos, player, PMD);
+            }
+
             return;
         }
         if(item instanceof WoodAxeItem){
@@ -178,7 +198,11 @@ public class ForgeNetworkEvent {
     public static void queryBlock(Level world, BlockPos pos, Player player, PlayerMapData PMD){
         BlockState blockState = world.getBlockState(pos);
 
-        PMD.setQueryBlockState(blockState);
+        if(Util.isDownCtrl()){
+            PMD.setReplaceBlockState(blockState);
+        }else{
+            PMD.setQueryBlockState(blockState);
+        }
         if(player.isLocalPlayer()){
             String blockStateStr = blockState.toString().replaceFirst("}", "")
                     .replaceFirst("^Block\\{", "");

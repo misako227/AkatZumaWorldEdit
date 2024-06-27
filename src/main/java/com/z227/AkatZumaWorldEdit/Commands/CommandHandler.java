@@ -49,6 +49,7 @@ public class CommandHandler {
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
 
+
     }
 
 

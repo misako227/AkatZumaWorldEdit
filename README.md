@@ -30,9 +30,12 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 |  ----  | ----  |
 | /a add viplayer | 添加高级玩家 |
 | /a del viplayer | 删除高级玩家 |
+| /a add whitelist | 添加黑白名单 |
+| /a del vipwhitelist | 添加高级玩家的黑白名单 |
+| /a add replaceList | 添加替换的方块列表 |
 
 
-### 注意事项
+### <font color=red>| 注意事项 </font> 
 * 所有功能都只扣除背包，撤销不会返还，也不会产生掉落物
 * 在别人领地内选区不会成功，会出现`渲染框`和`实际选区位置`不一致，请确保有权限的情况下操作
   <br>
@@ -59,6 +62,8 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。
 
 `左/右键`空气选择`玩家头部位置`的点位
+`Ctrl+滚轮`扩大/缩小选区位置1（根据玩家朝向判断）
+`Alt+滚轮`扩大/缩小选区位置2
 
 ![wood.jpg](img/wood.jpg)
 
@@ -67,10 +72,21 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 #### 查询工具
 ![query.png](img/query.png)
+![query2.png](img/query2.png)
 
-* `左键`查看方块状态，消息可以点击复制状态
-* `右键`放置一个上次查询方块，需要背包中有对应的方块物品
-* `ctrl+右键` 执行`/a set `指令， 方块为上次查询的方块
+* `左键`设置方块状态，消息可以点击复制状态
+* `ctrl+左键` 设置替换的方块
+
+* `右键`：
+  * 放置模式：放置一个上次查询方块，需要背包中有对应的方块物品
+  * 替换模式：把指针选中的方块设置成替换的方块
+
+* `ctrl+右键` 根据当前模式执行`放置/替换`指令， 方块为上次查询的方块
+  * 放置模式：执行`/a set`指令
+  * 替换模式：执行`/a replace`指令，把查询的方块设置成替换的方块
+
+* `ctrl+滚轮` 切换模式
+* `ctrl+alt+滚轮` 切换替换模式两个方块的位置
 
 
 <br>
@@ -92,7 +108,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 * 复制任何方块都只消耗此材料,可带到头部
 
-* 也可以在配置文件中添加要替换的方块，比如`空气、水`等不能获取的方块可以填入，会扣除对应数量的‘建筑耗材’方块
+* 也可以在配置文件中添加要替换的方块，比如`空气、水`等不能获取的方块可以填入，会扣除对应数量的`建筑耗材`方块
 
 方块ID：`akatzumaworldedit:building_consumable`
 
@@ -122,6 +138,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 //格式
 /a 指令 <必填参数> [选填参数]
 ```
+
+<br>
+
+- - -
 
 #### /a set 设置选区内方块
 `/a set <方块ID>`
@@ -243,6 +263,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 #### /a del viplayer 删除高级玩家 
 `/a del viplayer <玩家名字>`
+<br>
+
+- - -
 
 #### /a add whitelist 添加黑白名单
 `/a add whitelist <数量> <方块ID>`
@@ -257,13 +280,25 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### /a add vipwhitelist 添加高级玩家的黑白名单
 同上，-1则为添加黑名单
 
+
+#### /a del whitelist 删除黑白名单
+`/a del whitelist <数量> <方块ID>`
+* 数量：-1为删除黑名单
+* 删除白名单需要**数量**和配置文件中的数量相同，否则会出现游戏中删除，配置文件中未删除的情况
+<br>
+
+- - -
+
 #### /a add replaceList 添加替换的方块列表
 `/a add replaceList <方块ID>`
 
 ### Debug
-debug日志格式
 
+* 玩家成功执行指令后会在debug日志中记录（debug.log）
+
+* debug日志格式如下
 `[玩家名字][玩家发送的指令][玩家坐标][方块ID][选区坐标1][选区坐标2]`
+
 部分指令在日志中没有`[方块ID]`这个参数
 ```log
   [Dev][a set minecraft:birch_planks][BlockPos{x=-103, y=63, z=63}][Birch Planks=Block{minecraft:birch_planks}][BlockPos{x=-107, y=64, z=63}][BlockPos{x=-107, y=65, z=62}]

@@ -85,8 +85,9 @@ public class ReplaceBlock {
         for (Map.Entry<BlockPos, BlockState> entry : this.replaceMap.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
-            undoMap.put(pos, state);
-            this.world.setBlock(pos, this.outputState, 2);
+//            undoMap.put(pos, state);
+//            this.world.setBlock(pos, this.outputState, 2);
+            MySetBlock.setBlockNotUpdateAddUndo(this.world, pos ,this.outputState, undoMap);
         }
 //        MutableComponent blockName = this.outputState.getBlock().getName().withStyle(ChatFormatting.GREEN);
 //        Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));

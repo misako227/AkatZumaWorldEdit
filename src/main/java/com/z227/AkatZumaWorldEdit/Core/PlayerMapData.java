@@ -17,9 +17,12 @@ public class PlayerMapData {
 
     private BlockPos pos1;
     private BlockPos pos2;
+    private BlockPos tempPos;
 
     private boolean flag;
     private BlockState queryBlockState;
+    private BlockState replaceBlockState;
+    private int queryFlag;
 
     private CompoundTag invPosNBT;
     private Map<String, BlockState> invPosMap;
@@ -52,10 +55,35 @@ public class PlayerMapData {
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
         this.queryBlockState = Blocks.AIR.defaultBlockState();
+        this.replaceBlockState = Blocks.AIR.defaultBlockState();
+        this.queryFlag = 1;
 //        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
     }
 
+    public BlockPos getTempPos() {
+        return tempPos;
+    }
+
+    public void setTempPos(BlockPos tempPos) {
+        this.tempPos = tempPos;
+    }
+
+    public int getQueryFlag() {
+        return queryFlag;
+    }
+
+    public void setQueryFlag() {
+        this.queryFlag = this.queryFlag == 1 ? 2 : 1;
+    }
+
+    public BlockState getReplaceBlockState() {
+        return replaceBlockState;
+    }
+
+    public void setReplaceBlockState(BlockState replaceBlockState) {
+        this.replaceBlockState = replaceBlockState;
+    }
 
     public BlockPos getPos1() {
         return pos1;
