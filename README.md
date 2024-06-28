@@ -281,7 +281,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 同上，-1则为添加黑名单
 
 
-#### /a del whitelist 删除黑白名单
+#### /a del whitelist / vipwhitelist 删除黑白名单
 `/a del whitelist <数量> <方块ID>`
 * 数量：-1为删除黑名单
 * 删除白名单需要**数量**和配置文件中的数量相同，否则会出现游戏中删除，配置文件中未删除的情况

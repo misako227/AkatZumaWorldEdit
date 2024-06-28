@@ -97,6 +97,7 @@ public class ForgeNetworkEvent {
         Util.setLoadSop();
     }
 
+    //空中速掘
     @SubscribeEvent
     public static void onAttachCapabilityEvent(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
