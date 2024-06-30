@@ -1,11 +1,13 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,6 +20,7 @@ public class PlayerMapData {
     private BlockPos pos1;
     private BlockPos pos2;
     private BlockPos tempPos;
+    private boolean isUpdatePos = false;
 
     private boolean flag;
     private BlockState queryBlockState;
@@ -46,6 +49,8 @@ public class PlayerMapData {
         return this.redoDataMap;
     }
 
+    public Map<Item, BrushBase> BrushMap;
+
 
     public PlayerMapData() {
 
@@ -54,11 +59,24 @@ public class PlayerMapData {
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
+        this.BrushMap = new HashMap<>();
         this.queryBlockState = Blocks.AIR.defaultBlockState();
         this.replaceBlockState = Blocks.AIR.defaultBlockState();
         this.queryFlag = 1;
 //        this.lineBase = new LineBase();
 //        this.copyBlockMap = new HashMap<>();
+    }
+
+    public boolean isUpdatePos() {
+        return isUpdatePos;
+    }
+
+    public void setUpdatePos(boolean updatePos) {
+        isUpdatePos = updatePos;
+    }
+
+    public Map<Item, BrushBase> getBrushMap() {
+        return BrushMap;
     }
 
     public BlockPos getTempPos() {

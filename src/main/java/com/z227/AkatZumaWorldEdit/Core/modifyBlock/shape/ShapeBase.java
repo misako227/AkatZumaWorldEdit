@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.RotateBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public class ShapeBase {
     BlockPos pos1,pos2;
-    ServerLevel world;
+    Level world;
     Player player;
     PlayerMapData PMD;
     BlockState blockState;
@@ -29,9 +30,9 @@ public class ShapeBase {
     int zOrigin;
     float xAngle,yAngle,zAngle;
 
-    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int height, boolean hollow,String shape) {
-        this.pos1 = PMD.getPos1();
-        this.pos2 = PMD.getPos2();
+    public ShapeBase(PlayerMapData PMD, Level level, Player player, BlockState blockState, int radius, int height, boolean hollow, String shape) {
+//        this.pos1 = PMD.getPos1();
+//        this.pos2 = PMD.getPos2();
         this.world = level;
         this.player = player;
         this.PMD = PMD;
@@ -59,6 +60,10 @@ public class ShapeBase {
         this.yAngle = yAng;
         this.zAngle = zAng;
     }
+    public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockPos playerPos,BlockState blockState, int radius, int radiusZ,int height, boolean hollow,String shape) {
+        this(PMD,level,player,blockState,radius,height,hollow,shape);
+        this.playerPos = playerPos;
+    }
 
     public boolean init(){
         if(checkPos(this.player,this.PMD)){
@@ -76,6 +81,21 @@ public class ShapeBase {
         return false;
     }
 
+    public BlockState getBlockState() {
+        return blockState;
+    }
+
+    public void setBlockState(BlockState blockState) {
+        this.blockState = blockState;
+    }
+
+    public BlockPos getPlayerPos() {
+        return playerPos;
+    }
+
+    public void setPlayerPos(BlockPos playerPos) {
+        this.playerPos = playerPos;
+    }
 
     public boolean checkPos(Player player, PlayerMapData PMD){
         if(!PlaceBlock.cheakFlag(PMD,player)){
@@ -212,6 +232,36 @@ public class ShapeBase {
                     }
                 }
             }
+        player.teleportTo(centerX,centerY+this.radius,centerZ);
+
+    }
+
+    //生成投影
+    public void sphereProjection(Map<BlockPos, Byte> shapePosMap){
+        int centerX = this.playerPos.getX();
+        int centerY = this.playerPos.getY();
+        int centerZ = this.playerPos.getZ();
+        for (int x = centerX - radius; x <= centerX + radius; x++) {
+            for (int y = centerY - radius; y <= centerY + radius; y++) {
+                for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                    double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2) + Math.pow(z - centerZ, 2));
+                    if(hollow)
+                    {//空心球
+                        if (distance < radius && distance >= radius - 1){
+                            BlockPos pos = new BlockPos(x, y, z);
+                            shapePosMap.put(pos, (byte) 1);
+//                            MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap);
+                        }
+                    }else{//实心球
+                        if (distance < radius){
+                            BlockPos pos = new BlockPos(x, y, z);
+                            shapePosMap.put(pos, (byte) 1);
+//                            MySetBlock.shapeSetBlock(this.world, this.player, pos, this.blockState, 2, this.undoMap);
+                        }
+                    }
+                }
+            }
+        }
         player.teleportTo(centerX,centerY+this.radius,centerZ);
 
     }

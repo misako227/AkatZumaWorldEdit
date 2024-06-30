@@ -20,7 +20,7 @@ public class NetworkingHandle {
 
     public static void register() {
         INSTANCE = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(AkatZumaWorldEdit.MODID, "int_networking"),
+                new ResourceLocation(AkatZumaWorldEdit.MODID, "network"),
         () -> VERSION,
         (version) -> version.equals(VERSION),
         (version) -> version.equals(VERSION)
@@ -39,6 +39,8 @@ public class NetworkingHandle {
         INSTANCE.registerMessage(2,SendToClient.class, SendToClient::toBytes, SendToClient::new,SendToClient::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
         INSTANCE.registerMessage(3,SendToClientCompoundTag.class, SendToClientCompoundTag::toBytes, SendToClientCompoundTag::new,SendToClientCompoundTag::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        INSTANCE.registerMessage(4,S2CSphere.class, S2CSphere::toBytes, S2CSphere::new,S2CSphere::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
     }
 
     public static <MSG> void sendToClient(MSG message , ServerPlayer player)

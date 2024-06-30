@@ -8,6 +8,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -38,7 +39,7 @@ public class PreviewingRender {
 
     @SubscribeEvent
     public static void onRenderLastEvent(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
             return;
         }
         Player player = Minecraft.getInstance().player;
@@ -50,11 +51,13 @@ public class PreviewingRender {
 //        if (!(heldItem.getItem() instanceof WoodAxeItem)) {
 //            return;
 //        }
-        Item item = heldItem.getItem();
-        if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
 
         //获取方块坐标
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
+        Item item = heldItem.getItem();
+        if(AkatZumaWorldEdit.USEITEM.get(item) == null && PMD.getBrushMap().get(item) == null)return;
+
+
 //        if(PMD==null)return;
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
@@ -69,6 +72,10 @@ public class PreviewingRender {
                     drawLineBox(vertexConsumer, stack, pStart, pEnd);
                     if(item instanceof ProjectorItem){
                         drawCopyBlock( copyBlock, stack, player);
+                        return;
+                    }
+                    if(PMD.getBrushMap().get(item)!= null){
+                        RenderSphere.render(stack, item, PMD);
                     }
 
                     return;

@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
@@ -17,17 +18,24 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Map;
 
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -157,15 +165,52 @@ public class ClientEventRegister {
         if(item instanceof WoodAxeItem){
             scrollAddPos(player, event);
         }
+    }
+
+    @SubscribeEvent
+    public static void onMouseDragged(InputEvent.MouseButton.Post event) {
+//        Minecraft mc = Minecraft.getInstance();
+//        LocalPlayer player = Minecraft.getInstance().player;
+//        if (player == null)return;
+//
+//        System.out.println(event.getAction());
+//        mc.mouseHandler.getXVelocity()
+
+    }
+
+    @SubscribeEvent
+    public static void onMouseDragged(TickEvent.ClientTickEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+
+        if (player == null)return;
+
+        Item item = player.getMainHandItem().getItem();
+        PlayerMapData PMD = Util.getPMD(player);
+        if(PMD.getBrushMap().get(item) == null)return;
+
+        if(mc.options.keyAttack.isDown()){
+            Vec3 playerEyePos = player.getEyePosition();
+            BlockPos toEndPos =  PlayerUtil.getPlayerPOVHitEnd(player, 50);
+
+//            List<BlockPos> linePosList = LineCommand.drawLine(BlockPos.containing(playerEyePos), toEndPos); //玩家到最大点位之间的所有坐标
+            BlockPos endPos;
+            Level level = player.level();
+            BlockHitResult endBlockPos2 = level.clip(new ClipContext(playerEyePos, new Vec3(toEndPos.getX(), toEndPos.getY(), toEndPos.getZ()), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+            BrushBase brushBase = PMD.getBrushMap().get(item);
+            Map<BlockPos, Byte> shapePosMap= brushBase.getShapePosMap();
+            brushBase.getShapeBase().setPlayerPos(endBlockPos2.getBlockPos());
+            brushBase.getShapeBase().sphereProjection(shapePosMap);  //生成坐标给渲染投影使用
+        }
 
 
     }
 
+
+
+
     public static void sendScrollEndPos(LocalPlayer player, InputEvent.Key event) {
         PlayerMapData PMD = Util.getPMD(player);
-        if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL && event.getAction() == GLFW.GLFW_PRESS){
-
-        }
 
         if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL){
             BlockPos pos1 = PMD.getPos1();
@@ -174,7 +219,9 @@ public class ClientEventRegister {
             }
             if(event.getAction() == GLFW.GLFW_RELEASE){
                 if(pos1 == null) return;
+                if(!PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos1 " + Util.getPos(pos1));
+                PMD.setUpdatePos(false);
                 return;
             }
 
@@ -186,7 +233,9 @@ public class ClientEventRegister {
             }
             if(event.getAction() == GLFW.GLFW_RELEASE){
                 if(pos2 == null) return;
+                if(!PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos2 " + Util.getPos(pos2));
+                PMD.setUpdatePos(false);
                 return;
             }
 
@@ -219,7 +268,7 @@ public class ClientEventRegister {
             BlockPos pos1 = PMD.getPos1();
             if(pos1 == null) return;
             PMD.setPos1(addPos(pos1, event.getScrollDelta(), player));
-
+            PMD.setUpdatePos(true);
             event.setCanceled(true);
             return;
         }
@@ -227,6 +276,7 @@ public class ClientEventRegister {
             BlockPos pos2 = PMD.getPos2();
             if(pos2 == null) return;
             PMD.setPos2(addPos(pos2, event.getScrollDelta(), player));
+            PMD.setUpdatePos(true);
             event.setCanceled(true);
         }
     }

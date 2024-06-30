@@ -83,10 +83,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 * `ctrl+右键` 根据当前模式执行`放置/替换`指令， 方块为上次查询的方块
   * 放置模式：执行`/a set`指令
-  * 替换模式：执行`/a replace`指令，把查询的方块设置成替换的方块
+  * 替换模式：执行`/a replace`指令，把选区内查询的方块设置成替换的方块
 
 * `ctrl+滚轮` 切换模式
-* `ctrl+alt+滚轮` 切换替换模式两个方块的位置
+* `ctrl+alt+滚轮` 切换两个方块的位置
 
 
 <br>
@@ -95,7 +95,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 #### 绑定箱子工具
 ![bind.jpg](img/bind.png)
-* 可以绑定一个`原版`或`精妙存储`的箱子、木桶
+* 可以绑定一个`原版`或`精妙存储`的箱子、木桶，背包中物品不足时，会从绑定的箱子中查找扣除
 * `右键` 绑定箱子
 * `ctrl+右键`传送到绑定的坐标（不支持跨世界，会传送到当前世界的这个坐标）
 
@@ -303,5 +303,3 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ```log
   [Dev][a set minecraft:birch_planks][BlockPos{x=-103, y=63, z=63}][Birch Planks=Block{minecraft:birch_planks}][BlockPos{x=-107, y=64, z=63}][BlockPos{x=-107, y=65, z=62}]
 ```
-
-
