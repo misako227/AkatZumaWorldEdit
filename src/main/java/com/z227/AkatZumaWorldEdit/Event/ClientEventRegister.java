@@ -218,8 +218,7 @@ public class ClientEventRegister {
                 PMD.setTempPos(pos1);
             }
             if(event.getAction() == GLFW.GLFW_RELEASE){
-                if(pos1 == null) return;
-                if(!PMD.isUpdatePos()) return;
+                if(pos1 == null || !PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos1 " + Util.getPos(pos1));
                 PMD.setUpdatePos(false);
                 return;
@@ -232,8 +231,7 @@ public class ClientEventRegister {
                 PMD.setTempPos(pos2);
             }
             if(event.getAction() == GLFW.GLFW_RELEASE){
-                if(pos2 == null) return;
-                if(!PMD.isUpdatePos()) return;
+                if(pos2 == null || !PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos2 " + Util.getPos(pos2));
                 PMD.setUpdatePos(false);
                 return;
