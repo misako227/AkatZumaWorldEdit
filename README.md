@@ -2,7 +2,6 @@
 
 <br>
 
-[语雀文档地址](https://www.yuque.com/u39444834/dgakrb/gt2eg4whuq7hcvwf?singleDoc#)
 
 作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、[くじょう-アイ](https://center.mcmod.cn/131109/)
 
@@ -31,14 +30,16 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 | /a add viplayer | 添加高级玩家 |
 | /a del viplayer | 删除高级玩家 |
 | /a add whitelist | 添加黑白名单 |
-| /a del vipwhitelist | 添加高级玩家的黑白名单 |
+| /a del vipwhitelist | 删除高级玩家的黑白名单 |
 | /a add replaceList | 添加替换的方块列表 |
+| /a add range / viprange | 设置选区大小 |
 
 
 ### <font color=red>| 注意事项 </font> 
 * 所有功能都只扣除背包，撤销不会返还，也不会产生掉落物
-* 在别人领地内选区不会成功，会出现`渲染框`和`实际选区位置`不一致，请确保有权限的情况下操作
-  <br>
+* 在别人领地内选区不会成功，会出现`选区渲染框`和`实际选区位置`不一致，请确保有权限的情况下操作
+
+<br>
 
 - - -
 
@@ -291,6 +292,18 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 #### /a add replaceList 添加替换的方块列表
 `/a add replaceList <方块ID>`
+
+<br>
+
+- - -
+
+#### /a add range 设置选区大小
+`/a add range <数字>`
+* 修改配置文件的选区大小，range改为viprange修改高级玩家的选区大小
+<br>
+
+- - -
+
 
 ### Debug
 

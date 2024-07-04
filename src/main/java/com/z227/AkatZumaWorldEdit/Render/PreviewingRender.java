@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -63,6 +64,8 @@ public class PreviewingRender {
 
         CopyBlock copyBlock = PMD.getCopyBlockClient();
 
+
+
         if (pStart != null && pEnd != null) {
             for (Entity entity : Minecraft.getInstance().level.entitiesForRendering()) {
                 if (entity instanceof LivingEntity) {
@@ -74,9 +77,10 @@ public class PreviewingRender {
                         drawCopyBlock( copyBlock, stack, player);
                         return;
                     }
-                    if(PMD.getBrushMap().get(item)!= null){
-                        RenderSphere.render(stack, item, PMD);
-                    }
+//                    //渲染笔刷
+//                    if(PMD.getBrushMap().get(item)!= null){
+//                        RenderSphere.render(stack, item, PMD);
+//                    }
 
                     return;
                 }
@@ -156,27 +160,34 @@ public class PreviewingRender {
 
 
     public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
-        if(copyBlock != null){
-            copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
-            copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
-            //计算玩家朝向旋转的角度
-            Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
-            for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getCopyMap().entrySet()){
-                BlockPos pos = entry.getKey();
-                //根据玩家朝向旋转复制内容
-                pos = pos.rotate(rotation);
-                pos = pos.offset(player.getOnPos());
-                BlockState state = entry.getValue().rotate(rotation);
+        if(copyBlock == null) return;
+        int size = copyBlock.getCopyMap().size();
+        if(size == 0 || size > 100000) return;
+
+
+        copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
+        copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+        //计算玩家朝向旋转的角度
+        Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
+        for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getCopyMap().entrySet()){
+
+            if(entry.getValue().is(Blocks.AIR)) continue;
+
+            BlockPos pos = entry.getKey();
+            //根据玩家朝向旋转复制内容
+            pos = pos.rotate(rotation);
+            pos = pos.offset(player.getOnPos());
+            BlockState state = entry.getValue().rotate(rotation);
 //                drawBlock(stack, pos, state);
-                if(!state.getFluidState().isEmpty()){
-                    RenderLiquidBlock.drawLiquid(stack,pos, state);
+            if(!state.getFluidState().isEmpty()){
+                RenderLiquidBlock.drawLiquid(stack,pos, state);
 
-                }else{
-                    drawBlock(stack, pos, state);
-                }
-
+            }else{
+                drawBlock(stack, pos, state);
             }
+
         }
     }
+
 }
 

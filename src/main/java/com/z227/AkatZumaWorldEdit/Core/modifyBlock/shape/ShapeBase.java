@@ -47,8 +47,6 @@ public class ShapeBase {
         this.xOrigin = this.playerPos.getX();
         this.yOrigin = this.playerPos.getY();
         this.zOrigin = this.playerPos.getZ();
-
-
     }
     public ShapeBase(PlayerMapData PMD, ServerLevel level, Player player,BlockState blockState, int radius, int radiusZ,int height, boolean hollow,String shape) {
         this(PMD,level,player,blockState,radius,height,hollow,shape);
@@ -265,6 +263,9 @@ public class ShapeBase {
         player.teleportTo(centerX,centerY+this.radius,centerZ);
 
     }
+
+
+
 
     public void ellipse(){
         int centerX = this.playerPos.getX();

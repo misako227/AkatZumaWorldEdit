@@ -1,9 +1,7 @@
 package com.z227.AkatZumaWorldEdit.network;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,6 +11,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -26,6 +26,7 @@ public class S2CSphere{
         this.blockState = buffer.readById(Block.BLOCK_STATE_REGISTRY);
         this.radius = buffer.readInt();
         this.hollow = buffer.readBoolean();
+
     }
 
     public S2CSphere(BlockState blockState,int radius, boolean hollow) {
@@ -48,15 +49,16 @@ public class S2CSphere{
         ctx.get().setPacketHandled(true);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void sphere(BlockState blockState,int radius, boolean hollow){
-        System.out.println("radius:"+radius+"hollow:"+hollow);
-        System.out.println("blockState:"+blockState);
+//        System.out.println("radius:"+radius+"hollow:"+hollow);
+//        System.out.println("blockState:"+blockState);
         Player player = Minecraft.getInstance().player;
         Level level = Minecraft.getInstance().level;
         PlayerMapData PMD = Util.getPMD(player);
-        ShapeBase shapeBase = new ShapeBase(PMD,level,player,blockState,radius, 0,hollow, "sphere");
+//        ShapeBase shapeBase = new ShapeBase(PMD,level,player,blockState,radius, 0,hollow, "sphere");
         Item item = player.getMainHandItem().getItem();
-        PMD.getBrushMap().put(item, new BrushBase(shapeBase));
+        PMD.getBrushMap().put(item, null);
 
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.bind_pos"), player);
     }

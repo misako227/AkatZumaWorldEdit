@@ -63,8 +63,7 @@ public class PlayerMapData {
         this.queryBlockState = Blocks.AIR.defaultBlockState();
         this.replaceBlockState = Blocks.AIR.defaultBlockState();
         this.queryFlag = 1;
-//        this.lineBase = new LineBase();
-//        this.copyBlockMap = new HashMap<>();
+
     }
 
     public boolean isUpdatePos() {
