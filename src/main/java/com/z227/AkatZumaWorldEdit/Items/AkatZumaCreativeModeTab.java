@@ -19,8 +19,8 @@ public class AkatZumaCreativeModeTab {
             .icon(() -> new ItemStack(AkatZumaWorldEdit.WOOD_AXE.get()))
             // 为物品栏页添加默认物品
             .displayItems((params, output) -> {
-                output.accept(AkatZumaWorldEdit.Query_Item.get());
                 output.accept(AkatZumaWorldEdit.WOOD_AXE.get());
+                output.accept(AkatZumaWorldEdit.Query_Item.get());
                 output.accept(AkatZumaWorldEdit.Building_Consumable_Item.get());
                 output.accept(AkatZumaWorldEdit.Projector_Item.get());
                 output.accept(AkatZumaWorldEdit.BindInventory.get());

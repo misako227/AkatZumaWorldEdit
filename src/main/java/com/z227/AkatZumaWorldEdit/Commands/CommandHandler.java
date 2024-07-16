@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.z227.AkatZumaWorldEdit.Commands.admin.AddVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.admin.DelVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushCommand;
+import com.z227.AkatZumaWorldEdit.Commands.brush.MaskCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
@@ -46,6 +47,7 @@ public class CommandHandler {
         LineCommand.register(dispatcher,commandbuildcontext);
         BindInvPosCommand.register(dispatcher,commandbuildcontext);
         BrushCommand.register(dispatcher,commandbuildcontext);
+        MaskCommand.register(dispatcher,commandbuildcontext);
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);

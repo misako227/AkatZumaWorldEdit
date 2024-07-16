@@ -4,6 +4,8 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.messagePacket.S2CInventoryNotEnough;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.RemoveItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -13,6 +15,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -189,21 +192,18 @@ public class PlaceBlock {
     //@param volume 扣除的总数量
     //@param player 玩家
     //@param deBlockName 扣除物品的显示名
-    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, MutableComponent deBlockName) {
+    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, BlockState blockState) {
         List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
         Map<Integer, Integer> chestMap;
         Map<Integer, Integer> sopBackpackMap;
+
 
         temp.add(blockInInvMap);
 
         int sum = Util.sum(blockInInvMap);
             //要扣除的数量
         int num = (int) Math.ceil((double) volume / n);
-        MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
-                .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num)
-                .append(Component.translatable("chat.akatzuma.error.current_num"))
-                ;
 
         //背包如果不够
         if (sum < num) {
@@ -222,7 +222,8 @@ public class PlaceBlock {
                 sum = sum + chestSum;
                 if(sum < num){
                     //如果玩家(背包+精妙背包+绑定的箱子)还不够，返回null
-                    AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
+//                    AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
+                    NetworkingHandle.sendToClient(new S2CInventoryNotEnough(blockState, num,sum), (ServerPlayer) player);
                     return null;
                 }
                 temp.add(chestMap);
@@ -369,6 +370,7 @@ public class PlaceBlock {
             blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
             if(blockName.equals("akatzumaworldedit:building_consumable") ){
                 deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+                blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
             }
 
 
@@ -378,7 +380,7 @@ public class PlaceBlock {
 //            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,volume,player,deBlockName);
+                blockInInvMap = checkInv(blockName,n,volume,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 

@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -43,7 +44,7 @@ public class SphereCommand {
     public static void setSphere(CommandContext<CommandSourceStack> context, boolean hollow){
         Player player = context.getSource().getPlayer();
 
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");
         int radius =  IntegerArgumentType.getInteger(context, "半径");

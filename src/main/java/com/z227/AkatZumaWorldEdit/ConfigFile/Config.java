@@ -32,7 +32,7 @@ public class Config {
     static {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
         LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
-        UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
+        UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 15, 0, 10000);
         BLACKListWorld = BUILDER.comment("""
                 世界黑名单，格式为"世界名/维度名"，世界名是创建世界时候的名字
                 "主世界/minecraft:overworld"，"下界/minecraft:the_nether"，"末地/minecraft:the_end\"""")

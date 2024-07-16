@@ -5,7 +5,6 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
-import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -29,14 +28,21 @@ import java.util.Optional;
 public class CopyBlock {
     BlockPos playerCopyPos,playerPastePos, copyPos1,copyPos2;
     Map<BlockPos, BlockState> copyMap;
-    Map<String, BlockPos> pastePosMap;//记录翻转后的位置，给tempPastePosMap使用
-    Map<String, BlockPos> tempPastePosMap;//粘帖时候的start和end坐标，用来判断是否有权限放置
+//    Map<String, BlockPos> pastePosMap;//记录翻转后的位置，给tempPastePosMap使用
+//    Map<String, BlockPos> tempPastePosMap;//粘帖时候的start和end坐标，用来判断是否有权限放置
+    BlockPos pastePos1, pastePos2; //复制时的坐标
+    BlockPos tempPastePos1, tempPastePos2;  //粘帖时候的start和end坐标，用来判断是否有权限放置
+
     Player player;
 //    ServerLevel serverLevel;
     PlayerMapData PMD;
     Vec3i copyVec3, pasteVec3;
     boolean permissionLevel;
     BlockState invBlockState =  AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+    boolean air;
+    boolean isMask,maskFlag;
+    //客户端渲染使用
+    Map<BlockState, Boolean> maskMap;
 
 
     public CopyBlock(PlayerMapData PMD, Player player) {
@@ -46,7 +52,7 @@ public class CopyBlock {
         this.player = player;
 //        this.serverLevel =  serverLevel;
         this.copyMap = new HashMap<>();
-        this.pastePosMap = new HashMap<>();
+//        this.pastePosMap = new HashMap<>();
         this.PMD = PMD;
         this.permissionLevel = player.hasPermissions(2);
 
@@ -91,8 +97,10 @@ public class CopyBlock {
         int cx = this.playerCopyPos.getX(),
             cy = this.playerCopyPos.getY(),
             cz = this.playerCopyPos.getZ();
-        pastePosMap.put("startPos", this.copyPos1.offset(-cx,-cy, -cz));
-        pastePosMap.put("endPos", this.copyPos2.offset(-cx,-cy, -cz));
+        pastePos1 = this.copyPos1.offset(-cx,-cy, -cz);
+        pastePos2 = this.copyPos2.offset(-cx,-cy, -cz);
+//        pastePosMap.put("startPos", );
+//        pastePosMap.put("endPos", );
 
 //        Component component;
         for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
@@ -138,6 +146,8 @@ public class CopyBlock {
 
         return true;
     }
+
+
 
     public void flip(boolean Y){
         Component component;
@@ -316,16 +326,17 @@ public class CopyBlock {
 //    }
 
 
-    public void pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap, boolean air) {
-        boolean isLowHeight = false;
+    public boolean pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap, boolean air) {
+//        boolean isLowHeight = false;
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
 
-        this.tempPastePosMap = getPastePosMap(rotation);
+        //修改pos1、2为粘贴时的坐标系
+        getPastePosAndRotation(rotation);
         //粘帖前权限检查
-        BlockPos pos1 = tempPastePosMap.get("startPos"),pos2= tempPastePosMap.get("endPos");
-        if (!PlaceBlock.canPlaceBlock( pos1, pos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
-            return;
+//        BlockPos pos1 = pastePos1,pos2= pastePos2;
+        if (!PlaceBlock.canPlaceBlock( tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
+            return false;
         }
         this.PMD.getUndoDataMap().push(undoMap);
 
@@ -339,7 +350,7 @@ public class CopyBlock {
             BlockPos transfPos = pos.offset(this.playerPastePos);
             //判断放置的高度是否超过最低高度，超过则忽略
             if(transfPos.getY()< Config.LOWHeight.get()){
-                isLowHeight=true;
+//                isLowHeight=true;
                 continue;
             }
             if(!air && state== Blocks.AIR.defaultBlockState()){
@@ -348,39 +359,39 @@ public class CopyBlock {
             BlockState old = serverlevel.getBlockState(transfPos);
 
             undoMap.put(transfPos,old);
-            MySetBlock.setBlockNotUpdate(serverlevel, transfPos, old, state);
+            MySetBlock.shapeSetBlock(serverlevel, transfPos, state, isMask,maskFlag,maskMap,undoMap);
 //            serverlevel.setBlock(transfPos, state, 2);
         }
-        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),this.player);
-        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.ignore_low_hight"),this.player);
-        Util.recordPosLog("/a paste",player);
+        return true;
+
     }
 
 
     public void setPastePosMapFlip(Vec3i vec3i){
-        BlockPos start = this.pastePosMap.get("startPos");
-        BlockPos end = this.pastePosMap.get("endPos");
-        this.pastePosMap.put("startPos",new BlockPos(
-                start.getX()*vec3i.getX(),
-                start.getY()*vec3i.getY(),
-                start.getZ()*vec3i.getZ()
-        ));
-        this.pastePosMap.put("endPos",new BlockPos(
-                end.getX()*vec3i.getX(),
-                end.getY()*vec3i.getY(),
-                end.getZ()*vec3i.getZ()
-        ));
+        int x1 = this.pastePos1.getX()*vec3i.getX();
+        int y1 = this.pastePos1.getY()*vec3i.getY();
+        int z1 = this.pastePos1.getZ()*vec3i.getZ();
+        this.tempPastePos1 = new BlockPos(x1,y1,z1);
+        int x2 = this.pastePos2.getX()*vec3i.getX();
+        int y2 = this.pastePos2.getY()*vec3i.getY();
+        int z2 = this.pastePos2.getZ()*vec3i.getZ();
+        this.tempPastePos2 = new BlockPos(x2,y2,z2);
+
+
     }
 //计算粘帖时的pos1，pos2
-    public HashMap<String,BlockPos> getPastePosMap(Rotation rotation){
-        BlockPos start = this.pastePosMap.get("startPos");
-        BlockPos end = this.pastePosMap.get("endPos");
-        BlockPos startPos = new BlockPos(start.rotate(rotation)).offset(this.playerPastePos);
-        BlockPos endPos = new BlockPos(end.rotate(rotation)).offset(this.playerPastePos);
-        HashMap<String,BlockPos> map = new HashMap<>();
-        map.put("startPos",startPos);
-        map.put("endPos",endPos);
-        return map;
+    public void getPastePosAndRotation(Rotation rotation){
+//        BlockPos start = this.pastePosMap.get("startPos");
+//        BlockPos end = this.pastePosMap.get("endPos");
+        BlockPos startPos = new BlockPos(pastePos1.rotate(rotation)).offset(this.playerPastePos);
+        BlockPos endPos = new BlockPos(pastePos2.rotate(rotation)).offset(this.playerPastePos);
+//        HashMap<String,BlockPos> map = new HashMap<>();
+//        map.put("startPos",startPos);
+//        map.put("endPos",endPos);
+        this.tempPastePos1 = startPos;
+        this.tempPastePos2 = endPos;
+//        return map;
+
     }
 
 //    public Map<String, BlockPos> getTempPastePosMap() {
@@ -414,4 +425,66 @@ public class CopyBlock {
 //    public BlockPos getCopyPos2() {
 //        return copyPos2;
 //    }
+
+
+
+    //==========================================粘帖笔刷===================================================================
+
+    public void modifyPlayerCopyPos(){
+
+        int cx = (this.copyPos1.getX() + this.copyPos2.getX()) / 2;
+        int cy = (this.copyPos1.getY() + this.copyPos2.getY()) / 2;
+        int cz = (this.copyPos1.getZ() + this.copyPos2.getZ()) / 2;
+
+//        this.playerCopyPos = new BlockPos(cx, cy, cz);
+
+
+        Map<BlockPos, BlockState> tempCopyMap = new HashMap<>();
+
+        //遍历copyMap
+        for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
+            BlockPos pos = entry.getKey();
+            BlockState state = entry.getValue();
+            BlockPos newPos = pos.offset(playerCopyPos).offset(-cx, -cy, -cz);
+            tempCopyMap.put(newPos, state);
+        }
+        this.copyMap = tempCopyMap;
+
+        pastePos1 = this.copyPos1.offset(-cx,-cy, -cz);
+        pastePos2 = this.copyPos2.offset(-cx,-cy, -cz);
+
+    }
+
+    public boolean isAir() {
+        return air;
+    }
+
+    public void setAir(boolean air) {
+        this.air = air;
+    }
+
+
+    public boolean isMask() {
+        return isMask;
+    }
+
+    public boolean isMaskFlag() {
+        return maskFlag;
+    }
+
+    public void setMask(boolean flag) {
+        this.isMask = true;
+        this.maskFlag = flag;
+    }
+
+    public Map<BlockState, Boolean> getMaskMap() {
+        return maskMap;
+    }
+
+    public void putMaskMap(BlockState blockState) {
+        this.maskMap.put(blockState, false);
+    }
+    public void initMaskMap() {
+        this.maskMap = new HashMap<>();
+    }
 }

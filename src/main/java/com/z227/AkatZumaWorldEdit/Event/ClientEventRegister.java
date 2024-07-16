@@ -2,10 +2,13 @@ package com.z227.AkatZumaWorldEdit.Event;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.brushPacket.C2SUseBrush;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -15,10 +18,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -28,6 +33,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Map;
 
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -158,6 +165,37 @@ public class ClientEventRegister {
             scrollAddPos(player, event);
         }
     }
+
+    @SubscribeEvent
+    public static void RightClickAir(PlayerInteractEvent.RightClickEmpty event) {
+        brushEvent(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void RightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if(event.getLevel().isClientSide()){
+            brushEvent(event.getEntity());
+        }
+    }
+
+
+    public static void brushEvent(Player player) {
+
+//        Player player = event.getEntity();
+//        if (player == null)return;
+
+        ItemStack itemstack = player.getMainHandItem();
+        Item item = itemstack.getItem();
+        PlayerMapData PMD = Util.getPMD(player);
+        Map<Item, BrushBase> brushMap = PMD.getBrushMap();
+        if (brushMap.isEmpty()) return;
+        if (brushMap.get(item) == null) return;
+
+        BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player,120);
+        BlockPos blockPos = blockHitResult.getBlockPos();
+        if(player.level().getBlockState(blockPos).isAir()) return;
+        NetworkingHandle.INSTANCE.sendToServer(new C2SUseBrush(blockPos));
+}
 
 
 //    @SubscribeEvent

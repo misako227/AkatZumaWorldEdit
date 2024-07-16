@@ -177,7 +177,7 @@ public class BindInvPosCommand {
 
         if(setSingleBlock(world, blockPos, blockState, player, queryFlag)){
 //            world.setBlock(blockPos, blockState, 16);
-            MySetBlock.setBlockNotUpdate(world, blockPos,Blocks.AIR.defaultBlockState(), blockState);
+            MySetBlock.setBlockNotUpdate(world, blockPos,world.getBlockState(blockPos), blockState);
         }
 
     }
@@ -206,9 +206,18 @@ public class BindInvPosCommand {
                 return false;
             }
 
+            //检查是否替换成本MOD的建筑耗材方块
+            blockName = PlaceBlock.isReplaceToBuildItem(player,blockName,blackWhiteMap);
+            if(blockName.equals("akatzumaworldedit:building_consumable") ){
+                blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+            }
+
             List<Map<Integer, Integer>> blockInInvMap = null;
-            if(!player.isCreative()){
-                blockInInvMap = PlaceBlock.checkInv(blockName, n, 1, player, descriptBlockName);
+            if(n > 0 && !player.isCreative()){
+                blockInInvMap = PlaceBlock.checkInv(blockName, 1, 1, player, blockState);
+                if (blockInInvMap == null ) {
+                    return false;
+                }
             }
 
 
@@ -218,14 +227,13 @@ public class BindInvPosCommand {
                 AkatZumaWorldEdit.sendAkatMessage(component,player);
                 return false;
             }
-            if (blockInInvMap == null ) {
-                return false;
-            }
+
 
 
             //扣除背包
-            PlaceBlock.removeItemInPlayerInv(blockInInvMap, 1, 1, player);
-
+            if(blockInInvMap!=null) {
+                PlaceBlock.removeItemInPlayerInv(blockInInvMap, 1, 1, player);
+            }
 
             component = Component.translatable("chat.akatzuma.set.success")
                     .append(descriptBlockName.withStyle(ChatFormatting.GREEN));

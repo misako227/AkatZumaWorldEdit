@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.lighting.LightEngine;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -23,6 +24,25 @@ public class MySetBlock {
             setBlockState(world,pos,blockState,false);
             sendBlockUpdated((ServerLevel) world,pos);
         }
+    }
+
+    public static void shapeSetBlock(@NotNull Level world, BlockPos pos, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap, Map<BlockPos, BlockState> undoMap) {
+
+        BlockState old = world.getBlockState(pos);
+        if (old == blockState) return;
+        if(isMask){
+            if(maskFlag && maskMap.get(old) == null) {
+                return;
+            }else if(!maskFlag && maskMap.get(old) != null){
+                return;
+            }
+
+        }
+
+        undoMap.putIfAbsent(pos, old);
+        setBlockState(world,pos,blockState,false);
+        sendBlockUpdated((ServerLevel) world,pos);
+
     }
 
 
@@ -39,7 +59,7 @@ public class MySetBlock {
     public static void setBlockNotUpdateAddUndo(ServerLevel world, BlockPos pos, BlockState blockState,Map undoMap) {
         BlockState old = world.getBlockState(pos);
         undoMap.putIfAbsent(pos, old);
-        world.setBlock(pos,blockState, 16);
+//        world.setBlock(pos,blockState, 16);
 //        world.sendBlockUpdated(pos, old,blockState,16);
         if(old != blockState){
 //            chunkSetBlock(world,pos,blockState);
@@ -55,43 +75,43 @@ public class MySetBlock {
     }
 
 
-    public static void chunkSetBlock(Level world, BlockPos pos, BlockState blockState){
-        LevelChunk levelchunk = world.getChunkAt(pos);
-        int i = pos.getY();
-        LevelChunkSection levelChunkSection = levelchunk.getSection(levelchunk.getSectionIndex(i));
-        int j = pos.getX() & 15;
-        int k = i & 15;
-        int l = pos.getZ() & 15;
-
-        BlockState oldState = levelChunkSection.setBlockState(j, k, l, blockState, false);
-
-        boolean flag = levelChunkSection.hasOnlyAir();
-        boolean flag1 = levelChunkSection.hasOnlyAir();
-        if (flag != flag1) {
-            levelchunk.getLevel().getChunkSource().getLightEngine().updateSectionStatus(pos, flag1);
-        }
-        if (LightEngine.hasDifferentLightProperties(world, pos, oldState, blockState)) {
-            ProfilerFiller profilerfiller = levelchunk.getLevel().getProfiler();
-            profilerfiller.push("updateSkyLightSources");
-            levelchunk.getSkyLightSources().update(levelchunk, j, i, l);
-            profilerfiller.popPush("queueCheckLight");
-            levelchunk.getLevel().getChunkSource().getLightEngine().checkBlock(pos);
-            profilerfiller.pop();
-        }
-
-        //移除方块实体
-        boolean flag2 = oldState.hasBlockEntity();
-        Block block = blockState.getBlock();
-        if (!levelchunk.getLevel().isClientSide) {
-            oldState.onRemove(levelchunk.getLevel(), pos, blockState, false);
-        } else if ((!oldState.is(block) || !blockState.hasBlockEntity()) && flag2) {
-            levelchunk.removeBlockEntity(pos);
-        }
-
-        levelchunk.setUnsaved(true);
-
-        
-    }
+//    public static void chunkSetBlock(Level world, BlockPos pos, BlockState blockState){
+//        LevelChunk levelchunk = world.getChunkAt(pos);
+//        int i = pos.getY();
+//        LevelChunkSection levelChunkSection = levelchunk.getSection(levelchunk.getSectionIndex(i));
+//        int j = pos.getX() & 15;
+//        int k = i & 15;
+//        int l = pos.getZ() & 15;
+//
+//        BlockState oldState = levelChunkSection.setBlockState(j, k, l, blockState, false);
+//
+//        boolean flag = levelChunkSection.hasOnlyAir();
+//        boolean flag1 = levelChunkSection.hasOnlyAir();
+//        if (flag != flag1) {
+//            levelchunk.getLevel().getChunkSource().getLightEngine().updateSectionStatus(pos, flag1);
+//        }
+//        if (LightEngine.hasDifferentLightProperties(world, pos, oldState, blockState)) {
+//            ProfilerFiller profilerfiller = levelchunk.getLevel().getProfiler();
+//            profilerfiller.push("updateSkyLightSources");
+//            levelchunk.getSkyLightSources().update(levelchunk, j, i, l);
+//            profilerfiller.popPush("queueCheckLight");
+//            levelchunk.getLevel().getChunkSource().getLightEngine().checkBlock(pos);
+//            profilerfiller.pop();
+//        }
+//
+//        //移除方块实体
+//        boolean flag2 = oldState.hasBlockEntity();
+//        Block block = blockState.getBlock();
+//        if (!levelchunk.getLevel().isClientSide) {
+//            oldState.onRemove(levelchunk.getLevel(), pos, blockState, false);
+//        } else if ((!oldState.is(block) || !blockState.hasBlockEntity()) && flag2) {
+//            levelchunk.removeBlockEntity(pos);
+//        }
+//
+//        levelchunk.setUnsaved(true);
+//
+//
+//    }
 
     public static BlockState setBlockState(Level world, BlockPos pPos, BlockState pState, boolean pIsMoving) {
         LevelChunk levelchunk = world.getChunkAt(pPos);

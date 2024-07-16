@@ -1,7 +1,5 @@
 [toc]
-
 <br>
-
 
 作者：[5中生有](https://center.mcmod.cn/60332/) 、AkatZuma、[くじょう-アイ](https://center.mcmod.cn/131109/)
 
@@ -9,21 +7,21 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 ### 指令列表
 
-|  指令   | 描述  |
-|  ----  | ----  |
-| /a set | 设置选区内方块 |
-| /a stack      | 堆叠选区内方块 |
-| /a copy      | 复制 |
-| /a paste      | 粘帖 |
-| /a flip      | 翻转复制的内容 |
-| /a replace      | 替换 |
-| /a line      | 连线 |
-| /a undo      | 撤销 |
-| /a redo      | 撤销undo |
-| /a cyl        | 实心圆形/圆柱体 |
-| /a hcyl        | 空心圆形/圆柱体 |
-| /a sphere     | 球 |
-| /a ellipse    | 椭圆 |
+ 指令   | 描述  |
+ ----  | ----  |
+/a set | 设置选区内方块 |
+/a stack      | 堆叠选区内方块 |
+/a copy      | 复制 |
+/a paste      | 粘帖 |
+/a flip      | 翻转复制的内容 |
+/a replace      | 替换 |
+/a line      | 连线 |
+/a undo      | 撤销 |
+/a redo      | 撤销undo |
+/a cyl        | 实心圆形/圆柱体 |
+/a hcyl        | 空心圆形/圆柱体 |
+/a sphere     | 球 |
+/a ellipse    | 椭圆 |
 
 | 管理员指令      |  |
 |  ----  | ----  |
@@ -44,7 +42,8 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 
 ### 快捷键
-`ctrl + u` 撤销（undo）
+<kbd>ctrl</kbd> + <kbd>u</kbd> 撤销（undo）
+
 
 
 ### 扣除背包
@@ -62,9 +61,12 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 #### 选区工具
 使用本MOD的选区工具，`左键`选取第一个点，`右键`选取第二个点。
 
-`左/右键`空气选择`玩家头部位置`的点位
-`Ctrl+滚轮`扩大/缩小选区位置1（根据玩家朝向判断）
-`Alt+滚轮`扩大/缩小选区位置2
+ 
+<kbd>左/右键</kbd>空气选择`玩家头部位置`的点位
+
+<kbd>Ctrl+滚轮</kbd>扩大/缩小选区位置1（根据玩家朝向判断）
+
+<kbd>Alt+滚轮</kbd>扩大/缩小选区位置2
 
 ![wood.jpg](img/wood.jpg)
 
@@ -166,7 +168,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 
 #### /a copy 复制
-复制选区内的方块，使用`/a paste` 粘帖
+
+* 复制选区内的方块，使用`/a paste` 粘帖
+* 手拿本模组的投影工具来显示投影，可以更方便的粘帖
 > 复制时候玩家的站位会影响粘帖的位置和翻转，粘帖时候会根据玩家朝向来粘帖
 * <font color='red'>注意</font>： 不会复制NBT属性，比如箱子里面的数据等，只复制方块状态
 
@@ -189,7 +193,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 <br>
 
 #### /a paste 粘帖
-`/a flip [-a]`
+`/a paste [-a]`
 * 会根据玩家朝向来旋转复制的内容粘帖
 * `-a` （选填参数）粘帖的时候忽略空气
 
@@ -198,7 +202,10 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 
 #### /a replace 替换
-`/a replace <被替换的方块> <替换成的方块>`
+`/a replace <方块1> <方块2>`
+
+* 把选区内的`方块1`替换成`方块2`
+
 <br>
 - - -
 

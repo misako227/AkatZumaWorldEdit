@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID,bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModNetworkEvent {
 
+
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         var gen = event.getGenerator();
@@ -46,7 +47,10 @@ public class ModNetworkEvent {
     public static void onCommonSetup(FMLCommonSetupEvent event) {
 //        event.enqueueWork(NetworkingHandle::register);
         NetworkingHandle.register();
+
     }
+
+
 
 
 

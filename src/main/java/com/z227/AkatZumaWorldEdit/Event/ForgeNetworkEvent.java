@@ -10,10 +10,10 @@ import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
+import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -153,42 +153,39 @@ public class ForgeNetworkEvent {
     //左键点击方块
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        BlockPos pos =  event.getPos();
+        Level world = event.getLevel();
+        if(!world.isClientSide) return;
+
         Player player = event.getEntity();
-        if(player==null)return;
+//        if(player==null)return;
         Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
         if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
-        BlockPos pos =  event.getPos();
-        Level world = event.getLevel();
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
-
+        PlayerMapData PMD = Util.getPMD(player);
 
 
         if(item instanceof QueryBlockStateItem){
-            if(world.isClientSide){
-                if(player.getCooldowns().isOnCooldown(item))return;
-                player.getCooldowns().addCooldown(item, 10);
-                queryBlock(world, pos, player, PMD);
-            }
+            if(player.getCooldowns().isOnCooldown(item))return;
+            player.getCooldowns().addCooldown(item, 10);
+            queryBlock(world, pos, player, PMD);
 
             return;
         }
         if(item instanceof WoodAxeItem){
-            WoodAxeItem.clickPos(world,pos, player,true );
+            NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
+            WoodAxeItem.clickPos(world,pos,player, true );
             return;
         }
         if(item instanceof ProjectorItem){
-            if(world.isClientSide){
-                if(player.getCooldowns().isOnCooldown(item))return;
-                player.getCooldowns().addCooldown(item, 10);
 
-                LocalPlayer Lplayer = Minecraft.getInstance().player;
-                if (Lplayer != null) {
-                    Lplayer.connection.sendCommand("a copy");
-                }
-            }
+            if(player.getCooldowns().isOnCooldown(item))return;
+            player.getCooldowns().addCooldown(item, 10);
+
+            SendCopyMessage.sendCommand("a copy");
+
             return;
 
         }

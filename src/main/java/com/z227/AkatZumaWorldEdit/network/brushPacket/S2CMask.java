@@ -1,14 +1,15 @@
-package com.z227.AkatZumaWorldEdit.network;
+package com.z227.AkatZumaWorldEdit.network.brushPacket;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,49 +18,51 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class S2CSphere{
-    int radius;
-    boolean hollow;
-    BlockState blockState;
+public class S2CMask{
 
-    public S2CSphere(FriendlyByteBuf buffer) {
+    BlockState blockState;
+    boolean maskFlag;
+
+    public S2CMask(FriendlyByteBuf buffer) {
         this.blockState = buffer.readById(Block.BLOCK_STATE_REGISTRY);
-        this.radius = buffer.readInt();
-        this.hollow = buffer.readBoolean();
+        this.maskFlag = buffer.readBoolean();
 
     }
 
-    public S2CSphere(BlockState blockState,int radius, boolean hollow) {
+    public S2CMask(BlockState blockState, boolean maskFlag) {
         this.blockState = blockState;
-        this.radius = radius;
-        this.hollow = hollow;
+        this.maskFlag = maskFlag;
+
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeId(Block.BLOCK_STATE_REGISTRY, this.blockState);
-        buf.writeInt(this.radius);
-        buf.writeBoolean(this.hollow);
+        buf.writeBoolean(maskFlag);
 
     }
 
     public void handler(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            sphere(blockState, radius, hollow);
-        });
+        ctx.get().enqueueWork(this::mask);
         ctx.get().setPacketHandled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void sphere(BlockState blockState,int radius, boolean hollow){
-//        System.out.println("radius:"+radius+"hollow:"+hollow);
-//        System.out.println("blockState:"+blockState);
+    public void mask(){
         Player player = Minecraft.getInstance().player;
-        Level level = Minecraft.getInstance().level;
         PlayerMapData PMD = Util.getPMD(player);
-//        ShapeBase shapeBase = new ShapeBase(PMD,level,player,blockState,radius, 0,hollow, "sphere");
-        Item item = player.getMainHandItem().getItem();
-        PMD.getBrushMap().put(item, null);
+        if(!Minecraft.getInstance().isLocalServer()){
+            Item item = player.getMainHandItem().getItem();
+            BrushBase BrushBase =  PMD.getBrushMap().get(item);
 
-        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.bind_pos"), player);
+            BrushBase.putMaskMap(blockState);
+            BrushBase.setMaskFlag(maskFlag);
+
+        }
+
+        Component blockName = blockState.getBlock().getName();
+
+        AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+                .append(Component.translatable("chat.akatzuma.success.add_viplayer")).withStyle(ChatFormatting.GREEN)
+                .append(blockName), player);
     }
 }

@@ -51,7 +51,7 @@ public class QueryBlockStateItem extends Item{
                 return super.use(pLevel, pPlayer, pUsedHand);
             }
             PlayerMapData PMD = Util.getPMD(pPlayer);
-            pPlayer.getCooldowns().addCooldown(this, 10);
+            pPlayer.getCooldowns().addCooldown(this, 5);
             if(Util.isDownCtrl()){
 
 //                Component component;
@@ -103,7 +103,7 @@ public class QueryBlockStateItem extends Item{
             BlockPos placePos = context.getClickedPos().relative(context.getClickedFace());
             PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
-            player.getCooldowns().addCooldown(this, 10);
+            player.getCooldowns().addCooldown(this, 5);
             if(Util.isDownCtrl()){
 
 

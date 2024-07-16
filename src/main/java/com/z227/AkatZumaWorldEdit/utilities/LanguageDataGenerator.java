@@ -80,8 +80,8 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.success.paste", "§a 粘帖成功，可以使用§d/a undo§f指令撤销操作");
             this.add("chat.akatzuma.success.stack", "§a 堆叠成功，可以使用§d/a undo§f指令撤销操作");
 
-            this.add("chat.akatzuma.success.add_viplayer", "添加成功:");
-            this.add("chat.akatzuma.success.del_viplayer", "删除成功:");
+            this.add("chat.akatzuma.success.add_viplayer", "添加成功 ");
+            this.add("chat.akatzuma.success.del_viplayer", "删除成功 ");
             this.add("chat.akatzuma.error.not_viplayer", "没有找到:");
 
             this.add("chat.akatzuma.set.success", "已放置方块");
@@ -97,6 +97,13 @@ public class LanguageDataGenerator {
             this.add("hud.akatzuma.query_mode_2", "替换");
             this.add("hud.akatzuma.query_block1", "方块：");
             this.add("hud.akatzuma.query_block2", "替换：");
+
+            this.add("chat.akatzuma.mask_null", "§c 当前物品没有绑定笔刷");
+
+            this.add("hud.akatzuma.mask_mode_white", "白名单");
+            this.add("hud.akatzuma.mask_mode_black", "§c黑名单");
+            this.add("chat.akatzuma.error.brush_air", "§c 绑定失败，请使用其他物品");
+            this.add("chat.akatzuma.error.unbind", "§c 当前物品没有绑定笔刷");
 
 
             this.add("chat.akatzuma.success.bind_pos", "§a 绑定成功");

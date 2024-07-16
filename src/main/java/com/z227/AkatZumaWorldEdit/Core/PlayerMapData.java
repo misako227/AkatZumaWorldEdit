@@ -50,6 +50,7 @@ public class PlayerMapData {
     }
 
     public Map<Item, BrushBase> BrushMap;
+    public Map<Item, BrushBase> BrushMapClient;
 
 
     public PlayerMapData() {
@@ -60,6 +61,7 @@ public class PlayerMapData {
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
         this.BrushMap = new HashMap<>();
+        this.BrushMapClient = new HashMap<>();
         this.queryBlockState = Blocks.AIR.defaultBlockState();
         this.replaceBlockState = Blocks.AIR.defaultBlockState();
         this.queryFlag = 1;
@@ -77,6 +79,8 @@ public class PlayerMapData {
     public Map<Item, BrushBase> getBrushMap() {
         return BrushMap;
     }
+
+
 
     public BlockPos getTempPos() {
         return tempPos;

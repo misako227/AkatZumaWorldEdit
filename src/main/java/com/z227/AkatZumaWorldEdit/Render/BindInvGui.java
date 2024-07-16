@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Render;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.BindInventoryItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
@@ -33,6 +34,11 @@ public class BindInvGui {
     public static Component HUDdesc1 = Component.translatable("hud.akatzuma.right");
     public static Component HUDdesc2 = Component.translatable("hud.akatzuma.ctrl_right");
 
+//    public static Component BrushShapeHUD = Component.translatable("hud.akatzuma.brush_shape");
+//    public static Component BrushMaskModeHUD = Component.translatable("hud.akatzuma.mask_mode");
+    public static Component BrushMaskModeWhite = Component.translatable("hud.akatzuma.mask_mode_white");
+    public static Component BrushMaskModeBlack = Component.translatable("hud.akatzuma.mask_mode_black");
+
     public static final IGuiOverlay InvPosHUD = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player == null) return;
@@ -40,18 +46,41 @@ public class BindInvGui {
 
         PlayerMapData PMD = Util.getPMD(player);
         if(item instanceof BindInventoryItem){
-            renderInvPosHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, Util.getPMD(player));
+            renderInvPosHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, PMD);
             return;
         };
         if(item instanceof QueryBlockStateItem){
-            renderQueryItemHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, Util.getPMD(player));
+            renderQueryItemHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, PMD);
             return;
         };
+
+        if(PMD.getBrushMap().isEmpty()) return;
+        BrushBase brushBase =  PMD.getBrushMap().get(item);
+        if(brushBase == null) return;
+        renderBrushHUD(gui, guiGraphics, partialTick, screenWidth, screenHeight, brushBase);
 
 
 
 
     });
+
+    private static void renderBrushHUD(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight, BrushBase brushBase) {
+        int height = guiGraphics.guiHeight();
+
+
+        guiGraphics.drawString(gui.getFont(),brushBase.getShape(),3, height - (gui.getFont().lineHeight * 6) - 4, 0xffffff);     //形状
+        guiGraphics.drawString(gui.getFont(),brushBase.isMaskFlag() ? BrushMaskModeWhite : BrushMaskModeBlack, 3, height - (gui.getFont().lineHeight * 5) - 4, 0xffffff);     // 右键
+
+
+//todo
+        if(brushBase.getMaskMap() == null)return;
+        int n = 0;
+        for (BlockState blockState : brushBase.getMaskMap().keySet()){
+            guiGraphics.renderItem(blockState.getBlock().asItem().getDefaultInstance(),3 + n * 17, height - 40 );
+            n++;
+        }
+
+    }
 
     @SubscribeEvent
     public static void onRenderText(RegisterGuiOverlaysEvent event){
