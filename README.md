@@ -22,6 +22,9 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 /a hcyl        | 空心圆形/圆柱体 |
 /a sphere     | 球 |
 /a ellipse    | 椭圆 |
+/a brush      | 笔刷 |
+/a mask      | 蒙版 |
+/a brush unbind | 解除绑定笔刷 |
 
 | 管理员指令      |  |
 |  ----  | ----  |
