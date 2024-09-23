@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos2;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -53,6 +54,9 @@ public class WoodAxeItem extends Item {
 
         BlockPos blockPos2 =BlockPos.containing(pPlayer.getEyePosition());
         clickPos(pLevel,blockPos2, pPlayer,false );
+        if(pLevel.isClientSide()){
+            RenderLineBox.updateVertexBuffer();
+        }
         return super.use(pLevel, pPlayer, pUsedHand);
 
     }
@@ -103,11 +107,11 @@ public class WoodAxeItem extends Item {
                 component = Component.translatable("chat.item.wood_axe.right");
                 if (pwm.getPos1() !=null) pos2 = pwm.getPos1();
             }
+
         String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
-//        if(player.isLocalPlayer()){}
         msg = msg.replaceFirst("^BlockPos", "§5");
-        //判断是客户端
-//        if(player.isLocalPlayer()){
+        Util.logDebug(player,component.getString()+msg);
+
         if(player.isLocalPlayer())return false;
 
             if(pos2!=null){
@@ -118,8 +122,7 @@ public class WoodAxeItem extends Item {
 
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
-//        }
-        Util.logDebug(player,component.getString()+msg);
+
         return true;
     }
 
@@ -135,7 +138,7 @@ public class WoodAxeItem extends Item {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
-        if(!level.isClientSide())return InteractionResult.SUCCESS;
+//        if(!level.isClientSide())return InteractionResult.SUCCESS;
 
         BlockPos blockPos2 = context.getClickedPos();
 //        Player player = context.getPlayer();
@@ -144,7 +147,9 @@ public class WoodAxeItem extends Item {
 
         NetworkingHandle.INSTANCE.sendToServer(new C2SPos2(blockPos2));
         WoodAxeItem.clickPos(level,blockPos2,context.getPlayer(), false );
-
+        if(level.isClientSide()){
+            RenderLineBox.updateVertexBuffer();
+        }
 
         return InteractionResult.SUCCESS;
     }

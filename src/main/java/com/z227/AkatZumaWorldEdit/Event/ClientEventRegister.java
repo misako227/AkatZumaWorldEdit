@@ -4,9 +4,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
+import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.C2SUseBrush;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
@@ -74,9 +77,10 @@ public class ClientEventRegister {
         ItemStack itemStack =  event.getItemStack();
         Item item = itemStack.getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
-
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = (LocalPlayer) event.getEntity();
+//        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
+            PlayerMapData PMD = Util.getPMD(player);
             if(item instanceof WoodAxeItem ){
                 player.connection.sendCommand("a pos1");
                 return;
@@ -87,7 +91,7 @@ public class ClientEventRegister {
             }
             //查询空气
             if(item instanceof QueryBlockStateItem){
-                PlayerMapData PMD = Util.getPMD(player);
+
 //                NetworkingHandle.INSTANCE.sendToServer(new SendToServer(0));
                 BlockState blockState = Blocks.AIR.defaultBlockState();
                 if(Util.isDownCtrl()){
@@ -104,6 +108,18 @@ public class ClientEventRegister {
                 AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
                 return;
             }
+
+            if(item instanceof LineItem){
+                if(Util.isDownCtrl()){
+                    LineItemEvent.onItemCtrlLeftAir(player, PMD.getLineBase());
+                    return;
+                }
+
+                LineItemEvent.onItemLeftAir(player, PMD.getLineBase());
+                return;
+            }
+
+
 
         }
     }
@@ -168,7 +184,17 @@ public class ClientEventRegister {
 
     @SubscribeEvent
     public static void RightClickAir(PlayerInteractEvent.RightClickEmpty event) {
-        brushEvent(event.getEntity());
+        Player player = event.getEntity();
+//        ItemStack itemstack = player.getMainHandItem();
+//        Item item = itemstack.getItem();
+//        PlayerMapData PMD = Util.getPMD(player);
+//
+//        if(item instanceof LineItem){
+//            LineItemEvent.onItemRightAir(event, (LocalPlayer) player, PMD);
+//            return;
+//        }
+
+        brushEvent(player);
     }
 
     @SubscribeEvent
@@ -198,35 +224,6 @@ public class ClientEventRegister {
 }
 
 
-//    @SubscribeEvent
-//    public static void onMouseDragged(TickEvent.ClientTickEvent event) {
-//        Minecraft mc = Minecraft.getInstance();
-//        LocalPlayer player = mc.player;
-//
-//        if (player == null)return;
-//
-//        Item item = player.getMainHandItem().getItem();
-//        PlayerMapData PMD = Util.getPMD(player);
-//        if(PMD.getBrushMap().get(item) == null)return;
-//
-//        if(mc.options.keyAttack.isDown()){
-//            Vec3 playerEyePos = player.getEyePosition();
-//            BlockPos toEndPos =  PlayerUtil.getPlayerPOVHitEnd(player, 50);
-//
-////            List<BlockPos> linePosList = LineCommand.drawLine(BlockPos.containing(playerEyePos), toEndPos); //玩家到最大点位之间的所有坐标
-//            BlockPos endPos;
-//            Level level = player.level();
-//            BlockHitResult endBlockPos2 = level.clip(new ClipContext(playerEyePos, new Vec3(toEndPos.getX(), toEndPos.getY(), toEndPos.getZ()), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-//            BrushBase brushBase = PMD.getBrushMap().get(item);
-//            Map<BlockPos, Byte> shapePosMap= brushBase.getShapePosMap();
-//            brushBase.getShapeBase().setPlayerPos(endBlockPos2.getBlockPos());
-//            brushBase.getShapeBase().sphereProjection(shapePosMap);  //生成坐标给渲染投影使用
-//        }
-//
-//
-//    }
-
-
 
 
     public static void sendScrollEndPos(LocalPlayer player, InputEvent.Key event) {
@@ -240,6 +237,7 @@ public class ClientEventRegister {
             if(event.getAction() == GLFW.GLFW_RELEASE){
                 if(pos1 == null || !PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos1 " + Util.getPos(pos1));
+//                RenderLineBox.updateVertexBuffer();
                 PMD.setUpdatePos(false);
                 return;
             }
@@ -253,6 +251,7 @@ public class ClientEventRegister {
             if(event.getAction() == GLFW.GLFW_RELEASE){
                 if(pos2 == null || !PMD.isUpdatePos()) return;
                 SendCopyMessage.sendCommand("a pos2 " + Util.getPos(pos2));
+//                RenderLineBox.updateVertexBuffer();
                 PMD.setUpdatePos(false);
                 return;
             }
@@ -287,6 +286,7 @@ public class ClientEventRegister {
             if(pos1 == null) return;
             PMD.setPos1(addPos(pos1, event.getScrollDelta(), player));
             PMD.setUpdatePos(true);
+            RenderLineBox.updateVertexBuffer();
             event.setCanceled(true);
             return;
         }
@@ -295,6 +295,7 @@ public class ClientEventRegister {
             if(pos2 == null) return;
             PMD.setPos2(addPos(pos2, event.getScrollDelta(), player));
             PMD.setUpdatePos(true);
+            RenderLineBox.updateVertexBuffer();
             event.setCanceled(true);
         }
     }

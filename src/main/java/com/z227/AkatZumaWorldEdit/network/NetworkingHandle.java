@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit.network;
 
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.*;
+import com.z227.AkatZumaWorldEdit.network.lineItemPacket.C2SPlaceCurvePacket;
 import com.z227.AkatZumaWorldEdit.network.messagePacket.S2CInventoryNotEnough;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos2;
@@ -51,6 +52,7 @@ public class NetworkingHandle {
         INSTANCE.registerMessage(9, C2SPos2.class, C2SPos2::toBytes, C2SPos2::new,C2SPos2::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         INSTANCE.registerMessage(10, S2CInventoryNotEnough.class, S2CInventoryNotEnough::toBytes, S2CInventoryNotEnough::new,S2CInventoryNotEnough::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         INSTANCE.registerMessage(11, S2CUnbind.class, S2CUnbind::toBytes, S2CUnbind::new,S2CUnbind::handler, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        INSTANCE.registerMessage(12, C2SPlaceCurvePacket.class, C2SPlaceCurvePacket::toBytes, C2SPlaceCurvePacket::new,C2SPlaceCurvePacket::handler, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
 
     public static <MSG> void sendToClient(MSG message , ServerPlayer player)

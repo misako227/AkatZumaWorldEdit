@@ -5,9 +5,12 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
+import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
@@ -153,9 +156,10 @@ public class ForgeNetworkEvent {
     //左键点击方块
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        BlockPos pos =  event.getPos();
+
         Level world = event.getLevel();
-        if(!world.isClientSide) return;
+        BlockPos pos =  event.getPos();
+        if(!world.isClientSide()) return;
 
         Player player = event.getEntity();
 //        if(player==null)return;
@@ -176,7 +180,9 @@ public class ForgeNetworkEvent {
         }
         if(item instanceof WoodAxeItem){
             NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
-            WoodAxeItem.clickPos(world,pos,player, true );
+            WoodAxeItem.clickPos(world,pos,player, true);
+            RenderLineBox.updateVertexBuffer();
+
             return;
         }
         if(item instanceof ProjectorItem){
@@ -189,6 +195,18 @@ public class ForgeNetworkEvent {
             return;
 
         }
+
+        if(item instanceof LineItem){
+            if(Util.isDownCtrl()){
+                LineItemEvent.onItemCtrlLeftAir((LocalPlayer) player, PMD.getLineBase());
+                return;
+            }
+
+            LineItemEvent.onItemLeftAir((LocalPlayer) player, PMD.getLineBase());
+            return;
+        }
+
+
     }
 
 

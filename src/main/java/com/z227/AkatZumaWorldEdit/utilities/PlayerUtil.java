@@ -56,4 +56,8 @@ public class PlayerUtil {
         return level.clip(new ClipContext(player.getEyePosition(), toEnd, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 
     }
+    public static BlockHitResult getPlayerPOVHitResult(Player player){
+        return getPlayerPOVHitResult(player, 120);
+    }
+
 }

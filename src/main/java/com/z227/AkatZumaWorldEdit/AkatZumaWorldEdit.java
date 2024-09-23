@@ -56,7 +56,7 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Item> Query_Item;
     public static final RegistryObject<Item> Projector_Item;
     public static final RegistryObject<Item> BindInventory;
-//    public static final RegistryObject<Item> Line_Item;
+    public static final RegistryObject<Item> Line_Item;
 
 
     public static final DeferredRegister<Block> BLOCKS;
@@ -71,7 +71,7 @@ public class AkatZumaWorldEdit{
         Query_Item = ITEMS.register("query_blockstate_item", () ->  new QueryBlockStateItem(new Item.Properties().stacksTo(1)));
         Projector_Item = ITEMS.register("projector", () ->  new ProjectorItem(new Item.Properties().stacksTo(1)));
         BindInventory = ITEMS.register("bind_inventory", () ->  new BindInventoryItem(new Item.Properties().stacksTo(1)));
-//        Line_Item = ITEMS.register("line", () ->  new LineItem(new Item.Properties().stacksTo(1)));
+        Line_Item = ITEMS.register("line", () ->  new LineItem(new Item.Properties().stacksTo(1)));
 
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));

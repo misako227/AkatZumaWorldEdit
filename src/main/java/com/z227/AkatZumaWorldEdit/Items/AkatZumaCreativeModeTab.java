@@ -24,7 +24,7 @@ public class AkatZumaCreativeModeTab {
                 output.accept(AkatZumaWorldEdit.Building_Consumable_Item.get());
                 output.accept(AkatZumaWorldEdit.Projector_Item.get());
                 output.accept(AkatZumaWorldEdit.BindInventory.get());
-//                output.accept(AkatZumaWorldEdit.Line_Item.get());
+                output.accept(AkatZumaWorldEdit.Line_Item.get());
             })
             .build()
     );

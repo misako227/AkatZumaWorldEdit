@@ -111,6 +111,9 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，请检查是否有权限或是否支持这个容器");
             this.add("chat.akatzuma.error.void_pos", "§c 无效坐标");
             this.add("chat.akatzuma.error.open_gui_fail", "§c 打开GUI失败");
+
+
+            this.add("chat.akatzuma.error.line_pos_inadequate", "§c 点位不够，请创建两个以上的点位");
         }
     }
 

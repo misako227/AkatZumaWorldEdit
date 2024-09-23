@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Core;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -17,16 +18,19 @@ import java.util.Map;
 
 public class PlayerMapData {
 
+    //选区工具
     private BlockPos pos1;
     private BlockPos pos2;
     private BlockPos tempPos;
-    private boolean isUpdatePos = false;
+    private boolean isUpdatePos = false;  // 是否更新pos1和pos2
 
+    //查询工具
     private boolean flag;
     private BlockState queryBlockState;
     private BlockState replaceBlockState;
     private int queryFlag;
 
+    //绑定工具
     private CompoundTag invPosNBT;
     private Map<String, BlockState> invPosMap;
     private BlockPos invPos;
@@ -39,7 +43,9 @@ public class PlayerMapData {
 
     private CopyBlock copyBlock;
     private CopyBlock copyBlockClient;
-//    private LineBase lineBase;
+
+    //连线工具
+    private LineBase lineBase;
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -50,7 +56,7 @@ public class PlayerMapData {
     }
 
     public Map<Item, BrushBase> BrushMap;
-    public Map<Item, BrushBase> BrushMapClient;
+
 
 
     public PlayerMapData() {
@@ -61,11 +67,20 @@ public class PlayerMapData {
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
         this.BrushMap = new HashMap<>();
-        this.BrushMapClient = new HashMap<>();
         this.queryBlockState = Blocks.AIR.defaultBlockState();
         this.replaceBlockState = Blocks.AIR.defaultBlockState();
         this.queryFlag = 1;
+        this.lineBase = new LineBase();
 
+    }
+
+
+    public LineBase getLineBase() {
+        return lineBase;
+    }
+
+    public void setLineBase(LineBase lineBase) {
+        this.lineBase = lineBase;
     }
 
     public boolean isUpdatePos() {

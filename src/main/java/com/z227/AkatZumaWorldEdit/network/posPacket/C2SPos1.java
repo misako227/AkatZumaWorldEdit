@@ -29,7 +29,7 @@ public class C2SPos1 {
 
     public void handler(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            WoodAxeItem.clickPos(ctx.get().getSender().serverLevel(), blockPos, ctx.get().getSender(), true );
+            WoodAxeItem.clickPos(ctx.get().getSender().serverLevel(), blockPos, ctx.get().getSender(), true);
         });
         ctx.get().setPacketHandled(true);
 
