@@ -139,6 +139,16 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 - - -
 
+
+#### 连线工具
+![curve_item.png](img/curve_item.png)
+
+![curve.jpg](img/curve.jpg)]
+
+<br>
+
+- - -
+
 ### 指令
 ```java
 //格式

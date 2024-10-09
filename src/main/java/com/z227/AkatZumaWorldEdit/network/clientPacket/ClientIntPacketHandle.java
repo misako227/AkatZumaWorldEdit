@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+;
 import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,7 @@ public class ClientIntPacketHandle {
 
     }
 
+    // 1|2
     @OnlyIn(Dist.CLIENT)
     public static void setClientPos(boolean b){
         Minecraft mc = Minecraft.getInstance();
@@ -56,6 +58,7 @@ public class ClientIntPacketHandle {
         RenderLineBox.updateVertexBuffer();
     }
 
+    // 3|4
     public static void setClientPosToTempPos(boolean b){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
@@ -70,11 +73,21 @@ public class ClientIntPacketHandle {
         Player player = mc.player;
         Level level = player.level();
 
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
-        CopyBlock copyBlock = new CopyBlock(PMD, player);
-        if(copyBlock.checkPosAddCopyMap(level, PMD)){
-            PMD.setCopyBlockClient(copyBlock);
+
+
+
+        PlayerMapData PMD = Util.getPMD(player);
+        if(!mc.isLocalServer()){
+            CopyBlock copyBlock = new CopyBlock(PMD, player);
+            copyBlock.checkPosAddCopyMap(level);
+            PMD.setCopyBlock(copyBlock);
+        }else{
+            CopyBlock copyBlock = PMD.getCopyBlock();
+            copyBlock.getClientCopyMap().clear();
+            copyBlock.checkPosAddCopyMap(level);
         }
+
+
     }
 
     public static void setClientFlip(boolean up){
@@ -83,9 +96,9 @@ public class ClientIntPacketHandle {
 
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        CopyBlock copyBlock = PMD.getCopyBlockClient();
+        CopyBlock copyBlock = PMD.getCopyBlock();
         if(copyBlock != null){
-            copyBlock.flip(up);
+            copyBlock.flip(up,true);
         }
 
 

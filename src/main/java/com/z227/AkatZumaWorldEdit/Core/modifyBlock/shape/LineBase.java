@@ -1,6 +1,6 @@
 package com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape;
 
-import com.z227.AkatZumaWorldEdit.Core.PosDirection;
+import com.z227.AkatZumaWorldEdit.Render.RenderCurveLineBox;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
@@ -11,14 +11,14 @@ import java.util.Set;
 public class LineBase {
     // 1:对角线 2:曲线
     private int type;
-    private List<BlockPos> posList;
+    private List<BlockPos> posList;  // 控制点位
     boolean rightFlag;      //右键状态，true为右键选中了一个点位
     int rightCheckedIndex;       //右键选中点位的索引
     BlockPos rightPos;      //右键选中点位的坐标
     int MAX_POINT_NUM = 50; // 最大点位数
     int max_step = 10;      // 最大步进数
 //    int max_interpolation = 1;     // 最大插值次数
-    public List<BlockPos> curvePosList;
+    public List<BlockPos> curvePosList;  // 根据控制点位生成的曲线点位
     List<BlockPos> innerCurvePosList;   // 内部曲线点位
     int minPosY;
 
@@ -32,6 +32,7 @@ public class LineBase {
         this.innerCurvePosList = new ArrayList<>();
     }
 
+    //服务端
     public LineBase(int type, List<BlockPos> posList){
 //        this();
         this.type = type;
@@ -74,12 +75,14 @@ public class LineBase {
                     }
                 }
                 this.curvePosList = generateBezierCurve(max_step);
+                RenderCurveLineBox.updateVertexBuffer();
                 return;
             }else{
                 //如果选中的还是原点位，则取消选中
                 if(pos.equals(rightPos)){
                     rightFlag = false;
                     this.rightPos = null;
+                    RenderCurveLineBox.updateVertexBuffer();
                     return;
                 }
                 //如果选中的是其他点位，则修改选中点位
@@ -97,6 +100,7 @@ public class LineBase {
                 this.rightPos = pos;
             }
         }
+        RenderCurveLineBox.updateVertexBuffer();
     }
 
     public void delPos()
@@ -118,6 +122,7 @@ public class LineBase {
             this.curvePosList = generateBezierCurve(max_step);
 //            updateCurvePosList(pos);
         }
+        RenderCurveLineBox.updateVertexBuffer();
     }
 
     public void delAllPos(){
@@ -126,6 +131,7 @@ public class LineBase {
         this.rightFlag = false;
         this.rightCheckedIndex = 0;
         this.rightPos = null;
+        RenderCurveLineBox.updateVertexBuffer();
 
     }
 
@@ -135,6 +141,7 @@ public class LineBase {
         if(!this.posList.contains(pos) && posList.size() < MAX_POINT_NUM){
             this.posList.add(0,pos);
             updateCurvePosList(pos);
+
         }
     }
 
@@ -152,6 +159,7 @@ public class LineBase {
     {
         updateMinPos(pos);
         this.curvePosList = generateBezierCurve(max_step);
+        RenderCurveLineBox.updateVertexBuffer();
     }
 
     public void updateMinPos(BlockPos pos)
@@ -371,20 +379,7 @@ public class LineBase {
         return maxDistance;
     }
 
-    public void placeCurve(){
-        int innerIndex = 0;
 
-        double yaw = 0;
-        for(BlockPos pos : curvePosList){
-            if(innerIndex == 0 ){
-                BlockPos direction = PosDirection.calcPosDirection(innerCurvePosList.get(0), innerCurvePosList.get(1));
-
-            }else{
-
-            }
-        }
-
-    }
 
 
 

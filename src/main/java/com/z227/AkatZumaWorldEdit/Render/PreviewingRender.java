@@ -1,6 +1,5 @@
 package com.z227.AkatZumaWorldEdit.Render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
@@ -12,14 +11,17 @@ import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +31,10 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.joml.Matrix4f;
 
+import java.util.BitSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -55,18 +60,22 @@ public class PreviewingRender {
 
         BlockPos pStart= PMD.getPos1(), pEnd = PMD.getPos2();
 
-        CopyBlock copyBlock = PMD.getCopyBlockClient();
-        PoseStack stack = event.getPoseStack();
+
+
 
             for (Entity entity : Minecraft.getInstance().level.entitiesForRendering()) {
                 if (entity instanceof LivingEntity) {
-                    //以下两项不知道做什么的，但是最好不要动 //builder
-                    VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
 
-//                    drawLineBox(vertexConsumer, stack, pStart, pEnd);
-                    RenderLineBox.renderBlocks(stack, pStart, pEnd,event.getProjectionMatrix());
+//                    VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+                    PoseStack stack = event.getPoseStack();
+                    Matrix4f  projectionMatrix = event.getProjectionMatrix();
+                    Vec3 view = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+
+
+                    RenderLineBox.renderBlockLine(stack, pStart, pEnd, projectionMatrix, view);
 
                     if(item instanceof ProjectorItem){
+                        CopyBlock copyBlock = PMD.getCopyBlock();
                         drawCopyBlock( copyBlock, stack, player);
                         return;
                     }
@@ -79,8 +88,10 @@ public class PreviewingRender {
 
                     //渲染连线工具
                     if (item instanceof LineItem){
-                        RenderLineBase.render(vertexConsumer, stack, player);
+//                        RenderCurveLine.render(vertexConsumer, stack, player);
+                        RenderCurveLineBox.renderBlockLine(stack, player, projectionMatrix, view);
                     }
+
 
                     return;
                 }
@@ -89,95 +100,32 @@ public class PreviewingRender {
 
     }
 
-//    public static void drawLineBox(VertexConsumer vertexConsumer, PoseStack stack,BlockPos pStart, BlockPos pEnd){
-//        if (pStart != null && pEnd != null) {
-//
-//
-//        //渲染
-//
-//        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-//        //关闭深度检测
-//        RenderSystem.disableDepthTest();
-//
-//        //获取标线AABB
-//        BlockPos p1 = new BlockPos(Math.min(pStart.getX(), pEnd.getX()), Math.min(pStart.getY(), pEnd.getY()), Math.min(pStart.getZ(), pEnd.getZ()));
-//        BlockPos p2 = new BlockPos(Math.max(pStart.getX(), pEnd.getX()) + 1, Math.max(pStart.getY(), pEnd.getY()) + 1, Math.max(pStart.getZ(), pEnd.getZ()) + 1);
-//        AABB aabb =  new AABB(p1, p2);
-//
-//        //坐标变换
-//        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-//        //渲染
-//        stack.pushPose();
-//        stack.translate( - camvec.x,  - camvec.y,  - camvec.z);
-//
-//
-//        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 48, 1, 167, 1);
-//        LevelRenderer.renderLineBox(stack, vertexConsumer, pStart.getX(),pStart.getY(),pStart.getZ(),pStart.getX()+1,pStart.getY()+1,pStart.getZ()+1, 170, 1, 1, 1);
-//        LevelRenderer.renderLineBox(stack, vertexConsumer, pEnd.getX(),pEnd.getY(),pEnd.getZ(),pEnd.getX()+1,pEnd.getY()+1,pEnd.getZ()+1, 1, 170, 170, 1);
-//
-//
-//        stack.popPose();
-//        RenderSystem.enableDepthTest();
-//        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-//
-//        }
-//
-//
-//    }
 
-    public static void drawBlock(PoseStack stack,BlockPos pos, BlockState blockState){
-        //关闭深度检测
-//        RenderSystem.disableDepthTest();
-        RenderSystem.enableDepthTest();
-        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        stack.pushPose();
-        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
-
-//        Minecraft mc = Minecraft.getInstance();
-
-//        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-//        ModelData modelData = Minecraft.getInstance().level.getModelDataManager().getAt(pos);
-
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                blockState,
-                stack,
-                Minecraft.getInstance().renderBuffers().bufferSource(),
-//                15728640,
-                15728880,
-
-//                OverlayTexture.NO_OVERLAY,
-                OverlayTexture.pack(3,10),
-//                OverlayTexture.NO_OVERLAY,
-
-                ModelData.EMPTY,
-//                modelData,
-
-                null
-//                RenderType.cutout()
-        );
-
-        RenderSystem.enableCull();
-        stack.popPose();
-
-//        RenderSystem.enableDepthTest();
-    }
 
 
 
 
     public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
         if(copyBlock == null) return;
-        int size = copyBlock.getCopyMap().size();
+        int size = copyBlock.getClientCopyMap().size();
         if(size == 0 || size > 100000) return;
+
+        VertexConsumer vertexConsumerB = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.cutout());
 
 
         copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
-        for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getCopyMap().entrySet()){
 
-            if(entry.getValue().is(Blocks.AIR)) continue;
+        RandomSource randomSource = RandomSource.create();
+        randomSource.setSeed(42L);
+        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Level level = Minecraft.getInstance().level;
+        for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getClientCopyMap().entrySet()){
+
+//            if(entry.getValue().is(Blocks.AIR)) continue;
 
             BlockPos pos = entry.getKey();
             //根据玩家朝向旋转复制内容
@@ -189,11 +137,42 @@ public class PreviewingRender {
                 RenderLiquidBlock.drawLiquid(stack,pos, state);
 
             }else{
-                drawBlock(stack, pos, state);
+                drawBlock(stack,vertexConsumerB, pos, state,level, randomSource,camvec);
             }
 
         }
+
     }
+
+    public static void drawBlock(PoseStack stack,VertexConsumer vertexConsumer,BlockPos pos,BlockState blockState,Level level,RandomSource randomSource,Vec3 camvec){
+
+        stack.pushPose();
+        stack.translate(pos.getX()-camvec.x, pos.getY()-camvec.y, pos.getZ()-camvec.z);
+
+        BakedModel bakedModel = RenderBlockTest.getBlockModel(blockState);
+        // 使用可变的BlockPos来减少对象创建，提高性能
+//        BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
+        BitSet bitSet = new BitSet(3);
+
+        for (Direction direction : Direction.values()) {
+            // 获取当前方向的四边形列表
+            List<BakedQuad> quads = bakedModel.getQuads(blockState, direction, randomSource, ModelData.EMPTY, null);
+            RenderBlockTest.renderModelFaceFlat(level, blockState, pos, 15728880,  655363, false, stack, vertexConsumer, quads, bitSet);
+
+        }
+
+
+        // 获取无方向的四边形列表
+        List<BakedQuad> quadsNoDirection = bakedModel.getQuads(blockState, null, randomSource, ModelData.EMPTY, null);
+        if (!quadsNoDirection.isEmpty()) {
+            // 渲染模型的无方向平面
+            RenderBlockTest.renderModelFaceFlat(level, blockState, pos, 15728880, 655363, true, stack, vertexConsumer, quadsNoDirection, bitSet);
+        }
+        stack.popPose();
+
+    }
+
+
 
 }
 

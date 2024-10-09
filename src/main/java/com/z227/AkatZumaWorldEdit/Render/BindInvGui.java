@@ -72,7 +72,7 @@ public class BindInvGui {
         guiGraphics.drawString(gui.getFont(),brushBase.isMaskFlag() ? BrushMaskModeWhite : BrushMaskModeBlack, 3, height - (gui.getFont().lineHeight * 5) - 4, 0xffffff);     // 右键
 
 
-//todo
+
         if(brushBase.getMaskMap() == null)return;
         int n = 0;
         for (BlockState blockState : brushBase.getMaskMap().keySet()){

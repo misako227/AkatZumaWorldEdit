@@ -10,7 +10,7 @@
 //@Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID,bus = Mod.EventBusSubscriber.Bus.FORGE)
 //public class PermissionEventRegister {
 //
-//    public static final PermissionNode<Boolean> use_set = new PermissionNode<>(AkatZumaWorldEdit.MODID, "akat.use_set",
+//    public static final PermissionNode<Boolean> use_set = new PermissionNode<>(AkatZumaWorldEdit.MODID, "akatzuma.check_inv",
 //            PermissionTypes.BOOLEAN, (player, uuid, context) -> player!=null && player.hasPermissions(2));
 //    @SubscribeEvent
 //    public static void permissionRegister(PermissionGatherEvent.Nodes event) {

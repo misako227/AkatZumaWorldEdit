@@ -68,7 +68,6 @@ public class ClientEventRegister {
 //        System.out.println(Minecraft.getInstance().options.keyAttack.isDown());
 //    }
 
-//
 
     //左键单击空气
     @SubscribeEvent
@@ -78,15 +77,16 @@ public class ClientEventRegister {
         Item item = itemStack.getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
         LocalPlayer player = (LocalPlayer) event.getEntity();
-//        LocalPlayer player = Minecraft.getInstance().player;
+
         if (player != null) {
             PlayerMapData PMD = Util.getPMD(player);
             if(item instanceof WoodAxeItem ){
-                player.connection.sendCommand("a pos1");
+                SendCopyMessage.sendCommand("a pos1");
+
                 return;
             }
             if(item instanceof ProjectorItem){
-                player.connection.sendCommand("a copy");
+                SendCopyMessage.sendCommand("a copy");
                 return;
             }
             //查询空气

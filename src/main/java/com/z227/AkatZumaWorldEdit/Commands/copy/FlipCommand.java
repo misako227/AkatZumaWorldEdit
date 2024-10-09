@@ -53,7 +53,7 @@ public class FlipCommand {
         if(!PlaceBlock.cheakFlag(PMD,player))return ;
         PMD.setFlag(false);
 
-        copyBlock.flip(up);
+        copyBlock.flip(up,false);
 
         // 设置标志位
         PMD.setFlag(true);

@@ -5,8 +5,6 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
-import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
-import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos2;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -138,15 +136,10 @@ public class WoodAxeItem extends Item {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
-//        if(!level.isClientSide())return InteractionResult.SUCCESS;
 
         BlockPos blockPos2 = context.getClickedPos();
-//        Player player = context.getPlayer();
-
-//        clickPos(level,blockPos2, player,false );
-
-        NetworkingHandle.INSTANCE.sendToServer(new C2SPos2(blockPos2));
-        WoodAxeItem.clickPos(level,blockPos2,context.getPlayer(), false );
+//        NetworkingHandle.INSTANCE.sendToServer(new C2SPos2(blockPos2));
+        clickPos(level,blockPos2,context.getPlayer(), false );
         if(level.isClientSide()){
             RenderLineBox.updateVertexBuffer();
         }

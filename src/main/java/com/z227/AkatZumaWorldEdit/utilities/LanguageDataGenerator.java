@@ -32,7 +32,7 @@ public class LanguageDataGenerator {
             this.add("item.akatzumaworldedit.projector", "§b投影");
             this.add("item.projector_item.desc1", "§a左键§f复制选区的建筑");
             this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
-            this.add("item.projector_item.desc3", "§6ctrl+右键§f忽略空气粘帖(/a paste -a)");
+            this.add("item.projector_item.desc3", "§6Ctrl+右键§f忽略空气粘帖(/a paste -a)");
             this.add("item.projector_item.desc4", "手持此物品可查看复制的投影");
             this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
             this.add("item.query_block_state.desc1", "§a左键§f方块查询方块状态");
@@ -88,9 +88,9 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");
             this.add("chat.action.copy", "点击复制: ");
 
-            this.add("hud.akatzuma.ctrl_scroll", "§actrl+滚轮§f切换");
+            this.add("hud.akatzuma.ctrl_scroll", "§aCtrl+滚轮§f切换");
             this.add("hud.akatzuma.right", "§6右键§f绑定箱子");
-            this.add("hud.akatzuma.ctrl_right", "§6ctrl+右键§f传送到绑定的坐标上");
+            this.add("hud.akatzuma.ctrl_right", "§6Ctrl+右键§f传送到绑定的坐标上");
 
             this.add("hud.akatzuma.query_mode", "模式：");
             this.add("hud.akatzuma.query_mode_1", "放置");
@@ -114,6 +114,14 @@ public class LanguageDataGenerator {
 
 
             this.add("chat.akatzuma.error.line_pos_inadequate", "§c 点位不够，请创建两个以上的点位");
+            this.add("item.akatzumaworldedit.line_item", "§b连线工具");
+            this.add("item.line_item.desc1", "§a 左键§f创建一个点位");
+            this.add("item.line_item.desc2", "§a Ctrl+左键§f在开头添加点位");
+            this.add("item.line_item.desc3", "§6 右键§f选中一个点位，选中后§6右键§f其他地方修改点位");
+            this.add("item.line_item.desc4", "§6 Ctrl+右键§f放置查询的方块");
+            this.add("item.line_item.desc5", "§6 Alt+右键§f删除选中的点位");
+            this.add("item.line_item.desc6", "§b Ctrl+Alt+右键§f删除所有点位");
+            this.add("chat.akatzuma.line.delall", "§a 已删除所有点位");
         }
     }
 

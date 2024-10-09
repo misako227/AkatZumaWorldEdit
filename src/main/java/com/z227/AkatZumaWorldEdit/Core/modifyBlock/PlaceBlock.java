@@ -380,7 +380,7 @@ public class PlaceBlock {
             }
 
 
-
+            //TODO 添加权限节点
             //检查背包 && 是否无限制放置
             if(checkInventory && n > 0 && !player.isCreative()){
 //            if(checkInventory && n > 0){
@@ -429,11 +429,14 @@ public class PlaceBlock {
             }
 
             //区块是否加载
-//            if (!world.hasChunkAt(pos1)) {
-//                MutableComponent component = Component.translatable("chat.akatzuma.error.chunk_not_loaded");
-//                AkatZumaWorldEdit.sendAkatMessage(component, player);
-//                return false;
-//            }
+            for (BlockPos pos : posList) {
+                if (!world.hasChunkAt(pos)) {
+                    MutableComponent component = Component.translatable("chat.akatzuma.error.chunk_not_loaded");
+                    AkatZumaWorldEdit.sendAkatMessage(component, player);
+                    return false;
+                }
+            }
+
 
 
             String blockName = BlockStateString.getBlockName(blockState);
@@ -465,7 +468,11 @@ public class PlaceBlock {
 
             //检查是否有放置权限
             for (BlockPos pos : posList) {
-                if(!isPlaceBlock(world, player, pos, blockState))return false;
+                if(!isPlaceBlock(world, player, pos, blockState)){
+                    Component component = Component.translatable("chat.akatzuma.error.not_permission_place");
+                    AkatZumaWorldEdit.sendAkatMessage(component,player);
+                    return false;
+                }
             }
 
 

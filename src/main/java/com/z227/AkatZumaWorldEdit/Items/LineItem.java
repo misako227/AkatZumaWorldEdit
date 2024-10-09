@@ -7,7 +7,6 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.lineItemPacket.C2SPlaceCurvePacket;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -31,8 +30,12 @@ public class LineItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-//        pTooltipComponents.add( Component.translatable("item.line_item.desc1"));
-
+        pTooltipComponents.add( Component.translatable("item.line_item.desc1"));
+        pTooltipComponents.add( Component.translatable("item.line_item.desc2"));
+        pTooltipComponents.add( Component.translatable("item.line_item.desc3"));
+        pTooltipComponents.add( Component.translatable("item.line_item.desc4"));
+        pTooltipComponents.add( Component.translatable("item.line_item.desc5"));
+        pTooltipComponents.add( Component.translatable("item.line_item.desc6"));
 
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
@@ -49,32 +52,7 @@ public class LineItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 
         if(pLevel.isClientSide()){
-            PlayerMapData PMD = Util.getPMD(pPlayer);
-            LineBase lineBase = PMD.getLineBase();
-            if(Util.isDownCtrl() && Util.isDownLAlt()){
-                lineBase.delAllPos();
-                return super.use(pLevel, pPlayer, pUsedHand);
-            }
-
-
-
-            if(Util.isDownLAlt()){
-                lineBase.delPos();
-                return super.use(pLevel, pPlayer, pUsedHand);
-            }
-            if(Util.isDownCtrl()){
-                List<BlockPos> posList = lineBase.getPosList();
-                if(posList.size() > 2){
-                    NetworkingHandle.INSTANCE.sendToServer(new C2SPlaceCurvePacket(PMD.getQueryBlockState(), posList));
-                }else{
-                    Component component = Component.translatable("chat.akatzuma.error.line_pos_inadequate");
-                    AkatZumaWorldEdit.sendAkatMessage(component, pPlayer);
-                }
-
-                return super.use(pLevel, pPlayer, pUsedHand);
-            }
-
-            LineItemEvent.onItemRightAir((LocalPlayer) pPlayer, lineBase);
+            right(pPlayer);
         }
 
         return super.use(pLevel, pPlayer, pUsedHand);
@@ -88,18 +66,44 @@ public class LineItem extends Item {
 
         if(pLevel.isClientSide()){
             Player pPlayer = context.getPlayer();
-            PlayerMapData PMD = Util.getPMD(pPlayer);
-            LineBase lineBase = PMD.getLineBase();
-            if(Util.isDownCtrl()){
-                lineBase.delPos();
-                return InteractionResult.SUCCESS;
-            }
-
-            LineItemEvent.onItemRightAir((LocalPlayer) pPlayer, lineBase);
-
-//            lineBase.get123();
+//            PlayerMapData PMD = Util.getPMD(pPlayer);
+//            LineBase lineBase = PMD.getLineBase();
+            right(pPlayer);
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    public static void right(Player pPlayer){
+        PlayerMapData PMD = Util.getPMD(pPlayer);
+        LineBase lineBase = PMD.getLineBase();
+
+        //删除所有点
+        if(Util.isDownCtrl() && Util.isDownLAlt()){
+            lineBase.delAllPos();
+            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.line.delall"), pPlayer);
+            return;
+        }
+
+        //alt + 右键，删除选中的点位
+        if(Util.isDownLAlt()){
+            lineBase.delPos();
+            return;
+        }
+
+        //ctrl + 右键，放置曲线
+        if(Util.isDownCtrl()){
+            List<BlockPos> posList = lineBase.getPosList();
+            if(posList.size() > 2){
+                NetworkingHandle.INSTANCE.sendToServer(new C2SPlaceCurvePacket(PMD.getQueryBlockState(), posList));
+            }else{
+                Component component = Component.translatable("chat.akatzuma.error.line_pos_inadequate");
+                AkatZumaWorldEdit.sendAkatMessage(component, pPlayer);
+            }
+            return;
+        }
+
+        //右键选中一个点位
+        LineItemEvent.onItemRightAir(pPlayer, lineBase);
     }
 }

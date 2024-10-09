@@ -2,7 +2,6 @@ package com.z227.AkatZumaWorldEdit.Render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
@@ -19,7 +18,7 @@ public class RenderLineBox {
         requestedRefresh = true;
     }
 
-    public static void renderBlocks(PoseStack stack, BlockPos pStart, BlockPos pEnd, Matrix4f mat4f) {
+    public static void renderBlockLine(PoseStack stack, BlockPos pStart, BlockPos pEnd, Matrix4f mat4f, Vec3 view) {
         if (pStart == null || pEnd == null) return;
         if (vertexBuffer == null || requestedRefresh) {
             requestedRefresh = false;
@@ -57,37 +56,39 @@ public class RenderLineBox {
             VertexBuffer.unbind();
         }
 
-            if (vertexBuffer != null) {
-                Vec3 view = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        if (vertexBuffer != null) {
+//            = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
 
-                //启动混合模式，控制颜色和深度值合并在一起，即RGB通道和透明度通道
-                GL11.glEnable(GL11.GL_BLEND);
-                //设置混合函数，设置混合函数是源颜色的透明通道和目标颜色的1-透明通道进行混合
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                //抗锯齿
-                GL11.glEnable(GL11.GL_LINE_SMOOTH);
-                //禁用深度测试
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
+            //启动混合模式，控制颜色和深度值合并在一起，即RGB通道和透明度通道
+            GL11.glEnable(GL11.GL_BLEND);
+            //设置混合函数，设置混合函数是源颜色的透明通道和目标颜色的1-透明通道进行混合
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            //抗锯齿
+            GL11.glEnable(GL11.GL_LINE_SMOOTH);
+            //禁用深度测试
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-                //设置渲染系统的着色器为位置颜色着色器，返回的是着色器对象
-                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            //设置渲染系统的着色器为位置颜色着色器，返回的是着色器对象
+//            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 //                PoseStack matrix = event.getPoseStack();
-                stack.pushPose();
-                stack.translate(-view.x, -view.y, -view.z);
+            stack.pushPose();
+            stack.translate(-view.x, -view.y, -view.z);
 
-                vertexBuffer.bind();
-                //绘制场景模型
-                vertexBuffer.drawWithShader(stack.last().pose(), mat4f, RenderSystem.getShader());
-                VertexBuffer.unbind();
-                stack.popPose();
+            vertexBuffer.bind();
+            //绘制场景模型
+//            Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(LINES)
+            vertexBuffer.drawWithShader(stack.last().pose(), mat4f, RenderSystem.getShader());
+            VertexBuffer.unbind();
+            stack.popPose();
 
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-                //关闭混合
-                GL11.glDisable(GL11.GL_BLEND);
-                GL11.glDisable(GL11.GL_LINE_SMOOTH);
-            }
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            //关闭混合
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
         }
+    }
 
 
     public static void bufferAddBlockVertex(BufferBuilder buffer, AABB pBox,float opacity, float red, float green, float blue) {
@@ -97,6 +98,7 @@ public class RenderLineBox {
         double maxX = pBox.maxX;
         double maxY = pBox.maxY;
         double maxZ = pBox.maxZ;
+
         buffer.vertex(x, maxY, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(maxX, maxY, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(maxX, maxY, z).color(red, green, blue, opacity).endVertex();
@@ -137,7 +139,7 @@ public class RenderLineBox {
     }
 
     public static void bufferAddBlockVertex(BufferBuilder buffer, double x, double y, double z,double maxX, double maxY, double maxZ,float opacity, float red, float green, float blue) {
-        
+
         buffer.vertex(x, y + maxY, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(x+ maxX, y + maxY, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(x+ maxX, y + maxY, z).color(red, green, blue, opacity).endVertex();

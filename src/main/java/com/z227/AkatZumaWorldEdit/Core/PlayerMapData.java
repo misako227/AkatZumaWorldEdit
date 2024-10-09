@@ -42,7 +42,7 @@ public class PlayerMapData {
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
 
     private CopyBlock copyBlock;
-    private CopyBlock copyBlockClient;
+//    private CopyBlock copyBlockClient;
 
     //连线工具
     private LineBase lineBase;
@@ -162,13 +162,13 @@ public class PlayerMapData {
         this.copyBlock = copyBlock;
     }
 
-    public CopyBlock getCopyBlockClient() {
-        return copyBlockClient;
-    }
+//    public CopyBlock getCopyBlockClient() {
+//        return copyBlockClient;
+//    }
 
-    public void setCopyBlockClient(CopyBlock copyBlockClient) {
-        this.copyBlockClient = copyBlockClient;
-    }
+//    public void setCopyBlockClient(CopyBlock copyBlockClient) {
+//        this.copyBlockClient = copyBlockClient;
+//    }
 
     public BlockPos getInvPos() {
         return invPos;

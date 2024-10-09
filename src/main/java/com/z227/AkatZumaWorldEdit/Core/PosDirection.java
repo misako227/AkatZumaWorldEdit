@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 
@@ -64,6 +65,25 @@ public class PosDirection {
         }
 
         return  result;
+    }
+
+    public static Direction calcNextPosDirection(BlockPos currentPos, BlockPos nextPos){
+
+        double yaw = calcPosYaw(currentPos, nextPos);
+
+        if(yaw > -45 && yaw < 45){
+            return Direction.EAST;
+
+        }else if(yaw > 45 && yaw < 135){
+            return Direction.SOUTH;
+
+        }else if(yaw > -135 && yaw < -45){
+            return Direction.NORTH;
+
+        }
+
+        return Direction.WEST;
+
     }
 
 
