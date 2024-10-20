@@ -196,7 +196,7 @@ public class Util {
             int[] intPos = tag.getIntArray("pos");
             if(intPos.length == 3){
                 BlockPos pos = new BlockPos(intPos[0], intPos[1], intPos[2]);
-                Level level = player.level;
+                Level level = player.getLevel();
                 //区块未加载
                 if (!level.hasChunkAt(pos)) {
                     return temp;
@@ -299,6 +299,9 @@ public class Util {
     public static boolean isDownCtrl(){
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 341);
     }
+    public static boolean isDownLAlt(){
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 342);
+    }
 
     public static boolean isLoadSopBackpacks(){
         return AkatZumaWorldEdit.loadSopBackpacks;
@@ -325,6 +328,10 @@ public class Util {
 
 
 
+    }
+
+    public static String getPos(BlockPos pos ){
+        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
     }
 
 

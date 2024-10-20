@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-
 public class RotateBlock {
 
     public static BlockPos rotateCyl(float xAngle,float yAngle,float zAngle, BlockPos pos, int xOrigin,int yOrigin,int zOrigin){
@@ -14,8 +13,6 @@ public class RotateBlock {
 //        int vy = pos.getY() -  yOrigin;
         int vz = pos.getZ() -  zOrigin;
 
-
-        //todo 2024年6月14日 20:33:24  下面不能用
         Matrix4f translationMatrix =  new Matrix4f().rotate(xAngle, 1, 0, 0);
 //        if(yAngle != 0)translationMatrix.rotate(yAngle, 0, 1, 0);
         if(zAngle != 0)translationMatrix.rotate(zAngle, 0, 0, 1);

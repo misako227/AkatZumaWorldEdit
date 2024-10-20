@@ -32,7 +32,7 @@ public class Config {
     static {
         BUILDER = new ForgeConfigSpec.Builder().comment("设置").push("Settings");
         LOWHeight  = BUILDER.comment("最低选区高度，可以防止破坏基岩").defineInRange("lowHeight", -60, -1000, Integer.MAX_VALUE);
-        UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 5, 0, 100);
+        UNDOLimit = BUILDER.comment("undo和redo撤销的最大次数").defineInRange("undoLimit", 20, 0, 100000);
         BLACKListWorld = BUILDER.comment("""
                 世界黑名单，格式为"世界名/维度名"，世界名是创建世界时候的名字
                 "主世界/minecraft:overworld"，"下界/minecraft:the_nether"，"末地/minecraft:the_end\"""")
@@ -85,7 +85,7 @@ public class Config {
         VIPBLACKListBlock = BUILDER.comment("""
                         \n黑名单方块，优先级：黑名单 > 白名单比例值 > *
                         优先级比白名单高,此名单中的方块均不允许放置，只填入名字即可，不需要前面的#""")
-                .defineList("VipBlackListBlock", () -> List.of("minecraft:water"), Config::validateBlackBlockName);
+                .defineList("VipBlackListBlock", List.of("minecraft:water"), Config::validateBlackBlockName);
         VIPBLACKListTags = BUILDER.comment("""
                         \n黑名单标签，此标签中的方块均不允许放置（默认添加了矿物、箱子、潜影盒的标签）
                         可以安装CraftTweaker使用指令/ct hand来查看手中方块的标签

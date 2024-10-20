@@ -4,6 +4,8 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
+import com.z227.AkatZumaWorldEdit.network.messagePacket.S2CInventoryNotEnough;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.RemoveItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -12,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -88,10 +92,16 @@ public class PlaceBlock {
 
 
     //遍历两个坐标之间的每个点
-    public static void traverseCube(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState, Map<BlockPos,BlockState> undoMap) {
-        for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
-            for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
-                for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
+    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState, Map<BlockPos,BlockState> undoMap) {
+        int minX = Math.min(pos1.getX(), pos2.getX());
+        int minY = Math.min(pos1.getY(), pos2.getY());
+        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+        int maxX = Math.max(pos1.getX(), pos2.getX());
+        int maxY = Math.max(pos1.getY(), pos2.getY());
+        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
 
                     BlockPos v3 = new BlockPos(x, y, z);
                     BlockState old =  world.getBlockState(v3);
@@ -188,21 +198,18 @@ public class PlaceBlock {
     //@param volume 扣除的总数量
     //@param player 玩家
     //@param deBlockName 扣除物品的显示名
-    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, MutableComponent deBlockName) {
+    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, BlockState blockState) {
         List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
         Map<Integer, Integer> chestMap;
         Map<Integer, Integer> sopBackpackMap;
+
 
         temp.add(blockInInvMap);
 
         int sum = Util.sum(blockInInvMap);
             //要扣除的数量
         int num = (int) Math.ceil((double) volume / n);
-        MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
-                .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":"+num)
-                .append(Component.translatable("chat.akatzuma.error.current_num"))
-                ;
 
         //背包如果不够
         if (sum < num) {
@@ -221,7 +228,8 @@ public class PlaceBlock {
                 sum = sum + chestSum;
                 if(sum < num){
                     //如果玩家(背包+精妙背包+绑定的箱子)还不够，返回null
-                    AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
+//                    AkatZumaWorldEdit.sendAkatMessage(component.append(":"+sum), player);
+                    NetworkingHandle.sendToClient(new S2CInventoryNotEnough(blockState, num,sum), (ServerPlayer) player);
                     return null;
                 }
                 temp.add(chestMap);
@@ -368,16 +376,17 @@ public class PlaceBlock {
             blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
             if(blockName.equals("akatzumaworldedit:building_consumable") ){
                 deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+                blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
             }
 
 
-
+            //TODO 添加权限节点
             //检查背包 && 是否无限制放置
-//            if(checkInventory && n > 0 && !player.isCreative()){
-            if(checkInventory && n > 0){
+            if(checkInventory && n > 0 && !player.isCreative()){
+//            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,volume,player,deBlockName);
+                blockInInvMap = checkInv(blockName,n,volume,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 
@@ -394,5 +403,87 @@ public class PlaceBlock {
     }
 
 
+    public static boolean canPlaceBlockList(List<BlockPos> posList, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel) {
 
-}//class
+        //如果不是管理员
+        if (!permissionLevel) {
+            //检查世界黑名单
+            if(!cheakLevel(world,player))return false;
+
+            int areaValue = Config.DEFAULTValue.get();      //选区大小
+            boolean checkInventory = Config.CHECKInventory.get();    //是否检查背包
+            Map<String, Integer> blackWhiteMap = AkatZumaWorldEdit.defaultBlockMap;    //黑白名单方块
+            if (checkVip(player)) {
+                areaValue = Config.VIPValue.get();      //选区大小
+                checkInventory = Config.VIPCHECKInventory.get();    //是否检查背包
+                blackWhiteMap = AkatZumaWorldEdit.VipBlockMap;    //黑白名单方块
+            }
+
+            MutableComponent deBlockName = blockState.getBlock().getName();
+
+            // 选区大小
+            if(posList.size() > areaValue){
+                Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
+                AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(areaValue), player);
+                return false;
+            }
+
+            //区块是否加载
+            for (BlockPos pos : posList) {
+                if (!world.hasChunkAt(pos)) {
+                    MutableComponent component = Component.translatable("chat.akatzuma.error.chunk_not_loaded");
+                    AkatZumaWorldEdit.sendAkatMessage(component, player);
+                    return false;
+                }
+            }
+
+
+
+            String blockName = BlockStateString.getBlockName(blockState);
+            int n = getLimit(blockName, blackWhiteMap);  //比例值
+            List<Map<Integer, Integer>> blockInInvMap = null;
+
+
+            //检查黑名单
+            if (!checkBlackList(player, n, deBlockName)) {
+                return false;
+            }
+
+            //检查是否替换成本MOD的建筑耗材方块
+            blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
+            if(blockName.equals("akatzumaworldedit:building_consumable") ){
+                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+                blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+            }
+
+
+            //检查背包 && 是否无限制放置
+            if(checkInventory && n > 0 && !player.isCreative()){
+//            if(checkInventory && n > 0){
+//
+                //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
+                blockInInvMap = checkInv(blockName,n,deductNum,player,blockState);
+                if(blockInInvMap==null)return false;
+            }
+
+            //检查是否有放置权限
+            for (BlockPos pos : posList) {
+                if(!isPlaceBlock(world, player, pos, blockState)){
+                    Component component = Component.translatable("chat.akatzuma.error.not_permission_place");
+                    AkatZumaWorldEdit.sendAkatMessage(component,player);
+                    return false;
+                }
+            }
+
+
+            //扣除背包
+            if(blockInInvMap!=null){
+                removeItemInPlayerInv(blockInInvMap, n, deductNum, player);
+            }
+        }
+        return true;
+    }
+
+
+
+}

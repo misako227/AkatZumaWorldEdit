@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -38,8 +39,8 @@ public class WoodAxeItem extends Item {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add( Component.translatable("item.wood_axe.desc1"));
         pTooltipComponents.add( Component.translatable("item.wood_axe.desc2"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc3"));
-//        pTooltipComponents.add( Component.translatable("item.wood_axe.desc3"));
+        pTooltipComponents.add( Component.translatable("item.wood_axe.desc3"));
+        pTooltipComponents.add( Component.translatable("item.wood_axe.desc4"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }
@@ -49,11 +50,12 @@ public class WoodAxeItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 //        if(pLevel.isClientSide)return super.use(pLevel, pPlayer, pUsedHand);
-
-//        BlockPos blockPos2 =BlockPos.containing(pPlayer.getEyePosition());
         Vec3 eye = pPlayer.getEyePosition();
         BlockPos blockPos2 =new BlockPos(eye.x,eye.y, eye.z);
         clickPos(pLevel,blockPos2, pPlayer,false );
+        if(pLevel.isClientSide()){
+            RenderLineBox.updateVertexBuffer();
+        }
         return super.use(pLevel, pPlayer, pUsedHand);
 
     }
@@ -104,11 +106,11 @@ public class WoodAxeItem extends Item {
                 component = Component.translatable("chat.item.wood_axe.right");
                 if (pwm.getPos1() !=null) pos2 = pwm.getPos1();
             }
+
         String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
-//        if(player.isLocalPlayer()){}
         msg = msg.replaceFirst("^BlockPos", "§5");
-        //判断是客户端
-//        if(player.isLocalPlayer()){
+        Util.logDebug(player,component.getString()+msg);
+
         if(player.isLocalPlayer())return false;
 
             if(pos2!=null){
@@ -119,8 +121,7 @@ public class WoodAxeItem extends Item {
 
             AkatZumaWorldEdit.sendAkatMessage(component, msg, player);
 
-//        }
-        Util.logDebug(player,component.getString()+msg);
+
         return true;
     }
 
@@ -132,16 +133,17 @@ public class WoodAxeItem extends Item {
         return true;
     }
 
-    //这在使用item时，在激活block之前调用。
+    //右键方块
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Level level = context.getLevel();
 
         BlockPos blockPos2 = context.getClickedPos();
-        Player player = context.getPlayer();
-        Level world = context.getLevel();
-        clickPos(world,blockPos2, player,false );
-
-
+//        NetworkingHandle.INSTANCE.sendToServer(new C2SPos2(blockPos2));
+        clickPos(level,blockPos2,context.getPlayer(), false );
+        if(level.isClientSide()){
+            RenderLineBox.updateVertexBuffer();
+        }
 
         return InteractionResult.SUCCESS;
     }

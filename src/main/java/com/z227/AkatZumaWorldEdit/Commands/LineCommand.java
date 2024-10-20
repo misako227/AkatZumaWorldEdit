@@ -6,7 +6,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,7 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LineCommand {
@@ -59,8 +60,14 @@ public class LineCommand {
             }
 
             if(PlaceBlock.canPlaceBlock(pos1,pos2,serverLevel,player,blockState,num, player.hasPermissions(2),PMD)){
-                if(drawLine(pos1, pos2, serverLevel, blockState, player, PMD)){
-                    SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
+//                if(drawLine(pos1, pos2, serverLevel, blockState, player, PMD)){
+//                    SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
+//                }
+                Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+                PMD.getUndoDataMap().push(undoMap);
+                List<BlockPos> posList = drawLine(pos1, pos2);
+                for (BlockPos pos : posList) {
+                    MySetBlock.setBlockNotUpdateAddUndo(serverLevel, pos, blockState, undoMap);
                 }
             }
         }
@@ -71,36 +78,45 @@ public class LineCommand {
 
     }
 
-    public static boolean drawLine(BlockPos pos1, BlockPos pos2, ServerLevel world, BlockState blockState,ServerPlayer player,PlayerMapData PMD ) {
-        int dx = pos2.getX() - pos1.getX();
-        int dy = pos2.getY() - pos1.getY();
-        int dz = pos2.getZ() - pos1.getZ();
 
-        int steps = Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dz));
-//        if(!PlaceBlock.canPlaceBlock(pos1,pos2,world, player, blockState,diagonal,player.hasPermissions(2), PMD)){
-//            return false;
-//        }
+    public static List drawLine(BlockPos pos1, BlockPos pos2){
+        List<BlockPos> points = new ArrayList<>();
+        // 计算方向向量
+        int x1 = pos1.getX(), y1 = pos1.getY(), z1 = pos1.getZ();
+        int x2 = pos2.getX(), y2 = pos2.getY(), z2 = pos2.getZ();
 
-        //undo
-        Map<BlockPos, BlockState> undoMap  = new HashMap<>();
-        PMD.getUndoDataMap().push(undoMap);
-        double t = 0.0;
-        double increment = 0.01; // 定义参数t的增量
-//        if(steps>100)increment = 1 / (steps/50);
-        if(steps>100)increment = 1 / steps;
 
-        while (t <= 1.0) { // 在参数范围内循环
-            double x = pos1.getX() * (1 - t) + pos2.getX() * t;
-            double y = Math.round(pos1.getY() * (1 - t) + pos2.getY() * t);
-            double z = pos1.getZ() * (1 - t) + pos2.getZ() * t;
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        int dz = Math.abs(z2 - z1);
 
-            BlockPos blockPos = new BlockPos((int) x, (int) y, (int) z);
-//            world.setBlock(blockPos, blockState,2);
-            MySetBlock.setBlockNotUpdateAddUndo(world, blockPos, blockState,undoMap);
+        // 确定步数，选择dx, dy, dz中的最大值
+        int steps = Math.max(dx, Math.max(dy, dz));
 
-            t += increment; // 增加参数t
+        // 确定增量的方向
+        int x_dir = x1 < x2 ? 1 : -1;
+        int y_dir = y1 < y2 ? 1 : -1;
+        int z_dir = z1 < z2 ? 1 : -1;
+
+        // 计算每一步在每个轴上的增量
+        double x_inc = (double) dx / steps;
+        double y_inc = (double) dy / steps;
+        double z_inc = (double) dz / steps;
+
+        // 初始化起始点
+        double x = x1;
+        double y = y1;
+        double z = z1;
+
+        // 生成并添加点到列表中
+        for (int i = 0; i <= steps; i++) {
+            points.add(new BlockPos((int) Math.round(x), (int) Math.round(y), (int) Math.round(z)));
+            x += x_inc * x_dir;
+            y += y_inc * y_dir;
+            z += z_inc * z_dir;
         }
-        return true;
+
+        return points;
     }
 
 }

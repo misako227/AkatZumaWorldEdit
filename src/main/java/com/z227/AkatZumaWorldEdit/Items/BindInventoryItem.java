@@ -80,14 +80,14 @@ public class BindInventoryItem extends Item {
                 player.getCooldowns().addCooldown(this, 20);
 
                 if(block instanceof ChestBlock || block instanceof BarrelBlock){
-                    String command = "a other bind " + getPos(blockPos);
+                    String command = "a other bind " + Util.getPos(blockPos);
 
                     SendCopyMessage.sendCommand(command);
 //                    PMD.setInvPosMap(blockPos,player);
                     return InteractionResult.SUCCESS;
                 }else if(Util.isLoadSopStorage()){
                     if(block instanceof WoodStorageBlockBase){
-                        String command = "a other bind "+ getPos(blockPos);
+                        String command = "a other bind "+ Util.getPos(blockPos);
                         SendCopyMessage.sendCommand(command);
 
 //                        PMD.setInvPosMap(blockPos,player);
@@ -107,8 +107,6 @@ public class BindInventoryItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    public static String getPos(BlockPos pos ){
-        return pos.getX() + " " + pos.getY() + " " + pos.getZ();
-    }
+
 
 }

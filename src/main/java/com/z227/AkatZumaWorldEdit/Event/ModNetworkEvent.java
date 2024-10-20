@@ -18,10 +18,11 @@ import java.util.regex.Matcher;
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID,bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModNetworkEvent {
 
+
 //    @SubscribeEvent
 //    public static void onGatherData(GatherDataEvent event) {
 //        var gen = event.getGenerator();
-//        var packOutput = gen.getOutputFolder();
+//        var packOutput = gen.getPackOutput();
 //        gen.addProvider(event.includeClient(), new LanguageDataGenerator.EnglishLanguageProvider(packOutput));
 //        gen.addProvider(event.includeClient(), new LanguageDataGenerator.ChineseLanguageProvider(packOutput));
 //        gen.addProvider(event.includeServer(), new AkatRecipe(packOutput));
@@ -36,14 +37,17 @@ public class ModNetworkEvent {
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Query_Item.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Projector_Item.get(), true);
 //        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.BindInventory.get(), true);
-//        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Line_Item.get(), true);
+        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Line_Item.get(), true);
     }
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
 //        event.enqueueWork(NetworkingHandle::register);
         NetworkingHandle.register();
+
     }
+
+
 
 
 

@@ -53,6 +53,14 @@
 //                .unlockedBy("has_stick", has(Items.STICK))
 //                .showNotification(true)
 //                .save(pWriter);
+//        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, AkatZumaWorldEdit.Line_Item.get())
+//                .define('X', Items.STICK)
+//                .define('Y', Items.FEATHER)
+//                .pattern("Y")
+//                .pattern("X")
+//                .unlockedBy("has_stick", has(Items.STICK))
+//                .showNotification(false)
+//                .save(pWriter);
 //    }
 //}
 //

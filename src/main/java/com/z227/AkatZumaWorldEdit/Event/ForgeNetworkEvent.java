@@ -5,15 +5,18 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
+import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
+import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
+import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -34,6 +37,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -121,6 +125,20 @@ public class ForgeNetworkEvent {
     }
 
 
+    //取消玩家在空中挖掘时的减速
+    @SubscribeEvent (priority = EventPriority.LOW)
+    public static void handleBreakSpeedEvent(PlayerEvent.BreakSpeed event) {
+
+        if (event.isCanceled()) {
+            return;
+        }
+        Player player = event.getEntity();
+        if (!player.isOnGround()) {
+            event.setNewSpeed(Math.max(event.getNewSpeed(), event.getOriginalSpeed() * 5.0F));
+        }
+    }
+
+
 
 
     public static void addTagsToMap(List<? extends String> input, Map output) {
@@ -138,49 +156,68 @@ public class ForgeNetworkEvent {
     //左键点击方块
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+
+        Level world = event.getLevel();
+        BlockPos pos =  event.getPos();
+        if(!world.isClientSide()) return;
+
         Player player = event.getEntity();
-        if(player==null)return;
+//        if(player==null)return;
         Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
-
 //        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
-        BlockPos pos =  event.getPos();
-        Level world = event.getLevel();
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+
+        PlayerMapData PMD = Util.getPMD(player);
 
 
         if(item instanceof QueryBlockStateItem){
             if(player.getCooldowns().isOnCooldown(item))return;
             player.getCooldowns().addCooldown(item, 10);
             queryBlock(world, pos, player, PMD);
+
             return;
         }
         if(item instanceof WoodAxeItem){
-            WoodAxeItem.clickPos(world,pos, player,true );
+            NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
+            WoodAxeItem.clickPos(world,pos,player, true);
+            RenderLineBox.updateVertexBuffer();
+
             return;
         }
         if(item instanceof ProjectorItem){
-            if(world.isClientSide){
-                if(player.getCooldowns().isOnCooldown(item))return;
-                player.getCooldowns().addCooldown(item, 10);
 
-                LocalPlayer Lplayer = Minecraft.getInstance().player;
-                if (Lplayer != null) {
-//                    Lplayer.connection.sendCommand("a copy");
-                    net.minecraftforge.client.ClientCommandHandler.runCommand("a copy");
-                }
-            }
+            if(player.getCooldowns().isOnCooldown(item))return;
+            player.getCooldowns().addCooldown(item, 10);
+
+            SendCopyMessage.sendCommand("a copy");
+
             return;
 
         }
+
+        if(item instanceof LineItem){
+            if(Util.isDownCtrl()){
+                LineItemEvent.onItemCtrlLeftAir((LocalPlayer) player, PMD.getLineBase());
+                return;
+            }
+
+            LineItemEvent.onItemLeftAir((LocalPlayer) player, PMD.getLineBase());
+            return;
+        }
+
+
     }
 
 
     public static void queryBlock(Level world, BlockPos pos, Player player, PlayerMapData PMD){
         BlockState blockState = world.getBlockState(pos);
 
-        PMD.setQueryBlockState(blockState);
+        if(Util.isDownCtrl()){
+            PMD.setReplaceBlockState(blockState);
+        }else{
+            PMD.setQueryBlockState(blockState);
+        }
         if(player.isLocalPlayer()){
             String blockStateStr = blockState.toString().replaceFirst("}", "")
                     .replaceFirst("^Block\\{", "");

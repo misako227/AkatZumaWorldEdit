@@ -27,16 +27,24 @@
 //            this.add("item.akatzumaworldedit.building_consumable.desc", "用于copy等指令消耗的材料\n(可穿戴到头部)");
 //            this.add("item.wood_axe.desc1", "§a左键§9方块§f/§9空气§f选取第一个点");
 //            this.add("item.wood_axe.desc2", "§6右键§9方块§f/§9空气§f选取第二个点");
+//            this.add("item.wood_axe.desc3", "§eCtrl+滚轮§f扩大/缩小选区位置1");
+//            this.add("item.wood_axe.desc4", "§eAlt +滚轮§f扩大/缩小选区位置2");
 //            this.add("item.akatzumaworldedit.projector", "§b投影");
 //            this.add("item.projector_item.desc1", "§a左键§f复制选区的建筑");
 //            this.add("item.projector_item.desc2", "§6右键§f粘帖建筑");
-//            this.add("item.projector_item.desc3", "§6ctrl+右键§f忽略空气粘帖(/a paste -a)");
+//            this.add("item.projector_item.desc3", "§6Ctrl+右键§f忽略空气粘帖(/a paste -a)");
 //            this.add("item.projector_item.desc4", "手持此物品可查看复制的投影");
 //            this.add("item.akatzumaworldedit.query_blockstate_item", "§b查询方块状态");
 //            this.add("item.query_block_state.desc1", "§a左键§f方块查询方块状态");
-//            this.add("item.query_block_state.desc2", "§6右键§f放置一个查询的方块");
-//            this.add("item.query_block_state.desc4", "点击消息可以复制状态到粘贴板");
-//            this.add("item.query_block_state.desc3", "§6ctrl+右键§f把选区设置为查询的方块(/a set)");
+//            this.add("item.query_block_state.desc2", "§aCtrl+左键§f设置替换方块状态");
+//            this.add("item.query_block_state.desc3", "§6右键§f放置/替换成查询的方块");
+//            this.add("item.query_block_state.desc4", "§6Ctrl+右键§f把选区设置/替换为查询的方块");
+//            this.add("item.query_block_state.desc5", "§eCtrl+滚轮§f切换模式");
+//            this.add("item.query_block_state.desc6", "§eCtrl+Alt+滚轮§f切换两个方块位置");
+//
+//
+//
+//
 //            this.add("item.query_block_state.desc_block", "查询的方块：");
 //            this.add("chat.item.query_block_state.null", "§c 没有找到要复制的状态，请先使用左键查看状态");
 //            this.add("chat.item.query_block_state.not_air", "§c 要放置的位置有方块，请先清除方块");
@@ -72,22 +80,48 @@
 //            this.add("chat.akatzuma.success.paste", "§a 粘帖成功，可以使用§d/a undo§f指令撤销操作");
 //            this.add("chat.akatzuma.success.stack", "§a 堆叠成功，可以使用§d/a undo§f指令撤销操作");
 //
-//            this.add("chat.akatzuma.success.add_viplayer", "添加成功:");
-//            this.add("chat.akatzuma.success.del_viplayer", "删除成功:");
+//            this.add("chat.akatzuma.success.add_viplayer", "添加成功 ");
+//            this.add("chat.akatzuma.success.del_viplayer", "删除成功 ");
 //            this.add("chat.akatzuma.error.not_viplayer", "没有找到:");
 //
 //            this.add("chat.akatzuma.set.success", "已放置方块");
 //            this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");
 //            this.add("chat.action.copy", "点击复制: ");
 //
-//            this.add("hud.akatzuma.ctrl_scroll", "§actrl+滚轮§f切换");
+//            this.add("hud.akatzuma.ctrl_scroll", "§aCtrl+滚轮§f切换");
 //            this.add("hud.akatzuma.right", "§6右键§f绑定箱子");
-//            this.add("hud.akatzuma.ctrl_right", "§6ctrl+右键§f传送到绑定的坐标上");
+//            this.add("hud.akatzuma.ctrl_right", "§6Ctrl+右键§f传送到绑定的坐标上");
+//
+//            this.add("hud.akatzuma.query_mode", "模式：");
+//            this.add("hud.akatzuma.query_mode_1", "放置");
+//            this.add("hud.akatzuma.query_mode_2", "替换");
+//            this.add("hud.akatzuma.query_block1", "方块：");
+//            this.add("hud.akatzuma.query_block2", "替换：");
+//
+//            this.add("chat.akatzuma.mask_null", "§c 当前物品没有绑定笔刷");
+//
+//            this.add("hud.akatzuma.mask_mode_white", "白名单");
+//            this.add("hud.akatzuma.mask_mode_black", "§c黑名单");
+//            this.add("chat.akatzuma.error.brush_air", "§c 绑定失败，请使用其他物品");
+//            this.add("chat.akatzuma.error.unbind", "§c 当前物品没有绑定笔刷");
+//
+//
 //            this.add("chat.akatzuma.success.bind_pos", "§a 绑定成功");
 //            this.add("chat.akatzuma.success.tp", "§a 传送成功");
 //            this.add("chat.akatzuma.error.bind_pos", "§c 绑定失败，请检查是否有权限或是否支持这个容器");
 //            this.add("chat.akatzuma.error.void_pos", "§c 无效坐标");
 //            this.add("chat.akatzuma.error.open_gui_fail", "§c 打开GUI失败");
+//
+//
+//            this.add("chat.akatzuma.error.line_pos_inadequate", "§c 点位不够，请创建两个以上的点位");
+//            this.add("item.akatzumaworldedit.line_item", "§b连线工具");
+//            this.add("item.line_item.desc1", "§a 左键§f创建一个点位");
+//            this.add("item.line_item.desc2", "§a Ctrl+左键§f在开头添加点位");
+//            this.add("item.line_item.desc3", "§6 右键§f选中一个点位，选中后§6右键§f其他地方修改点位");
+//            this.add("item.line_item.desc4", "§6 Ctrl+右键§f放置查询的方块");
+//            this.add("item.line_item.desc5", "§6 Alt+右键§f删除选中的点位");
+//            this.add("item.line_item.desc6", "§b Ctrl+Alt+右键§f删除所有点位");
+//            this.add("chat.akatzuma.line.delall", "§a 已删除所有点位");
 //        }
 //    }
 //

@@ -176,7 +176,7 @@ public class RemoveItem {
         if(map.isEmpty()) return sum;
 
         BlockPos pos = Util.getPMD(player).getInvPos();
-        Level level = player.level;
+        Level level = player.getLevel();
         if(pos==null) return sum;
 
         BlockEntity be =  level.getBlockEntity(pos);

@@ -1,11 +1,14 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
+import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,12 +18,19 @@ import java.util.Map;
 
 public class PlayerMapData {
 
+    //选区工具
     private BlockPos pos1;
     private BlockPos pos2;
+    private BlockPos tempPos;
+    private boolean isUpdatePos = false;  // 是否更新pos1和pos2
 
+    //查询工具
     private boolean flag;
     private BlockState queryBlockState;
+    private BlockState replaceBlockState;
+    private int queryFlag;
 
+    //绑定工具
     private CompoundTag invPosNBT;
     private Map<String, BlockState> invPosMap;
     private BlockPos invPos;
@@ -32,8 +42,10 @@ public class PlayerMapData {
     private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
 
     private CopyBlock copyBlock;
-    private CopyBlock copyBlockClient;
-//    private LineBase lineBase;
+//    private CopyBlock copyBlockClient;
+
+    //连线工具
+    private LineBase lineBase;
 
 
     public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
@@ -43,6 +55,9 @@ public class PlayerMapData {
         return this.redoDataMap;
     }
 
+    public Map<Item, BrushBase> BrushMap;
+
+
 
     public PlayerMapData() {
 
@@ -51,11 +66,60 @@ public class PlayerMapData {
         this.redoDataMap = new BoundedStack<>(Config.UNDOLimit.get());
         this.invPosNBT = new CompoundTag();
         this.invPosMap = new HashMap<>();
+        this.BrushMap = new HashMap<>();
         this.queryBlockState = Blocks.AIR.defaultBlockState();
-//        this.lineBase = new LineBase();
-//        this.copyBlockMap = new HashMap<>();
+        this.replaceBlockState = Blocks.AIR.defaultBlockState();
+        this.queryFlag = 1;
+        this.lineBase = new LineBase();
+
     }
 
+
+    public LineBase getLineBase() {
+        return lineBase;
+    }
+
+    public void setLineBase(LineBase lineBase) {
+        this.lineBase = lineBase;
+    }
+
+    public boolean isUpdatePos() {
+        return isUpdatePos;
+    }
+
+    public void setUpdatePos(boolean updatePos) {
+        isUpdatePos = updatePos;
+    }
+
+    public Map<Item, BrushBase> getBrushMap() {
+        return BrushMap;
+    }
+
+
+
+    public BlockPos getTempPos() {
+        return tempPos;
+    }
+
+    public void setTempPos(BlockPos tempPos) {
+        this.tempPos = tempPos;
+    }
+
+    public int getQueryFlag() {
+        return queryFlag;
+    }
+
+    public void setQueryFlag() {
+        this.queryFlag = this.queryFlag == 1 ? 2 : 1;
+    }
+
+    public BlockState getReplaceBlockState() {
+        return replaceBlockState;
+    }
+
+    public void setReplaceBlockState(BlockState replaceBlockState) {
+        this.replaceBlockState = replaceBlockState;
+    }
 
     public BlockPos getPos1() {
         return pos1;
@@ -98,13 +162,13 @@ public class PlayerMapData {
         this.copyBlock = copyBlock;
     }
 
-    public CopyBlock getCopyBlockClient() {
-        return copyBlockClient;
-    }
+//    public CopyBlock getCopyBlockClient() {
+//        return copyBlockClient;
+//    }
 
-    public void setCopyBlockClient(CopyBlock copyBlockClient) {
-        this.copyBlockClient = copyBlockClient;
-    }
+//    public void setCopyBlockClient(CopyBlock copyBlockClient) {
+//        this.copyBlockClient = copyBlockClient;
+//    }
 
     public BlockPos getInvPos() {
         return invPos;

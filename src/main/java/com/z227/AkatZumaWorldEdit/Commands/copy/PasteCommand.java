@@ -6,6 +6,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -43,7 +44,7 @@ public class PasteCommand {
         Player player = context.getSource().getPlayer();
 //        boolean playerPermission = context.getSource().hasPermission(2);
         ServerLevel serverlevel = context.getSource().getLevel();
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
 
 
 
@@ -53,7 +54,6 @@ public class PasteCommand {
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return;
         }
-
 
 
         // 设置标志位
@@ -67,13 +67,21 @@ public class PasteCommand {
         //undo
         Map<BlockPos, BlockState> undoMap  = new HashMap<>();
 
-        copyBlock.pasteBlock(serverlevel, undoMap, air);
+        if(copyBlock.pasteBlock(serverlevel, undoMap, air)){
+            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),player);
+            Util.recordPosLog("/a paste",player);
+        }
 
         // 设置标志位
         PMD.setFlag(true);
 
+//        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.ignore_low_hight"),this.player);
+
 
     }
+
+
+
 
 
 

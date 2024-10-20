@@ -1,5 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Core;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 
@@ -40,7 +42,57 @@ public class PosDirection {
                 return calcRotationFromAngle(copyVec3, pasteVec3);
 
         }
+    }
 
+    //计算第二个坐标在第一个坐标的方向
+    public static BlockPos calcPosDirection(BlockPos currentPos, BlockPos nextPos){
+        BlockPos result ;
+
+        double yaw = calcPosYaw(currentPos, nextPos);
+
+        if(yaw > -45 && yaw < 45){
+            result = new BlockPos(1,0,0);
+
+        }else if(yaw > 45 && yaw < 135){
+            result = new BlockPos(0,0,1);
+
+        }else if(yaw > -135 && yaw < -45){
+            result = new BlockPos(0,0,-1);
+
+        }else {
+            result = new BlockPos(-1,0,0);
+
+        }
+
+        return  result;
+    }
+
+    public static Direction calcNextPosDirection(BlockPos currentPos, BlockPos nextPos){
+
+        double yaw = calcPosYaw(currentPos, nextPos);
+
+        if(yaw > -45 && yaw < 45){
+            return Direction.EAST;
+
+        }else if(yaw > 45 && yaw < 135){
+            return Direction.SOUTH;
+
+        }else if(yaw > -135 && yaw < -45){
+            return Direction.NORTH;
+
+        }
+
+        return Direction.WEST;
+
+    }
+
+
+    public static double calcPosYaw(BlockPos currentPos, BlockPos nextPos){
+        BlockPos vector = new BlockPos(nextPos.getX() - currentPos.getX(),
+                nextPos.getY() - currentPos.getY(),
+                nextPos.getZ() - currentPos.getZ());
+
+        return  Math.atan2(vector.getZ(), vector.getX()) * (180F /  Math.PI);
 
     }
 }

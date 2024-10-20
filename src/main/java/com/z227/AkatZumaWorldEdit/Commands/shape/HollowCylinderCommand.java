@@ -1,6 +1,7 @@
 package com.z227.AkatZumaWorldEdit.Commands.shape;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
@@ -29,32 +30,31 @@ public class HollowCylinderCommand{
                                                             setCyl(context,true,0,0,0);
                                                             return 1;
                                                         })
-//                                                        .then(Commands.argument("x角度", FloatArgumentType.floatArg(-360, 360))
-//                                                            .executes((context)->{
-//                                                                        float xAngle = FloatArgumentType.getFloat(context,"x角度");
-//                                                                        setCyl(context,true,xAngle,0,0);
-//                                                                        return 1;
-//                                                                    }
-//                                                            )
-////                                                            .then(Commands.argument("y角度", FloatArgumentType.floatArg(-360, 360))
-////                                                                    .executes((context)->{
-////                                                                                float xAngle = FloatArgumentType.getFloat(context,"x角度");
-////                                                                                float yAngle  = FloatArgumentType.getFloat(context,"y角度");
-////                                                                                setCyl(context,true,xAngle,yAngle,0);
-////                                                                                return 1;
-////                                                                            }
-////                                                                    )
-//                                                        .then(Commands.argument("z角度", FloatArgumentType.floatArg(-360, 360))
-//                                                                .executes((context)->{
-//                                                                            float xAngle = FloatArgumentType.getFloat(context,"x角度");
-////                                                                            float yAngle  = FloatArgumentType.getFloat(context,"y角度");
-//                                                                            float zAngle  = FloatArgumentType.getFloat(context,"z角度");
-//                                                                            setCyl(context,true,xAngle,0,zAngle);
-//                                                                            return 1;
-//                                                                        }
-//                                                                )
-//                                                        ))
-                                                )))));
+                                                        .then(Commands.argument("x角度", FloatArgumentType.floatArg(-360, 360))
+                                                            .executes((context)->{
+                                                                        float xAngle = FloatArgumentType.getFloat(context,"x角度");
+                                                                        setCyl(context,true,xAngle,0,0);
+                                                                        return 1;
+                                                                    }
+                                                            )
+//                                                            .then(Commands.argument("y角度", FloatArgumentType.floatArg(-360, 360))
+//                                                                    .executes((context)->{
+//                                                                                float xAngle = FloatArgumentType.getFloat(context,"x角度");
+//                                                                                float yAngle  = FloatArgumentType.getFloat(context,"y角度");
+//                                                                                setCyl(context,true,xAngle,yAngle,0);
+//                                                                                return 1;
+//                                                                            }
+//                                                                    )
+                                                        .then(Commands.argument("z角度", FloatArgumentType.floatArg(-360, 360))
+                                                                .executes((context)->{
+                                                                            float xAngle = FloatArgumentType.getFloat(context,"x角度");
+//                                                                            float yAngle  = FloatArgumentType.getFloat(context,"y角度");
+                                                                            float zAngle  = FloatArgumentType.getFloat(context,"z角度");
+                                                                            setCyl(context,true,xAngle,0,zAngle);
+                                                                            return 1;
+                                                                        }
+                                                                )
+                                                        )))))));
     }
 
     public static void setCyl(CommandContext<CommandSourceStack> context,boolean hollow,float xAngle,float yAngle,float zAngle){

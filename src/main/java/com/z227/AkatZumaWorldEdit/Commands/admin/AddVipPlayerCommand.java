@@ -56,12 +56,26 @@ public class AddVipPlayerCommand {
                                                                     addreplaceList(context);
                                                                     return 1;
                                                                 })))
+                                        .then(Commands.literal("range")
+                                                .then(Commands.argument("num",IntegerArgumentType.integer(0))
+                                                        .executes((context)->{
+                                                            setRange(context,false);
+                                                            return 1;
+                                                        })))
+                                        .then(Commands.literal("viprange")
+                                                .then(Commands.argument("num",IntegerArgumentType.integer(0))
+                                                        .executes((context)->{
+                                                            setRange(context,true);
+                                                            return 1;
+                                                        })))
 
                         )
 
         );
 
     }
+
+
 
     public static void addVipPlayer(CommandContext<CommandSourceStack> context){
         Player player = context.getSource().getPlayer();
@@ -156,5 +170,24 @@ public class AddVipPlayerCommand {
         AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName);
     }
 
+    public static void setRange(CommandContext<CommandSourceStack> context, boolean vip) {
+        int num = IntegerArgumentType.getInteger(context, "num");
+        if(vip){
+            Config.VIPValue.set(num);
+            Config.VIPValue.save();
+            sendAddSuccess(context.getSource().getPlayer(), String.valueOf(num));
+        }else{
+            Config.DEFAULTValue.set(num);
+            Config.DEFAULTValue.save();
+            sendAddSuccess(context.getSource().getPlayer(), String.valueOf(num));
+        }
+    }
+
+    public static void sendAddSuccess(Player player,String msg){
+        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+                .append(component).withStyle(ChatFormatting.GREEN)
+                .append(msg), player);
+    }
 
 }

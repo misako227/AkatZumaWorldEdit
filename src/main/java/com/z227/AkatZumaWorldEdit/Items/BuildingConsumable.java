@@ -5,7 +5,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -17,11 +16,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BuildingConsumable extends Block implements Wearable {
+public class BuildingConsumable extends Block {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public BuildingConsumable(Properties properties) {
@@ -46,7 +44,7 @@ public class BuildingConsumable extends Block implements Wearable {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack,  BlockGetter pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
         pTooltip.add( Component.translatable("item.akatzumaworldedit.building_consumable.desc"));
         super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
     }
@@ -61,10 +59,6 @@ public class BuildingConsumable extends Block implements Wearable {
     }
 
     public EquipmentSlot getEquipmentSlot() {
-        return EquipmentSlot.HEAD;
-    }
-
-    public EquipmentSlot getSlot() {
         return EquipmentSlot.HEAD;
     }
 }
