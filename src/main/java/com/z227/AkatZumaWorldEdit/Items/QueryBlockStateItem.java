@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class QueryBlockStateItem extends Item{
 
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add( Component.translatable("item.query_block_state.desc1"));
         pTooltipComponents.add( Component.translatable("item.query_block_state.desc2"));
         pTooltipComponents.add( Component.translatable("item.query_block_state.desc3"));

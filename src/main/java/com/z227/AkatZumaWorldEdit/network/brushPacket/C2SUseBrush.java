@@ -57,7 +57,7 @@ public class C2SUseBrush {
 
         String shape = brushBase.getShape();
         if(shape.equals("paste")){
-            ServerLevel serverlevel = (ServerLevel) player.level();
+            ServerLevel serverlevel = (ServerLevel) player.getLevel();
             CopyBlock copyBlock =  brushBase.getCopyBlock();
             // 设置标志位
             if(!PlaceBlock.cheakFlag(PMD,player))return ;

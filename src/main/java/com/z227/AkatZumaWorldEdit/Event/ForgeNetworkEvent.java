@@ -133,7 +133,7 @@ public class ForgeNetworkEvent {
             return;
         }
         Player player = event.getEntity();
-        if (!player.onGround()) {
+        if (!player.isOnGround()) {
             event.setNewSpeed(Math.max(event.getNewSpeed(), event.getOriginalSpeed() * 5.0F));
         }
     }
@@ -165,7 +165,7 @@ public class ForgeNetworkEvent {
 //        if(player==null)return;
         Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
-        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
+//        if(event.getAction()!= PlayerInteractEvent.LeftClickBlock.Action.START)return;
 
 
         PlayerMapData PMD = Util.getPMD(player);

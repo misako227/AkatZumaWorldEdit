@@ -18,8 +18,9 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
 import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -79,14 +80,21 @@ public class RemoveItem {
                 LazyOptional<ICuriosItemHandler> curiosHandler = player.getCapability(CuriosCapability.INVENTORY);
                 if(curiosHandler.isPresent()){
                     ICuriosItemHandler curios = curiosHandler.orElse(null);
-                    Optional<SlotResult> optionalSlotResult = curios.findCurio("back",0);
-                    ItemStack sopBackpackItemStack = optionalSlotResult.get().stack();
-                    LazyOptional<IBackpackWrapper> lazyBackpackWrapper = sopBackpackItemStack.getCapability(CapabilityBackpackWrapper.getCapabilityInstance());
-                    if(lazyBackpackWrapper.isPresent()){
-                        IBackpackWrapper backpackWrapper = lazyBackpackWrapper.orElse(null);
-                        InventoryHandler inventoryHandler = backpackWrapper.getInventoryHandler();
-                        sum = removeItem(map, sum, inventoryHandler);
-                        break;
+
+//                    Optional<SlotResult> optionalSlotResult = curios.findCurio("back",0);
+
+                    Optional<ICurioStacksHandler> optionalSlotResult = curios.getStacksHandler("back");
+                    if(optionalSlotResult.isPresent()) {
+                        IDynamicStackHandler dynamicStackHandler = optionalSlotResult.get().getCosmeticStacks();
+                        ItemStack sopBackpackItemStack = dynamicStackHandler.getStackInSlot(0);
+//                    ItemStack sopBackpackItemStack = optionalSlotResult.get().stack();
+                        LazyOptional<IBackpackWrapper> lazyBackpackWrapper = sopBackpackItemStack.getCapability(CapabilityBackpackWrapper.getCapabilityInstance());
+                        if (lazyBackpackWrapper.isPresent()) {
+                            IBackpackWrapper backpackWrapper = lazyBackpackWrapper.orElse(null);
+                            InventoryHandler inventoryHandler = backpackWrapper.getInventoryHandler();
+                            sum = removeItem(map, sum, inventoryHandler);
+                            break;
+                        }
                     }
                 }
             }
@@ -168,7 +176,7 @@ public class RemoveItem {
         if(map.isEmpty()) return sum;
 
         BlockPos pos = Util.getPMD(player).getInvPos();
-        Level level = player.level();
+        Level level = player.getLevel();
         if(pos==null) return sum;
 
         BlockEntity be =  level.getBlockEntity(pos);

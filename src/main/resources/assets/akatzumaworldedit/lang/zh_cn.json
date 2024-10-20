@@ -1,5 +1,5 @@
 {
-  "item_group.akatzumaworldedit.item": "AkatZuma的工具",
+  "itemGroup.akatzumaworldedit": "AkatZuma的工具",
   "chat.item.wood_axe.left": "§a左键§f选择了位置:",
   "chat.item.wood_axe.left_error": "§c最低选区高度:§4",
   "chat.item.wood_axe.right": "§6右键§f选择了位置:",

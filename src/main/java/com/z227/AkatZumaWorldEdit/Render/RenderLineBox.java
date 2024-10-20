@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+import com.mojang.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 public class RenderLineBox {
@@ -23,7 +23,7 @@ public class RenderLineBox {
         if (vertexBuffer == null || requestedRefresh) {
             requestedRefresh = false;
             //STATIC 表示缓冲区不会经常修改
-            vertexBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+            vertexBuffer = new VertexBuffer();
 
             //tess用于在OpenGL中创建和处理几何图形，用于在GPU生成线，三角形等基本形状
             Tesselator tessellator = Tesselator.getInstance();

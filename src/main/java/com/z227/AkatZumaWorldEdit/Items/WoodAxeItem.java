@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -49,8 +50,8 @@ public class WoodAxeItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 //        if(pLevel.isClientSide)return super.use(pLevel, pPlayer, pUsedHand);
-
-        BlockPos blockPos2 =BlockPos.containing(pPlayer.getEyePosition());
+        Vec3 eye = pPlayer.getEyePosition();
+        BlockPos blockPos2 =new BlockPos(eye.x,eye.y, eye.z);
         clickPos(pLevel,blockPos2, pPlayer,false );
         if(pLevel.isClientSide()){
             RenderLineBox.updateVertexBuffer();

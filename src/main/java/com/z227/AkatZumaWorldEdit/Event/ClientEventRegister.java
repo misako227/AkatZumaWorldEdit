@@ -219,7 +219,7 @@ public class ClientEventRegister {
 
         BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player,120);
         BlockPos blockPos = blockHitResult.getBlockPos();
-        if(player.level().getBlockState(blockPos).isAir()) return;
+        if(player.getLevel().getBlockState(blockPos).isAir()) return;
         NetworkingHandle.INSTANCE.sendToServer(new C2SUseBrush(blockPos));
 }
 

@@ -31,8 +31,9 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -134,16 +135,25 @@ public class Util {
             LazyOptional<ICuriosItemHandler> curiosHandler = player.getCapability(CuriosCapability.INVENTORY);
             if(curiosHandler.isPresent()){
                 ICuriosItemHandler curios = curiosHandler.orElse(null);
-                Optional<SlotResult> optionalSlotResult = curios.findCurio("back",0);
+//                Optional<SlotResult> optionalSlotResult = curios.findCurio("back",0); // mc1.20.1
+                Optional<ICurioStacksHandler> optionalSlotResult = curios.getStacksHandler("back");
+
+
                 if(optionalSlotResult.isPresent()){
-                    ItemStack itemStack = optionalSlotResult.get().stack();
+                    IDynamicStackHandler dynamicStackHandler= optionalSlotResult.get().getCosmeticStacks();
+                    int slots = optionalSlotResult.get().getSlots();
+                    if(slots>0){
+                        ItemStack itemStack = dynamicStackHandler.getStackInSlot(0);
 
-                    if(itemStack.getItem() instanceof BackpackItem){
-                        temp = findSopBackpack(blockName, itemStack);
-                        PMD.setSopBackpackFlag((byte) 1);
-                        return temp;
+
+//                    ItemStack itemStack = optionalSlotResult.get().stack();
+
+                        if(itemStack.getItem() instanceof BackpackItem){
+                            temp = findSopBackpack(blockName, itemStack);
+                            PMD.setSopBackpackFlag((byte) 1);
+                            return temp;
+                        }
                     }
-
                 }
             }
         }
@@ -186,7 +196,7 @@ public class Util {
             int[] intPos = tag.getIntArray("pos");
             if(intPos.length == 3){
                 BlockPos pos = new BlockPos(intPos[0], intPos[1], intPos[2]);
-                Level level = player.level();
+                Level level = player.getLevel();
                 //区块未加载
                 if (!level.hasChunkAt(pos)) {
                     return temp;

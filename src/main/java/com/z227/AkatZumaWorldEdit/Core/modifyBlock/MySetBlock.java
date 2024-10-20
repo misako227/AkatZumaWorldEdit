@@ -2,14 +2,12 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.lighting.LightEngine;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -139,14 +137,16 @@ public class MySetBlock {
                     levelchunk.getLevel().getChunkSource().getLightEngine().updateSectionStatus(pPos, flag1);
                 }
 
-                if (LightEngine.hasDifferentLightProperties(levelchunk, pPos, blockstate, pState)) {
-                    ProfilerFiller profilerfiller = levelchunk.getLevel().getProfiler();
-                    profilerfiller.push("updateSkyLightSources");
-                    levelchunk.getSkyLightSources().update(levelchunk, j, i, l);
-                    profilerfiller.popPush("queueCheckLight");
-                    levelchunk.getLevel().getChunkSource().getLightEngine().checkBlock(pPos);
-                    profilerfiller.pop();
-                }
+                //todo 亮度更新
+//                world.getChunkSource().getLightEngine()
+//                if (LightEngine.hasDifferentLightProperties(levelchunk, pPos, blockstate, pState)) {
+//                    ProfilerFiller profilerfiller = levelchunk.getLevel().getProfiler();
+//                    profilerfiller.push("updateSkyLightSources");
+//                    levelchunk.getSkyLightSources().update(levelchunk, j, i, l);
+//                    profilerfiller.popPush("queueCheckLight");
+//                    levelchunk.getLevel().getChunkSource().getLightEngine().checkBlock(pPos);
+//                    profilerfiller.pop();
+//                }
 
                 boolean flag2 = blockstate.hasBlockEntity();
                 if (!levelchunk.getLevel().isClientSide) {

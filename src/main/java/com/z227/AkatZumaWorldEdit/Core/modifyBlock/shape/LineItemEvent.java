@@ -13,7 +13,8 @@ public class LineItemEvent {
 
         BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player);
         BlockPos blockPos = blockHitResult.getBlockPos();
-        if(player.level().getBlockState(blockPos).isAir()) return;
+        if(player.getLevel().getBlockState(blockPos).isAir()) return;
+
 
         lineBase.addPosToEnd(blockPos);
 
@@ -23,7 +24,7 @@ public class LineItemEvent {
 
         BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player);
         BlockPos blockPos = blockHitResult.getBlockPos();
-        if(player.level().getBlockState(blockPos).isAir()) return;
+        if(player.getLevel().getBlockState(blockPos).isAir()) return;
 
         lineBase.addPosToStart(blockPos);
 
@@ -35,7 +36,7 @@ public class LineItemEvent {
 
         BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player);
         BlockPos blockPos = blockHitResult.getBlockPos();
-        if(player.level().getBlockState(blockPos).isAir()) return;
+        if(player.getLevel().getBlockState(blockPos).isAir()) return;
 //        LineBase lineBase = PMD.getLineBase();
         lineBase.setRightPos(blockPos);
 

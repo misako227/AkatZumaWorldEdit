@@ -51,7 +51,7 @@ public class PlayerUtil {
 
     public static BlockHitResult getPlayerPOVHitResult(Player player, int distance){
 
-        Level level = player.level();
+        Level level = player.level;
         Vec3 toEnd = getPlayerPOVHitEndVec3(player, distance);
         return level.clip(new ClipContext(player.getEyePosition(), toEnd, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 

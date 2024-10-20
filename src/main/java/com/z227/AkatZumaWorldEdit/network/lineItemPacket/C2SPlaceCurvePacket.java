@@ -53,7 +53,7 @@ public class C2SPlaceCurvePacket {
     }
 
     public void PlaceCurve(Player player) {
-        ServerLevel level = (ServerLevel) player.level();
+        ServerLevel level = (ServerLevel) player.getLevel();
         LineBase lineBase = new LineBase(2,posList);
         List<BlockPos> curvePosList = lineBase.getCurvePosList();
 

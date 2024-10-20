@@ -2,12 +2,11 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
-import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClient;
-import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +14,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public class PosCommand
 {
@@ -42,7 +42,8 @@ public class PosCommand
     private static void pos(CommandContext<CommandSourceStack> context,boolean b) {
         ServerLevel serverLevel = context.getSource().getLevel();
         ServerPlayer player =  context.getSource().getPlayer();
-        BlockPos pos = BlockPos.containing(player.getEyePosition());
+        Vec3 vec3 = player.getEyePosition();
+        BlockPos pos = new BlockPos(vec3.x,vec3.y,vec3.z);
         if(WoodAxeItem.clickPos(serverLevel,pos, player,b)){
             if(b)NetworkingHandle.sendToClient(new SendToClient(1), player);
             else NetworkingHandle.sendToClient(new SendToClient(2), player);
@@ -51,9 +52,14 @@ public class PosCommand
     }
 
     private static int setPos(CommandContext<CommandSourceStack> context,boolean b) {
-        BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
+        BlockPos blockPos = null;
+        try {
+            blockPos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         ServerPlayer player =  context.getSource().getPlayer();
-        PlayerMapData PMD = Util.getPMD(player);
+//        PlayerMapData PMD = Util.getPMD(player);
         ServerLevel serverLevel = context.getSource().getLevel();
         if(!WoodAxeItem.clickPos(serverLevel,blockPos, player,b)){
             if(b)NetworkingHandle.sendToClient(new SendToClient(3), player);

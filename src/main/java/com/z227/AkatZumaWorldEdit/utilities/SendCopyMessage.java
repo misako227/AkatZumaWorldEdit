@@ -37,7 +37,8 @@ public class SendCopyMessage {
     public static void sendCommand(String command){
         LocalPlayer Lplayer = Minecraft.getInstance().player;
         if (Lplayer != null) {
-            Lplayer.connection.sendCommand(command);
+//            Lplayer.connection.sendCommand(command);
+            Lplayer.commandSigned(command, Component.literal("[").append(AkatZumaWorldEdit.Akat));
         }
     }
 }
