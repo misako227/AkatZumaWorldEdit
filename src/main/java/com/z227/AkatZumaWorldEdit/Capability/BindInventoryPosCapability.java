@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-@AutoRegisterCapability
+
 public class BindInventoryPosCapability implements ICapabilitySerializable<CompoundTag> {
     public static Capability<BindInventoryPos> BIND_INV_POS_CAP = CapabilityManager.get(new CapabilityToken<>() {});
     private BindInventoryPos bindInventoryPos = null;

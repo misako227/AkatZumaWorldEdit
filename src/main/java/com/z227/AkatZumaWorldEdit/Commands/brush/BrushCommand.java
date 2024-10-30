@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Commands.brush;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
@@ -12,12 +13,11 @@ import com.z227.AkatZumaWorldEdit.network.brushPacket.S2CPasteBrush;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.S2CSphere;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.S2CUnbind;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -27,13 +27,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Map;
 
 public class BrushCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("brush")
                                 .then(Commands.literal("sphere")
-                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                        .then(Commands.argument("block", BlockStateArgument.block())
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
                                         .executes((context)->{
                                             sphereBrush(context,false, "sphere");
@@ -45,7 +45,7 @@ public class BrushCommand {
                                             return 1;
                                                 })))))
                                 .then(Commands.literal("cyl")
-                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                        .then(Commands.argument("block", BlockStateArgument.block())
                                                 .then(Commands.argument("半径", IntegerArgumentType.integer(3))
                                                         .then(Commands.argument("高度", IntegerArgumentType.integer(1,500))
                                                                 .executes((context)->{
@@ -58,7 +58,7 @@ public class BrushCommand {
                                                                             return 1;
                                                                         }))))))
                                 .then(Commands.literal("ellipse")
-                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                        .then(Commands.argument("block", BlockStateArgument.block())
                                                 .then(Commands.argument("东西半径", IntegerArgumentType.integer(3))
                                                         .then(Commands.argument("南北半径", IntegerArgumentType.integer(3))
                                                                 .then(Commands.argument("高度", IntegerArgumentType.integer(3,500))
@@ -89,13 +89,18 @@ public class BrushCommand {
     }
 
     private static void sphereBrush(CommandContext<CommandSourceStack> context, boolean hollow, String shape) {
-        ServerPlayer player = context.getSource().getPlayer();
+        ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
         PlayerMapData PMD = Util.getPMD(player);
 
         Item item = player.getMainHandItem().getItem();
 
         if(item == Items.AIR) {
-            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.brush_air"), player);
+            AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.brush_air"), player);
             return;
         }
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "block");
@@ -131,12 +136,17 @@ public class BrushCommand {
     }
 
         private static void pasteBrush(CommandContext<CommandSourceStack> context, boolean air) {
-            ServerPlayer player = context.getSource().getPlayer();
+            ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
             PlayerMapData PMD = Util.getPMD(player);
             ServerLevel serverlevel = context.getSource().getLevel();
             Item item = player.getMainHandItem().getItem();
             if(item == Items.AIR) {
-                AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.brush_air"), player);
+                AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.brush_air"), player);
                 return;
             }
             CopyBlock copyBlock =  new CopyBlock(PMD, player);
@@ -159,7 +169,12 @@ public class BrushCommand {
 
 
         public static int unbind(CommandContext<CommandSourceStack> context) {
-            ServerPlayer player = context.getSource().getPlayer();
+            ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
             PlayerMapData PMD = Util.getPMD(player);
             Item item = player.getMainHandItem().getItem();
             Map<Item, BrushBase> brushMap = PMD.getBrushMap();

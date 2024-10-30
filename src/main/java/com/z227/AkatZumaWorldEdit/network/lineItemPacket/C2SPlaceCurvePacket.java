@@ -26,7 +26,7 @@ public class C2SPlaceCurvePacket {
     List<BlockPos> posList;
 
     public C2SPlaceCurvePacket(FriendlyByteBuf buffer) {
-        this.blockState = buffer.readById(Block.BLOCK_STATE_REGISTRY);
+        this.blockState = Block.BLOCK_STATE_REGISTRY.byId(buffer.readVarInt());
 
         this.posList = Arrays.stream(buffer.readLongArray()).mapToObj(BlockPos::of).toList();
     }
@@ -38,7 +38,7 @@ public class C2SPlaceCurvePacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeId(Block.BLOCK_STATE_REGISTRY, this.blockState);
+        buf.writeVarInt(Block.BLOCK_STATE_REGISTRY.getId(this.blockState));
 
         buf.writeLongArray(posList.stream().mapToLong(BlockPos::asLong).toArray());
 

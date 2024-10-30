@@ -21,6 +21,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +53,7 @@ public class ClientEventRegister {
 //        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
 //        CommandBuildContext commandbuildcontext = Commands.createValidationContext(VanillaRegistries.createLookup());
 //
-//        PosClientCommand.register(dispatcher,commandbuildcontext);
+//        PosClientCommand.register(dispatcher);
 //
 //    }
 
@@ -103,7 +105,7 @@ public class ClientEventRegister {
                 String blockStateStr = blockState.toString().replaceFirst("}", "")
                         .replaceFirst("^Block\\{", "");
 
-                Component component = blockState.getBlock().getName().append(Component.literal(": "));
+                Component component = blockState.getBlock().getName().append(new TextComponent(": "));
                 Component copy = SendCopyMessage.send(blockStateStr);
                 AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
                 return;
@@ -130,7 +132,7 @@ public class ClientEventRegister {
 
 
     @SubscribeEvent
-    public static void onKeyboardInput(InputEvent.Key event) {
+    public static void onKeyboardInput(InputEvent.KeyInputEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null)return;
 
@@ -146,7 +148,7 @@ public class ClientEventRegister {
             }else{
                 LocalPlayer Lplayer = Minecraft.getInstance().player;
                 if(Lplayer!=null){
-                    Component component = Component.translatable("chat.akatzuma.error.too_fast");
+                    Component component = new TranslatableComponent("chat.akatzuma.error.too_fast");
                     AkatZumaWorldEdit.sendAkatMessage(component,Lplayer);
                 }
             }
@@ -165,7 +167,7 @@ public class ClientEventRegister {
 
 
     @SubscribeEvent
-    public static void InputEventKey(InputEvent.MouseScrollingEvent event) {
+    public static void InputEventKey(InputEvent.MouseScrollEvent event) {
 
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null)return;
@@ -184,7 +186,7 @@ public class ClientEventRegister {
 
     @SubscribeEvent
     public static void RightClickAir(PlayerInteractEvent.RightClickEmpty event) {
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
 //        ItemStack itemstack = player.getMainHandItem();
 //        Item item = itemstack.getItem();
 //        PlayerMapData PMD = Util.getPMD(player);
@@ -199,8 +201,8 @@ public class ClientEventRegister {
 
     @SubscribeEvent
     public static void RightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if(event.getLevel().isClientSide()){
-            brushEvent(event.getEntity());
+        if(event.getWorld().isClientSide()){
+            brushEvent(event.getPlayer());
         }
     }
 
@@ -226,7 +228,7 @@ public class ClientEventRegister {
 
 
 
-    public static void sendScrollEndPos(LocalPlayer player, InputEvent.Key event) {
+    public static void sendScrollEndPos(LocalPlayer player, InputEvent.KeyInputEvent event) {
         PlayerMapData PMD = Util.getPMD(player);
 
         if(event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL){
@@ -259,7 +261,7 @@ public class ClientEventRegister {
         }
     }
 
-    public static void scrollQuery(LocalPlayer player, InputEvent.MouseScrollingEvent event){
+    public static void scrollQuery(LocalPlayer player, InputEvent.MouseScrollEvent event){
         if(Util.isDownCtrl() && Util.isDownLAlt()){
             PlayerMapData PMD = Util.getPMD(player);
             BlockState blockState1 = PMD.getQueryBlockState();
@@ -279,7 +281,7 @@ public class ClientEventRegister {
         }
     }
 
-    public static void scrollAddPos(LocalPlayer player, InputEvent.MouseScrollingEvent event){
+    public static void scrollAddPos(LocalPlayer player, InputEvent.MouseScrollEvent event){
         PlayerMapData PMD = Util.getPMD(player);
         if(Util.isDownCtrl()){
             BlockPos pos1 = PMD.getPos1();

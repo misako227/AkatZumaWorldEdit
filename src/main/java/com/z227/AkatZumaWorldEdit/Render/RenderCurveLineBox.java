@@ -97,7 +97,8 @@ public class RenderCurveLineBox {
             //将顶点缓冲绑定在0penGL顶点数组上
             vertexBuffer.bind();
             //将缓冲区数据上传到顶点缓冲对象，buffer包含了绘制的顶点数据。
-            vertexBuffer.upload(buffer.end());
+//            vertexBuffer.upload(buffer.end());
+            buffer.end();
             //结束顶点缓冲的绑定，后续绘制不会在使用这个顶点缓冲对象了
             VertexBuffer.unbind();
         }

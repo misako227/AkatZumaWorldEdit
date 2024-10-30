@@ -9,6 +9,7 @@ import com.z227.AkatZumaWorldEdit.network.lineItemPacket.C2SPlaceCurvePacket;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,12 +31,12 @@ public class LineItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.line_item.desc1"));
-        pTooltipComponents.add( Component.translatable("item.line_item.desc2"));
-        pTooltipComponents.add( Component.translatable("item.line_item.desc3"));
-        pTooltipComponents.add( Component.translatable("item.line_item.desc4"));
-        pTooltipComponents.add( Component.translatable("item.line_item.desc5"));
-        pTooltipComponents.add( Component.translatable("item.line_item.desc6"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc1"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc2"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc3"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc4"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc5"));
+        pTooltipComponents.add( new TranslatableComponent("item.line_item.desc6"));
 
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
@@ -50,7 +51,6 @@ public class LineItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-
         if(pLevel.isClientSide()){
             right(pPlayer);
         }
@@ -81,7 +81,7 @@ public class LineItem extends Item {
         //删除所有点
         if(Util.isDownCtrl() && Util.isDownLAlt()){
             lineBase.delAllPos();
-            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.line.delall"), pPlayer);
+            AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.line.delall"), pPlayer);
             return;
         }
 
@@ -97,7 +97,7 @@ public class LineItem extends Item {
             if(posList.size() > 2){
                 NetworkingHandle.INSTANCE.sendToServer(new C2SPlaceCurvePacket(PMD.getQueryBlockState(), posList));
             }else{
-                Component component = Component.translatable("chat.akatzuma.error.line_pos_inadequate");
+                Component component = new TranslatableComponent("chat.akatzuma.error.line_pos_inadequate");
                 AkatZumaWorldEdit.sendAkatMessage(component, pPlayer);
             }
             return;

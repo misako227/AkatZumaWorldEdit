@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.p3pp3rf1y.sophisticatedbackpacks.api.CapabilityBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
@@ -183,7 +183,7 @@ public class RemoveItem {
         Block block =  level.getBlockState(pos).getBlock();
         // 原版箱子、木桶
         if(block instanceof ChestBlock || block instanceof BarrelBlock){
-            LazyOptional<IItemHandler> lazyItemHandler = be.getCapability(ForgeCapabilities.ITEM_HANDLER);
+            LazyOptional<IItemHandler> lazyItemHandler = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
             if(lazyItemHandler.isPresent()) {
                 IItemHandler itemHandler1 = lazyItemHandler.orElse(null);
                 for (Map.Entry<Integer, Integer> entry : map.entrySet()) {

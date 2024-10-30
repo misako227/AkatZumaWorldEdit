@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit.Items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -45,7 +46,7 @@ public class BuildingConsumable extends Block {
 
     @Override
     public void appendHoverText(ItemStack pStack,  BlockGetter pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
-        pTooltip.add( Component.translatable("item.akatzumaworldedit.building_consumable.desc"));
+        pTooltip.add( new TranslatableComponent("item.akatzumaworldedit.building_consumable.desc"));
         super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
     }
 

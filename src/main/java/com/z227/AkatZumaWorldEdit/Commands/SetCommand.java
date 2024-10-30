@@ -2,12 +2,12 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SetCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                     .then(Commands.literal("set")
-                        .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
+                        .then(Commands.argument("方块ID", BlockStateArgument.block())
                         .executes((context)->{
                             setBlock(context);
                             return 1;
@@ -42,7 +42,12 @@ public class SetCommand {
 
     public static void setBlock(CommandContext<CommandSourceStack> context) {
 
-        ServerPlayer player = context.getSource().getPlayer();
+        ServerPlayer player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
 
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
@@ -62,7 +67,7 @@ public class SetCommand {
             //放置方块
             PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
 //            Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
-//            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
+//            Component setSuccess = new TranslatableComponent("chat.akatzuma.set.success").append(blockName).append(new TranslatableComponent("chat.akatzuma.undo.tip"));
 //            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);
             SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
 

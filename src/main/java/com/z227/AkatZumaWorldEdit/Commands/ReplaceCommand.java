@@ -2,11 +2,11 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.ReplaceBlock;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReplaceCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("replace")
-                        .then(Commands.argument("被替换的方块", BlockStateArgument.block(pContext))
-                            .then(Commands.argument("替换成的方块", BlockStateArgument.block(pContext))
+                        .then(Commands.argument("被替换的方块", BlockStateArgument.block())
+                            .then(Commands.argument("替换成的方块", BlockStateArgument.block())
                                 .executes((context)->{
                                     replace(context);
                                     return 1;
@@ -37,7 +37,12 @@ public class ReplaceCommand {
     }
 
     public static void replace(CommandContext<CommandSourceStack> context) {
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "被替换的方块");

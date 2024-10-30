@@ -2,11 +2,11 @@ package com.z227.AkatZumaWorldEdit.Commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
@@ -14,6 +14,7 @@ import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,12 +26,12 @@ import java.util.Map;
 
 public class LineCommand {
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("line")
-                            .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
+                            .then(Commands.argument("方块ID", BlockStateArgument.block())
                                 .executes((context) -> {
                             line(context);
                             return 1;
@@ -42,7 +43,12 @@ public class LineCommand {
 
     private static void line(CommandContext<CommandSourceStack> context) {
         ServerLevel serverLevel = context.getSource().getLevel();
-        ServerPlayer player =  context.getSource().getPlayer();
+        ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         BlockPos pos1 = PMD.getPos1();
         BlockPos pos2 = PMD.getPos2();
@@ -53,7 +59,7 @@ public class LineCommand {
             Vec3i vec3i = PlaceBlock.calculateCubeDimensions(pos1,pos2);
             int num = (int) Math.sqrt(Math.pow(vec3i.getX(),2) + Math.pow(vec3i.getY(),2) + Math.pow(vec3i.getZ(),2));
             if(num<5 ){
-                Component com = Component.translatable("chat.akatzuma.error.line_too_short");
+                Component com = new TranslatableComponent("chat.akatzuma.error.line_too_short");
                 AkatZumaWorldEdit.sendAkatMessage(com,player);
                 PMD.setFlag(true);
                 return;

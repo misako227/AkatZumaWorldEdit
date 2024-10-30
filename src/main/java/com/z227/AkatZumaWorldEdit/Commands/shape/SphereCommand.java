@@ -3,12 +3,12 @@ package com.z227.AkatZumaWorldEdit.Commands.shape;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SphereCommand {
 
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("sphere")
-                                .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
+                                .then(Commands.argument("方块ID", BlockStateArgument.block())
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
                                             .executes((context)->{
                                                 setSphere(context,false);
@@ -42,7 +42,12 @@ public class SphereCommand {
 
 
     public static void setSphere(CommandContext<CommandSourceStack> context, boolean hollow){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
 
         PlayerMapData PMD = Util.getPMD(player);
 

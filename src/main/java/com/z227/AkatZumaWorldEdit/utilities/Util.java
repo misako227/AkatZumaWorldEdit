@@ -11,6 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class Util {
 
@@ -67,7 +69,7 @@ public class Util {
     public static Map<Integer,Integer> findBlockInContainer(Level level, BlockPos pos, String blockName){
 
         BlockEntity be =  level.getBlockEntity(pos);
-        LazyOptional<IItemHandler> itemHandler = be.getCapability(ForgeCapabilities.ITEM_HANDLER);
+        LazyOptional<IItemHandler> itemHandler = be.getCapability(ITEM_HANDLER_CAPABILITY);
         Map<Integer,Integer> temp = new HashMap<>();
         itemHandler.ifPresent(container -> {
             int size = container.getSlots();
@@ -285,7 +287,7 @@ public class Util {
             }else{
                 block = Blocks.AIR;
             }
-            component = Component.translatable("item.query_block_state.desc_block")
+            component = new TranslatableComponent("item.query_block_state.desc_block")
                     .append(block.getName())
                     .withStyle(ChatFormatting.GREEN);
             pTooltipComponents.add(component);
@@ -342,7 +344,7 @@ public class Util {
 //        if (!playerInv.containsKey(blockName))return null;
 //        int sum = playerInv.get(blockName).values().stream().mapToInt(Integer::intValue).sum() * multiple;
 //        if(sum < size){
-//            MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough");
+//            MutableComponent component = new TranslatableComponent("chat.akatzuma.error.inventory_not_enough");
 //            AkatZumaWorldEdit.sendAkatMessage(component, player);
 //            return null;
 //        }
@@ -354,9 +356,9 @@ public class Util {
 //    public static boolean checkOreTags(ITag<Block> Tags, BlockState state, Player player){
 //        //判断矿词
 //        if(Tags.contains(state.getBlock())){
-//            Component component = Component.literal(" ")
+//            Component component = new TextComponent(" ")
 //                    .append(state.getBlock().getName()).withStyle(ChatFormatting.GREEN)
-//                    .append(Component.translatable(("chat.akatzuma.error.black_list")));
+//                    .append(new TranslatableComponent(("chat.akatzuma.error.black_list")));
 //            AkatZumaWorldEdit.sendAkatMessage(component,player);
 //            return false;
 //        }

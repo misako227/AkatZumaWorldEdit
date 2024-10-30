@@ -7,7 +7,7 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -25,7 +25,7 @@ public class S2CSphere{
     BlockState blockState;
 
     public S2CSphere(FriendlyByteBuf buffer) {
-        this.blockState = buffer.readById(Block.BLOCK_STATE_REGISTRY);
+        this.blockState = Block.BLOCK_STATE_REGISTRY.byId(buffer.readVarInt());
         this.radius = buffer.readInt();
         this.radiusZ = buffer.readInt();
         this.height = buffer.readInt();
@@ -42,7 +42,8 @@ public class S2CSphere{
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeId(Block.BLOCK_STATE_REGISTRY, this.blockState);
+//        buf.writeId(Block.BLOCK_STATE_REGISTRY, this.blockState);
+        buf.writeVarInt(Block.BLOCK_STATE_REGISTRY.getId(this.blockState));
         buf.writeInt(this.radius);
         buf.writeInt(this.radiusZ);
         buf.writeInt(this.height);
@@ -74,6 +75,6 @@ public class S2CSphere{
 
 
 
-        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.bind_pos"), player);
+        AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.success.bind_pos"), player);
     }
 }

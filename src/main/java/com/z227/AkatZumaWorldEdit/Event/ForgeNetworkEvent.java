@@ -20,6 +20,7 @@ import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -53,7 +54,7 @@ public class ForgeNetworkEvent {
 
     @SubscribeEvent
     public static void Login(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
 //        System.out.println("登录："+ playerName);
         AkatZumaWorldEdit.PlayerWEMap.put(player.getUUID(), new PlayerMapData());
 
@@ -68,7 +69,7 @@ public class ForgeNetworkEvent {
 
     @SubscribeEvent
     public static void Logout(PlayerEvent.PlayerLoggedOutEvent event) {
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
         AkatZumaWorldEdit.PlayerWEMap.remove(player.getUUID());
 //        System.out.println("退出："+ player.getName().getString());
 
@@ -78,7 +79,7 @@ public class ForgeNetworkEvent {
     //玩家加入服务器，仅在客户端触发
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void clientLoginIn(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void clientLoginIn(ClientPlayerNetworkEvent.LoggedInEvent event) {
         LocalPlayer player = event.getPlayer();
 
 //        System.out.println("登录："+ playerName);
@@ -132,7 +133,7 @@ public class ForgeNetworkEvent {
         if (event.isCanceled()) {
             return;
         }
-        Player player = event.getEntity();
+        Player player = event.getPlayer() ;
         if (!player.isOnGround()) {
             event.setNewSpeed(Math.max(event.getNewSpeed(), event.getOriginalSpeed() * 5.0F));
         }
@@ -157,11 +158,11 @@ public class ForgeNetworkEvent {
     @SubscribeEvent
     public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 
-        Level world = event.getLevel();
+        Level world = event.getWorld();
         BlockPos pos =  event.getPos();
         if(!world.isClientSide()) return;
 
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
 //        if(player==null)return;
         Item item = event.getItemStack().getItem();
         if(AkatZumaWorldEdit.USEITEM.get(item) == null)return;
@@ -222,7 +223,7 @@ public class ForgeNetworkEvent {
             String blockStateStr = blockState.toString().replaceFirst("}", "")
                     .replaceFirst("^Block\\{", "");
 
-            Component component = blockState.getBlock().getName().append(Component.literal(": "));
+            Component component = blockState.getBlock().getName().append(new TextComponent(": "));
             Component copy = SendCopyMessage.send(blockStateStr);
             AkatZumaWorldEdit.sendAkatMessage(component, copy, player);
         }

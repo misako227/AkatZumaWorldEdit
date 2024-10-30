@@ -13,7 +13,7 @@
 //import net.minecraft.world.entity.player.Player;
 //
 //public class RotateCommand {
-//    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+//    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 //
 //        dispatcher.register(
 //                Commands.literal(AkatZumaWorldEdit.MODID)
@@ -48,7 +48,8 @@
 //    }
 //
 //    public static void rotate(CommandContext<CommandSourceStack> context, float xAngle, float yAngle, float zAngle) {
-//        Player player = context.getSource().getPlayer();
+//        Player player = null;
+
 //        ServerLevel serverlevel = context.getSource().getLevel();
 //        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 //        CopyBlock copyBlock = PMD.getCopyBlock();

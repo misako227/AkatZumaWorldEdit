@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,12 +29,12 @@ public class QueryBlockStateItem extends Item{
 
     @Override
     public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc1"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc2"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc3"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc4"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc5"));
-        pTooltipComponents.add( Component.translatable("item.query_block_state.desc6"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc1"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc2"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc3"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc4"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc5"));
+        pTooltipComponents.add( new TranslatableComponent("item.query_block_state.desc6"));
 
 //        if(pLevel!=null && pLevel.isClientSide) Util.addBlockStateText(pTooltipComponents);
 
@@ -55,7 +56,7 @@ public class QueryBlockStateItem extends Item{
 
 //                Component component;
 //                if (PMD.getQueryBlockState() == null) {
-//                    component = Component.translatable("chat.item.query_block_state.null");
+//                    component = new TranslatableComponent("chat.item.query_block_state.null");
 //                    AkatZumaWorldEdit.sendAkatMessage(component, pPlayer);
 //                    return super.use(pLevel, pPlayer, pUsedHand);
 //                }
@@ -107,7 +108,7 @@ public class QueryBlockStateItem extends Item{
 
 
 //                if (PMD.getQueryBlockState() == null) {
-//                    component = Component.translatable("chat.item.query_block_state.null");
+//                    component = new TranslatableComponent("chat.item.query_block_state.null");
 //                    AkatZumaWorldEdit.sendAkatMessage(component, player);
 //                    return InteractionResult.SUCCESS;
 //                }

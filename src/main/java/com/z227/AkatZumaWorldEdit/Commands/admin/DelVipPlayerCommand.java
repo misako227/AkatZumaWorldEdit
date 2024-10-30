@@ -4,15 +4,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 public class DelVipPlayerCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
@@ -36,12 +38,12 @@ public class DelVipPlayerCommand {
                                                         })))
                                 .then(Commands.literal("whitelist")
                                         .then(Commands.argument("num", IntegerArgumentType.integer(-1))
-                                                .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                .then(Commands.argument("block", BlockStateArgument.block())
                                                         .executes((context1)->{delWhiteList(context1, false);return 1; })
                                 )))
                                 .then(Commands.literal("vipwhitelist")
                                         .then(Commands.argument("num", IntegerArgumentType.integer(-1))
-                                                .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                .then(Commands.argument("block", BlockStateArgument.block())
                                                         .executes((context1)->{delWhiteList(context1, true);return 1; })
                                                 )))
 
@@ -54,7 +56,12 @@ public class DelVipPlayerCommand {
 
 
     public static void delVipPlayer(CommandContext<CommandSourceStack> context){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         String playerName = StringArgumentType.getString(context, "玩家名字");
         List<? extends String> vipList = Config.VIPPlayerList.get();
         Set<String> set = new LinkedHashSet<>(vipList);
@@ -63,12 +70,12 @@ public class DelVipPlayerCommand {
             Config.VIPPlayerList.set(set.stream().toList());
             Config.VIPPlayerList.save();
             AkatZumaWorldEdit.VipPlayerMap.remove(playerName);
-            component = Component.translatable("chat.akatzuma.success.del_viplayer");
+            component = new TranslatableComponent("chat.akatzuma.success.del_viplayer");
         }else{
-            component = Component.translatable("chat.akatzuma.error.not_viplayer");
+            component = new TranslatableComponent("chat.akatzuma.error.not_viplayer");
         }
         if(player!=null) {
-            AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+            AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                     .append(component).withStyle(ChatFormatting.GREEN)
                     .append(playerName), player);
         }
@@ -77,7 +84,12 @@ public class DelVipPlayerCommand {
     }
 
     private static void delWhiteList(CommandContext<CommandSourceStack> context, boolean vip) {
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         int num = IntegerArgumentType.getInteger(context, "num");
         BlockState block = BlockStateArgument.getBlock(context, "block").getState();
 
@@ -110,8 +122,8 @@ public class DelVipPlayerCommand {
             AkatZumaWorldEdit.defaultBlockMap.remove(blockName);
         }
 
-        Component component = Component.translatable("chat.akatzuma.success.del_viplayer");
-        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+        Component component = new TranslatableComponent("chat.akatzuma.success.del_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(blockName), player);
         AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName + ":" + num);

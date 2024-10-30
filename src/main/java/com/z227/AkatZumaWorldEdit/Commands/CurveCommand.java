@@ -19,12 +19,12 @@
 //
 //public class CurveCommand {
 //
-//    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+//    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 //
 //        dispatcher.register(
 //                Commands.literal(AkatZumaWorldEdit.MODID)
 //                        .then(Commands.literal("curve")
-//                            .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
+//                            .then(Commands.argument("方块ID", BlockStateArgument.block())
 //                                .executes((context) -> {
 //                                    curve(context);
 //                            return 1;
@@ -36,7 +36,8 @@
 //
 //    private static void curve(CommandContext<CommandSourceStack> context) {
 //        ServerLevel serverLevel = context.getSource().getLevel();
-//        ServerPlayer player =  context.getSource().getPlayer();
+//        ServerPlayer player = null;
+
 //        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 //        BlockPos pos1 = PMD.getPos1();
 //        BlockPos pos2 = PMD.getPos2();

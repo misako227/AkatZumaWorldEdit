@@ -4,8 +4,8 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +23,7 @@ public class S2CInventoryNotEnough {
 
 
     public S2CInventoryNotEnough(FriendlyByteBuf buffer) {
-        this.blockState = buffer.readById(Block.BLOCK_STATE_REGISTRY);
+        this.blockState = Block.BLOCK_STATE_REGISTRY.byId(buffer.readVarInt());
         this.num = buffer.readVarInt();
         this.sum = buffer.readVarInt();
     }
@@ -35,7 +35,7 @@ public class S2CInventoryNotEnough {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeId(Block.BLOCK_STATE_REGISTRY, this.blockState);
+        buf.writeVarInt(Block.BLOCK_STATE_REGISTRY.getId(this.blockState));
         buf.writeVarInt(num);
         buf.writeVarInt(sum);
 
@@ -50,9 +50,9 @@ public class S2CInventoryNotEnough {
     public void sendMessage() {
         Player player = Minecraft.getInstance().player;
         MutableComponent deBlockName = blockState.getBlock().getName();
-        MutableComponent component = Component.translatable("chat.akatzuma.error.inventory_not_enough")
+        MutableComponent component = new TranslatableComponent("chat.akatzuma.error.inventory_not_enough")
                 .append(deBlockName).withStyle(ChatFormatting.GREEN).append(":" + num)
-                .append(Component.translatable("chat.akatzuma.error.current_num"));
+                .append(new TranslatableComponent("chat.akatzuma.error.current_num"));
         AkatZumaWorldEdit.sendAkatMessage(component.append(":" + sum), player);
     }
 }

@@ -4,11 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
@@ -18,12 +18,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HollowCylinderCommand{
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("hcyl")
-                                .then(Commands.argument("方块ID", BlockStateArgument.block(pContext))
+                                .then(Commands.argument("方块ID", BlockStateArgument.block())
                                         .then(Commands.argument("半径", IntegerArgumentType.integer(3))
                                                 .then(Commands.argument("高度", IntegerArgumentType.integer(1,500))
                                                         .executes((context)->{
@@ -58,7 +58,12 @@ public class HollowCylinderCommand{
     }
 
     public static void setCyl(CommandContext<CommandSourceStack> context,boolean hollow,float xAngle,float yAngle,float zAngle){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "方块ID");

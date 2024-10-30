@@ -1,9 +1,8 @@
 package com.z227.AkatZumaWorldEdit.Capability;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
-@AutoRegisterCapability
+
 public class BindInventoryPos {
 
     private CompoundTag compoundNBT;

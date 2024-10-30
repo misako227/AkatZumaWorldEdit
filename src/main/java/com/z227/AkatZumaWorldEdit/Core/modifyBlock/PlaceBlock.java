@@ -14,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,7 @@ public class PlaceBlock {
 
     public static Boolean isPlaceBlockFromPlane(Level world, Player player, BlockPos pos1,BlockPos pos2, BlockState blockState){
         if(!isPlaceBlock(world, player, pos1,pos2, blockState)){
-            Component component = Component.translatable("chat.akatzuma.error.not_permission_place");
+            Component component = new TranslatableComponent("chat.akatzuma.error.not_permission_place");
             AkatZumaWorldEdit.sendAkatMessage(component,player);
             return false;
         }
@@ -119,7 +121,7 @@ public class PlaceBlock {
     public static boolean cheakFlag(PlayerMapData PMD, Player player) {
         // 判断上次操作是否完成
         if (!PMD.isFlag()) {
-            Component component = Component.translatable("chat.akatzuma.error.wait");
+            Component component = new TranslatableComponent("chat.akatzuma.error.wait");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -132,7 +134,7 @@ public class PlaceBlock {
         String dimension = level.dimension().location().toString();
         String tempName = worldName + "/" + dimension;
         if(AkatZumaWorldEdit.BlackWorldMap.containsKey(tempName)){
-            Component component = Component.translatable("chat.akatzuma.error.black_world");
+            Component component = new TranslatableComponent("chat.akatzuma.error.black_world");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -144,7 +146,7 @@ public class PlaceBlock {
          // 选区大小
          if(volume > configVolume){
 
-             Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
+             Component component = new TranslatableComponent("chat.akatzuma.error.volume_too_long");
              AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(configVolume), player);
              return false;
          }
@@ -154,9 +156,9 @@ public class PlaceBlock {
     public static boolean checkBlackList(Player player, Integer n, MutableComponent deBlockName){
         //检查黑名单
         if(n < 0){
-            Component component = Component.literal(" ")
+            Component component = new TextComponent(" ")
                     .append(deBlockName).withStyle(ChatFormatting.GREEN)
-                    .append(Component.translatable(("chat.akatzuma.error.black_list")));
+                    .append(new TranslatableComponent(("chat.akatzuma.error.black_list")));
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -299,7 +301,7 @@ public class PlaceBlock {
 
         // 判断坐标是否为null
         if (pos1 == null || pos2 == null) {
-            MutableComponent component = Component.translatable("chat.akatzuma.error.invalid_pos");
+            MutableComponent component = new TranslatableComponent("chat.akatzuma.error.invalid_pos");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -312,7 +314,7 @@ public class PlaceBlock {
     public static boolean checkLowHeight(BlockPos pos1,BlockPos pos2, Player player){
         if(!player.hasPermissions(2)){
             if(pos1.getY()<Config.LOWHeight.get() || pos2.getY()<Config.LOWHeight.get()){
-                AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),player);
+                AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.low_hight"),player);
                 return false;
             }
         }
@@ -356,7 +358,7 @@ public class PlaceBlock {
 
             //区块是否加载
             if (!world.hasChunkAt(pos1) || !world.hasChunkAt(pos2)) {
-                MutableComponent component = Component.translatable("chat.akatzuma.error.chunk_not_loaded");
+                MutableComponent component = new TranslatableComponent("chat.akatzuma.error.chunk_not_loaded");
                 AkatZumaWorldEdit.sendAkatMessage(component, player);
                 return false;
             }
@@ -423,7 +425,7 @@ public class PlaceBlock {
 
             // 选区大小
             if(posList.size() > areaValue){
-                Component component = Component.translatable("chat.akatzuma.error.volume_too_long");
+                Component component = new TranslatableComponent("chat.akatzuma.error.volume_too_long");
                 AkatZumaWorldEdit.sendAkatMessage(component,String.valueOf(areaValue), player);
                 return false;
             }
@@ -431,7 +433,7 @@ public class PlaceBlock {
             //区块是否加载
             for (BlockPos pos : posList) {
                 if (!world.hasChunkAt(pos)) {
-                    MutableComponent component = Component.translatable("chat.akatzuma.error.chunk_not_loaded");
+                    MutableComponent component = new TranslatableComponent("chat.akatzuma.error.chunk_not_loaded");
                     AkatZumaWorldEdit.sendAkatMessage(component, player);
                     return false;
                 }
@@ -469,7 +471,7 @@ public class PlaceBlock {
             //检查是否有放置权限
             for (BlockPos pos : posList) {
                 if(!isPlaceBlock(world, player, pos, blockState)){
-                    Component component = Component.translatable("chat.akatzuma.error.not_permission_place");
+                    Component component = new TranslatableComponent("chat.akatzuma.error.not_permission_place");
                     AkatZumaWorldEdit.sendAkatMessage(component,player);
                     return false;
                 }

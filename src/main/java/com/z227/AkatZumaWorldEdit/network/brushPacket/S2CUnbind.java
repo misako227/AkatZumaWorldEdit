@@ -6,7 +6,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,7 +48,7 @@ public class S2CUnbind {
 
         brushMap.remove(item);
 
-        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.del_viplayer"), player);
+        AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.success.del_viplayer"), player);
 
     }
 

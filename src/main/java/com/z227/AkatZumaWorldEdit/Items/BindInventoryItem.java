@@ -6,6 +6,7 @@ import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -32,8 +33,8 @@ public class BindInventoryItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("hud.akatzuma.right"));
-        pTooltipComponents.add(Component.translatable("hud.akatzuma.ctrl_right"));
+        pTooltipComponents.add(new TranslatableComponent("hud.akatzuma.right"));
+        pTooltipComponents.add(new TranslatableComponent("hud.akatzuma.ctrl_right"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
     }
 
@@ -96,7 +97,7 @@ public class BindInventoryItem extends Item {
 
                 }
 
-                Component component = Component.translatable("chat.akatzuma.error.bind_pos");
+                Component component = new TranslatableComponent("chat.akatzuma.error.bind_pos");
                 AkatZumaWorldEdit.sendAkatMessage(component,player);
 
                 return InteractionResult.SUCCESS;

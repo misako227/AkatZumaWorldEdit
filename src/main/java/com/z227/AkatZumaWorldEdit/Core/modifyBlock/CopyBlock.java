@@ -8,8 +8,8 @@ import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -187,7 +187,7 @@ public class CopyBlock {
 
         // 判断坐标是否为null
         if (pos1 == null || pos2 == null) {
-            MutableComponent component = Component.translatable("chat.akatzuma.error.invalid_pos");
+            MutableComponent component = new TranslatableComponent("chat.akatzuma.error.invalid_pos");
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -237,7 +237,7 @@ public class CopyBlock {
         else this.clientCopyMap = flippedCopyMap;
 
 
-        if(!player.isLocalPlayer())AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.flip"), this.player);
+        if(!player.isLocalPlayer())AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.success.flip"), this.player);
     }
 
     public BlockState isFlipZFace(BlockState state,boolean Y){
@@ -381,7 +381,7 @@ public class CopyBlock {
 //            rotateCopyMap.put(new BlockPos(Math.toIntExact(Math.round(position.x)), Math.toIntExact(Math.round(position.y)), Math.toIntExact(Math.round(position.z))), state);
 //        }
 //
-//        component = Component.translatable("chat.akatzuma.success.rotate");
+//        component = new TranslatableComponent("chat.akatzuma.success.rotate");
 //        this.copyMap = rotateCopyMap;
 //        AkatZumaWorldEdit.sendAkatMessage(component, this.player);
 //    }
@@ -402,7 +402,7 @@ public class CopyBlock {
 //            BlockState state = entry.getValue();
 //            rotateCopyMap.put(RotateBlock.rotateCopyMapZ(this.playerCopyPos,pos,this.copyPos1,this.copyPos2), state);
 //        }
-//        component = Component.translatable("chat.akatzuma.success.rotate");
+//        component = new TranslatableComponent("chat.akatzuma.success.rotate");
 //        this.copyMap = rotateCopyMap;
 //        AkatZumaWorldEdit.sendAkatMessage(component, this.player);
 //    }

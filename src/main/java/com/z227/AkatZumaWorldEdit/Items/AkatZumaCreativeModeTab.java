@@ -25,7 +25,7 @@ public class AkatZumaCreativeModeTab extends CreativeModeTab {
 //    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = TABS.register(AkatZumaWorldEdit.MODID,
 //        () -> CreativeModeTab.builder()
 //            // 设置所要展示的页的名称
-//            .title(Component.translatable("item_group." + AkatZumaWorldEdit.MODID + ".item"))
+//            .title(new TranslatableComponent("item_group." + AkatZumaWorldEdit.MODID + ".item"))
 //            // 设置页图标
 //            .icon(() -> new ItemStack(AkatZumaWorldEdit.WOOD_AXE.get()))
 //            // 为物品栏页添加默认物品

@@ -18,7 +18,7 @@
 //import java.util.Map;
 //
 //public class MoveCommand {
-//    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+//    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 //        dispatcher.register(
 //                Commands.literal(AkatZumaWorldEdit.MODID)
 //                    .then(Commands.literal("move")
@@ -44,7 +44,8 @@
 //        public static void move(CommandContext<CommandSourceStack> context, int direction){
 //            int moveNum =  IntegerArgumentType.getInteger(context, "移动距离");
 //            ServerLevel serverlevel = context.getSource().getLevel();
-//            Player player = context.getSource().getPlayer();
+//            Player player = null;
+
 //            PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
 //            //undo
 //            Map<BlockPos, BlockState> undoMap  = new HashMap<>();

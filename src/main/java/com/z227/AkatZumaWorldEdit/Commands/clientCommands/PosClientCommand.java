@@ -13,7 +13,7 @@
 //
 //public class PosClientCommand
 //{
-//    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+//    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 //
 //        LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(
 //                Commands.literal(AkatZumaWorldEdit.MODID)

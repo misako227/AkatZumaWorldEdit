@@ -58,7 +58,7 @@
 //    }
 //    public boolean checkMoveLimit(){
 //        if(this.moveNum > Config.MOVELimit.get()){
-//            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.move_limit").append(String.valueOf(Config.MOVELimit.get())), this.player);
+//            AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.move_limit").append(String.valueOf(Config.MOVELimit.get())), this.player);
 //            return false;
 //        } return true;
 //    }
@@ -113,7 +113,7 @@
 //                }
 //            }
 //        }
-//        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);
+//        AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.success.stack"),this.player);
 //
 //        return true;
 //    }

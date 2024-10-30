@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -20,15 +19,16 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Random;
 
 public class RenderBlockTest {
     static final Direction[] DIRECTIONS = Direction.values();
 
-    public static void renderBatched(BlockState pState, BlockPos pPos, BlockAndTintGetter pLevel, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, RandomSource pRandom) {
-        renderBatched(pState, pPos, pLevel, pPoseStack, pConsumer, pCheckSides, pRandom, net.minecraftforge.client.model.data.ModelData.EMPTY, null);
+    public static void renderBatched(BlockState pState, BlockPos pPos, BlockAndTintGetter pLevel, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, Random pRandom) {
+        renderBatched(pState, pPos, pLevel, pPoseStack, pConsumer, pCheckSides, pRandom, net.minecraftforge.client.model.data.EmptyModelData.INSTANCE, null);
     }
 
-    public static void renderBatched(BlockState pState, BlockPos pPos, BlockAndTintGetter pLevel, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, RandomSource pRandom, net.minecraftforge.client.model.data.ModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
+    public static void renderBatched(BlockState pState, BlockPos pPos, BlockAndTintGetter pLevel, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, Random pRandom, net.minecraftforge.client.model.data.IModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
         try {
             RenderShape rendershape = pState.getRenderShape();
             if (rendershape == RenderShape.MODEL) {
@@ -52,7 +52,7 @@ public class RenderBlockTest {
         return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(pState);
     }
 
-    public static void tesselateBlock(BlockAndTintGetter pLevel, BakedModel pModel, BlockState pState, BlockPos pPos, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, RandomSource pRandom, long pSeed, int pPackedOverlay, net.minecraftforge.client.model.data.ModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
+    public static void tesselateBlock(BlockAndTintGetter pLevel, BakedModel pModel, BlockState pState, BlockPos pPos, PoseStack pPoseStack, VertexConsumer pConsumer, boolean pCheckSides, Random pRandom, long pSeed, int pPackedOverlay, net.minecraftforge.client.model.data.IModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
         // 判断是否使用环境光遮蔽
 //        boolean flag = Minecraft.useAmbientOcclusion() && pState.getLightEmission(pLevel, pPos) == 0 && pModel.useAmbientOcclusion(pState, renderType);
         boolean flag =false;
@@ -77,7 +77,7 @@ public class RenderBlockTest {
 
 
 
-    public static void tesselateWithoutAO(BlockAndTintGetter blockAndTintGetter, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, PoseStack poseStack, VertexConsumer vertexConsumer, boolean skipAo, RandomSource randomSource, long seed, int packedLight, net.minecraftforge.client.model.data.ModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
+    public static void tesselateWithoutAO(BlockAndTintGetter blockAndTintGetter, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, PoseStack poseStack, VertexConsumer vertexConsumer, boolean skipAo, Random randomSource, long seed, int packedLight, net.minecraftforge.client.model.data.IModelData modelData, net.minecraft.client.renderer.RenderType renderType) {
         // 创建一个BitSet来跟踪处理过的方向
         BitSet bitSet = new BitSet(3);
         // 使用可变的BlockPos来减少对象创建，提高性能
@@ -88,7 +88,7 @@ public class RenderBlockTest {
             // 为每个方向重新设置随机种子，确保一致性
             randomSource.setSeed(seed);
             // 获取当前方向的四边形列表
-            List<BakedQuad> quads = bakedModel.getQuads(blockState, direction, randomSource, modelData, renderType);
+            List<BakedQuad> quads = bakedModel.getQuads(blockState, direction, randomSource, modelData);
             if (!quads.isEmpty()) {
                 // 设置邻接块的位置
                 mutableBlockPos.setWithOffset(blockPos, direction);
@@ -106,7 +106,7 @@ public class RenderBlockTest {
         // 重新设置随机种子，为无方向的四边形生成做准备
         randomSource.setSeed(seed);
         // 获取无方向的四边形列表
-        List<BakedQuad> quadsNoDirection = bakedModel.getQuads(blockState, null, randomSource, modelData, renderType);
+        List<BakedQuad> quadsNoDirection = bakedModel.getQuads(blockState, null, randomSource, modelData);
         if (!quadsNoDirection.isEmpty()) {
             // 渲染模型的无方向平面
             renderModelFaceFlat(blockAndTintGetter, blockState, blockPos, 15728880, 655363, true, poseStack, vertexConsumer, quadsNoDirection, bitSet);

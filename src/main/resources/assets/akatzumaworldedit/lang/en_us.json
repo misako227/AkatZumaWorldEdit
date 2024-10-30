@@ -5,5 +5,6 @@
   "chat.item.wood_axe.left": "left:",
   "chat.item.wood_axe.right": "right:",
   "item.akatzumaworldedit.query_blockstate_item": "§bquery block state",
-  "item.akatzumaworldedit.wood_axe": "§bwooden axe"
+  "item.akatzumaworldedit.wood_axe": "§bwooden axe",
+  "item.query_block_state.desc5": ""
 }

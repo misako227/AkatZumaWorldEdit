@@ -4,8 +4,8 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +76,7 @@ public class ReplaceBlock {
             }
         }
         if(this.replaceMap.size() == 0){
-            AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.no_replace"),this.player);
+            AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.no_replace"),this.player);
         }
     }
 
@@ -90,7 +90,7 @@ public class ReplaceBlock {
             MySetBlock.setBlockNotUpdateAddUndo(this.world, pos ,this.outputState, undoMap);
         }
 //        MutableComponent blockName = this.outputState.getBlock().getName().withStyle(ChatFormatting.GREEN);
-//        Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
+//        Component setSuccess = new TranslatableComponent("chat.akatzuma.set.success").append(blockName).append(new TranslatableComponent("chat.akatzuma.undo.tip"));
 //        AkatZumaWorldEdit.sendAkatMessage(setSuccess, player);
 
     }

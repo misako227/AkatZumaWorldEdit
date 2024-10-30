@@ -4,15 +4,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 public class AddVipPlayerCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
@@ -38,20 +40,20 @@ public class AddVipPlayerCommand {
                                                 })))
                                         .then(Commands.literal("whitelist")
                                                 .then(Commands.argument("num", IntegerArgumentType.integer(-1))
-                                                .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                .then(Commands.argument("block", BlockStateArgument.block())
                                                         .executes((context)->{
                                                             addBlock(context,false);
                                                             return 1;
                                                         }))))
                                         .then(Commands.literal("vipwhitelist")
                                                 .then(Commands.argument("num", IntegerArgumentType.integer(-1))
-                                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                        .then(Commands.argument("block", BlockStateArgument.block())
                                                                 .executes((context)->{
                                                                     addBlock(context,true);
                                                                     return 1;
                                                                 }))))
                                         .then(Commands.literal("replaceList")
-                                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                        .then(Commands.argument("block", BlockStateArgument.block())
                                                                 .executes((context)->{
                                                                     addreplaceList(context);
                                                                     return 1;
@@ -78,7 +80,12 @@ public class AddVipPlayerCommand {
 
 
     public static void addVipPlayer(CommandContext<CommandSourceStack> context){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         String playerName = StringArgumentType.getString(context, "玩家名字");
         List<? extends String> vipList = Config.VIPPlayerList.get();
         Set<String> set = new LinkedHashSet<>(vipList);
@@ -86,15 +93,20 @@ public class AddVipPlayerCommand {
         Config.VIPPlayerList.set(set.stream().toList());
         Config.VIPPlayerList.save();
         AkatZumaWorldEdit.VipPlayerMap.put(playerName,true);
-        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
-        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+        Component component = new TranslatableComponent("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(playerName), player);
         AkatZumaWorldEdit.LOGGER.info(component.getString() +playerName);
 
     }
     public static void addBlock(CommandContext<CommandSourceStack> context,boolean vip){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         int num = IntegerArgumentType.getInteger(context, "num");
         BlockState block = BlockStateArgument.getBlock(context, "block").getState();
 
@@ -137,8 +149,8 @@ public class AddVipPlayerCommand {
             AkatZumaWorldEdit.defaultBlockMap.put(blockName,num);
         }
 
-        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
-        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+        Component component = new TranslatableComponent("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(blockName), player);
         AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName + ":" + num);
@@ -147,7 +159,12 @@ public class AddVipPlayerCommand {
     }
 
     public static void addreplaceList(CommandContext<CommandSourceStack> context){
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         BlockState block = BlockStateArgument.getBlock(context, "block").getState();
 
 
@@ -163,8 +180,8 @@ public class AddVipPlayerCommand {
         replaceList.save();
         AkatZumaWorldEdit.ReplaceBlockMap.put(blockName,true);
 
-        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
-        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+        Component component = new TranslatableComponent("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(blockName), player);
         AkatZumaWorldEdit.LOGGER.info(component.getString() + blockName);
@@ -172,20 +189,26 @@ public class AddVipPlayerCommand {
 
     public static void setRange(CommandContext<CommandSourceStack> context, boolean vip) {
         int num = IntegerArgumentType.getInteger(context, "num");
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         if(vip){
             Config.VIPValue.set(num);
             Config.VIPValue.save();
-            sendAddSuccess(context.getSource().getPlayer(), String.valueOf(num));
+            sendAddSuccess(player, String.valueOf(num));
         }else{
             Config.DEFAULTValue.set(num);
             Config.DEFAULTValue.save();
-            sendAddSuccess(context.getSource().getPlayer(), String.valueOf(num));
+            sendAddSuccess(player, String.valueOf(num));
         }
     }
 
     public static void sendAddSuccess(Player player,String msg){
-        Component component = Component.translatable("chat.akatzuma.success.add_viplayer");
-        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
+        Component component = new TranslatableComponent("chat.akatzuma.success.add_viplayer");
+        if(player!=null) AkatZumaWorldEdit.sendAkatMessage(new TextComponent("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(msg), player);
     }

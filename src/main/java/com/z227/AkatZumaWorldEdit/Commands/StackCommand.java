@@ -3,11 +3,11 @@ package com.z227.AkatZumaWorldEdit.Commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.StackBlock;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StackCommand {
-    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void  register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
             Commands.literal(AkatZumaWorldEdit.MODID)
@@ -51,7 +51,12 @@ public class StackCommand {
     public static void stack(CommandContext<CommandSourceStack> context, int direction){
         int stackNum =  IntegerArgumentType.getInteger(context, "堆叠次数");
         ServerLevel serverlevel = context.getSource().getLevel();
-        Player player = context.getSource().getPlayer();
+        Player player = null;
+        try {
+            player = context.getSource().getPlayerOrException();
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         //undo
         Map<BlockPos, BlockState> undoMap  = new HashMap<>();

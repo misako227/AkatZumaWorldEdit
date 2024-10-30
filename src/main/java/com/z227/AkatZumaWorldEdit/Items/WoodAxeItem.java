@@ -10,6 +10,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,10 +39,10 @@ public class WoodAxeItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.wood_axe.desc1"));
-        pTooltipComponents.add( Component.translatable("item.wood_axe.desc2"));
-        pTooltipComponents.add( Component.translatable("item.wood_axe.desc3"));
-        pTooltipComponents.add( Component.translatable("item.wood_axe.desc4"));
+        pTooltipComponents.add( new TranslatableComponent("item.wood_axe.desc1"));
+        pTooltipComponents.add( new TranslatableComponent("item.wood_axe.desc2"));
+        pTooltipComponents.add( new TranslatableComponent("item.wood_axe.desc3"));
+        pTooltipComponents.add( new TranslatableComponent("item.wood_axe.desc4"));
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
     }
@@ -65,8 +67,8 @@ public class WoodAxeItem extends Item {
         //超出最低高度
         if(!player.hasPermissions(2) && pos.getY() < Config.LOWHeight.get()){
             if(player.isLocalPlayer()){return false;}
-                Component component = Component.translatable("chat.item.wood_axe.left_error");
-                Component msg = Component.literal(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);
+                Component component = new TranslatableComponent("chat.item.wood_axe.left_error");
+                Component msg = new TextComponent(Config.LOWHeight.get().toString()).withStyle(ChatFormatting.RED);
                 AkatZumaWorldEdit.sendAkatMessage(component,msg, player);
 
             return false;
@@ -74,9 +76,9 @@ public class WoodAxeItem extends Item {
         //禁止选中基岩
         Block block = leve.getBlockState(pos).getBlock();
         if(block == Blocks.BEDROCK){
-            Component component = Component.literal(" ")
+            Component component = new TextComponent(" ")
                     .append(block.getName()).withStyle(ChatFormatting.GREEN)
-                    .append(Component.translatable(("chat.akatzuma.error.black_list")));
+                    .append(new TranslatableComponent(("chat.akatzuma.error.black_list")));
             AkatZumaWorldEdit.sendAkatMessage(component, player);
             return false;
         }
@@ -100,10 +102,10 @@ public class WoodAxeItem extends Item {
             Component component;
             //判断pos2存不存在
             if(bool){
-                component = Component.translatable("chat.item.wood_axe.left");
+                component = new TranslatableComponent("chat.item.wood_axe.left");
                 if (pwm.getPos2() !=null) pos2 = pwm.getPos2();
             }else{
-                component = Component.translatable("chat.item.wood_axe.right");
+                component = new TranslatableComponent("chat.item.wood_axe.right");
                 if (pwm.getPos1() !=null) pos2 = pwm.getPos1();
             }
 

@@ -6,8 +6,8 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -132,8 +132,8 @@ public class StackBlock {
                 world.setBlock(newPos, state, 2);
             }
         }
-        AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);
-        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.error.low_hight"),this.player);
+        AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.success.stack"),this.player);
+        if(isLowHeight)AkatZumaWorldEdit.sendAkatMessage(new TranslatableComponent("chat.akatzuma.error.low_hight"),this.player);
 
 
     }

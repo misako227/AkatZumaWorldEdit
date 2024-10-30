@@ -39,7 +39,7 @@ public class AkatZumaWorldEdit{
     public static MutableComponent Akat = new TextComponent("AkatZuma").withStyle(ChatFormatting.GOLD)
             .append(new TextComponent("]:").withStyle(ChatFormatting.WHITE));
 //    public static Component Akat = TranslatableComponent.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
-//            .append( Component.literal("]:").withStyle(ChatFormatting.WHITE));
+//            .append( new TextComponent("]:").withStyle(ChatFormatting.WHITE));
 
     public static Map<Item, Boolean> USEITEM = new HashMap<>();
 
@@ -108,30 +108,30 @@ public class AkatZumaWorldEdit{
     //发送消息
     public static void sendAkatMessage(Component component, Player player){
         player.sendMessage(new TextComponent("[").append(Akat).append(component), player.getUUID());
-//        player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
+//        player.sendSystemMessage(new TextComponent("[").append(Akat).append(component));
     }
 
     public static void sendAkatMessage(String message, Component component, Player player){
         player.sendMessage(new TextComponent("[").append(Akat).append(message).append(component), player.getUUID());
-//        player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
+//        player.sendSystemMessage(new TextComponent("[").append(Akat).append(message).append(component));
     }
 
     public static void sendAkatMessage(Component component, String message,  Player player){
         player.sendMessage(new TextComponent("[").append(Akat).append(component).append(message), player.getUUID());
-//        player.sendSystemMessage(Component.literal("[").append(Akat).append(component).append(message));
+//        player.sendSystemMessage(new TextComponent("[").append(Akat).append(component).append(message));
     }
 
     public static void sendAkatMessage(Component message, Component component, Player player){
         player.sendMessage(new TextComponent("[").append(Akat).append(message).append(component), player.getUUID());
-//        player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
+//        player.sendSystemMessage(new TextComponent("[").append(Akat).append(message).append(component));
     }
     public static void sendClientMessage(Component message, Component component, Player player){
         player.displayClientMessage(new TextComponent("[").append(Akat).append(message).append(component),true);
-//        player.displayClientMessage(Component.literal("[").append(Akat).append(message).append(component),true);
+//        player.displayClientMessage(new TextComponent("[").append(Akat).append(message).append(component),true);
     }
     public static void sendClientMessage(Component component, Player player){
         player.displayClientMessage(new TextComponent("[").append(Akat).append(component),true);
-//        player.displayClientMessage(Component.literal("[").append(Akat).append(component),true);
+//        player.displayClientMessage(new TextComponent("[").append(Akat).append(component),true);
     }
 
 

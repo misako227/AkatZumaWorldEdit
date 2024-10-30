@@ -7,7 +7,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClient;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -18,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class PosCommand
 {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
@@ -41,7 +40,12 @@ public class PosCommand
 
     private static void pos(CommandContext<CommandSourceStack> context,boolean b) {
         ServerLevel serverLevel = context.getSource().getLevel();
-        ServerPlayer player =  context.getSource().getPlayer();
+        ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
         Vec3 vec3 = player.getEyePosition();
         BlockPos pos = new BlockPos(vec3.x,vec3.y,vec3.z);
         if(WoodAxeItem.clickPos(serverLevel,pos, player,b)){
@@ -58,7 +62,12 @@ public class PosCommand
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }
-        ServerPlayer player =  context.getSource().getPlayer();
+        ServerPlayer player = null;
+            try {
+                player = context.getSource().getPlayerOrException();
+            } catch (CommandSyntaxException e) {
+                e.printStackTrace();
+            }
 //        PlayerMapData PMD = Util.getPMD(player);
         ServerLevel serverLevel = context.getSource().getLevel();
         if(!WoodAxeItem.clickPos(serverLevel,blockPos, player,b)){

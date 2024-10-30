@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,10 +26,10 @@ public class ProjectorItem extends Item
 
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add( Component.translatable("item.projector_item.desc1"));
-        pTooltipComponents.add( Component.translatable("item.projector_item.desc2"));
-        pTooltipComponents.add( Component.translatable("item.projector_item.desc3"));
-        pTooltipComponents.add( Component.translatable("item.projector_item.desc4"));
+        pTooltipComponents.add( new TranslatableComponent("item.projector_item.desc1"));
+        pTooltipComponents.add( new TranslatableComponent("item.projector_item.desc2"));
+        pTooltipComponents.add( new TranslatableComponent("item.projector_item.desc3"));
+        pTooltipComponents.add( new TranslatableComponent("item.projector_item.desc4"));
 
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 

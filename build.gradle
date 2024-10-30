@@ -30,6 +30,10 @@ archivesBaseName = 'akatzumaworldedit-forge1.19.2'
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+
+jarJar.enable()
+jarJar.fromRuntimeConfiguration()
+
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
@@ -168,6 +172,11 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
 
+    jarJar(group: 'org.joml', name: 'joml', version: "1.10.5") {
+        jarJar.ranged(it, '[1.0,2.0)')
+    }
+
+    implementation("org.joml:joml:1.10.5")
 
     implementation fg.deobf("curse.maven:sophisticatedcore-618298:4620053")
     implementation fg.deobf("curse.maven:sophisticatedstorage-619320:4668696")

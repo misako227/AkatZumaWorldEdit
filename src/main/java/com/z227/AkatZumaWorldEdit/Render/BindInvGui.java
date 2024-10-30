@@ -25,18 +25,19 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -44,24 +45,39 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 @OnlyIn(Dist.CLIENT)
 public class BindInvGui {
+
+
+    @SubscribeEvent
+    public static void onRenderText(FMLClientSetupEvent event){
+//        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+//            return;
+//        }
+        OverlayRegistry.registerOverlayTop("akatzuma.register.hud",InvPosHUD);
+//        event.RenderGameOverlayEvent()
+//        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(),"inv_pos_hud", InvPosHUD);
+//        event.registerAboveAll("inv_pos_hud", InvPosHUD);
+//        event.getOverlay().render(Minecraft.getInstance().gui , event.getMatrixStack(),event.getPartialTicks(),event.getWindow().getWidth(),event.getWindow().getHeight());
+    }
+
     public static ResourceLocation CHECK_BOX = new ResourceLocation(AkatZumaWorldEdit.MODID, "textures/gui/unchecked-checkbox-128.png");
-    public static Component HUDdesc1 = Component.translatable("hud.akatzuma.right");
-    public static Component HUDdesc2 = Component.translatable("hud.akatzuma.ctrl_right");
+    public static Component HUDdesc1 = new TranslatableComponent("hud.akatzuma.right");
+    public static Component HUDdesc2 = new TranslatableComponent("hud.akatzuma.ctrl_right");
 
-//    public static Component BrushShapeHUD = Component.translatable("hud.akatzuma.brush_shape");
-//    public static Component BrushMaskModeHUD = Component.translatable("hud.akatzuma.mask_mode");
-    public static Component BrushMaskModeWhite = Component.translatable("hud.akatzuma.mask_mode_white");
-    public static Component BrushMaskModeBlack = Component.translatable("hud.akatzuma.mask_mode_black");
+    //    public static Component BrushShapeHUD = new TranslatableComponent("hud.akatzuma.brush_shape");
+//    public static Component BrushMaskModeHUD = new TranslatableComponent("hud.akatzuma.mask_mode");
+    public static Component BrushMaskModeWhite = new TranslatableComponent("hud.akatzuma.mask_mode_white");
+    public static Component BrushMaskModeBlack = new TranslatableComponent("hud.akatzuma.mask_mode_black");
 
-    public static final IGuiOverlay InvPosHUD = ((gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+    public static final IIngameOverlay InvPosHUD = ((gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+        Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = Minecraft.getInstance().player;
         if(player == null) return;
         Item item = player.getMainHandItem().getItem();
 
         PlayerMapData PMD = Util.getPMD(player);
 
-        int guiWidth = gui.getMinecraft().getWindow().getGuiScaledWidth();
-        int guiHeight = gui.getMinecraft().getWindow().getGuiScaledHeight();
+        int guiWidth = minecraft.getWindow().getGuiScaledWidth();
+        int guiHeight = minecraft.getWindow().getGuiScaledHeight();
         int y = guiHeight - 65;
         int offset = guiWidth / 2;
         int posx = offset;
@@ -84,7 +100,7 @@ public class BindInvGui {
 
     });
 
-    private static void renderBrushHUD(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight, BrushBase brushBase) {
+    private static void renderBrushHUD(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight, BrushBase brushBase) {
 
 
         drawString(gui.getFont(), poseStack, brushBase.getShape(),3, screenHeight - (gui.getFont().lineHeight * 6) - 4, 0xffffff);     //形状
@@ -102,15 +118,8 @@ public class BindInvGui {
 
     }
 
-    @SubscribeEvent
-    public static void onRenderText(RegisterGuiOverlaysEvent event){
 
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(),"inv_pos_hud", InvPosHUD);
-//        event.registerAboveAll("inv_pos_hud", InvPosHUD);
-
-    }
-
-    public static void renderInvPosHUD(ForgeGui gui, PoseStack poseStack, float partialTick, int guiWidth, int guiHeight, PlayerMapData PMD) {
+    public static void renderInvPosHUD(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int guiWidth, int guiHeight, PlayerMapData PMD) {
         Map<String, BlockState> invPosMap = PMD.getInvPosMap();
         CompoundTag tag = PMD.getInvPosNBT();
 //        int index = PMD.getInvPosIndex();
@@ -156,7 +165,7 @@ public class BindInvGui {
 
     }
 
-    public static void renderQueryItemHUD(ForgeGui gui, PoseStack poseStack, float partialTick, int guiWidth, int guiHeight, PlayerMapData PMD) {
+    public static void renderQueryItemHUD(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int guiWidth, int guiHeight, PlayerMapData PMD) {
         int y = guiHeight - 65;
         int center = guiWidth / 2;
         int posx = center / 2;
@@ -167,13 +176,13 @@ public class BindInvGui {
 
         Component mode_name;
         if(queryFlag == 1){
-            mode_name = Component.translatable("hud.akatzuma.query_mode_1").withStyle(ChatFormatting.GREEN);
+            mode_name = new TranslatableComponent("hud.akatzuma.query_mode_1").withStyle(ChatFormatting.GREEN);
         }else{
-            mode_name = Component.translatable("hud.akatzuma.query_mode_2").withStyle(ChatFormatting.GOLD);
+            mode_name = new TranslatableComponent("hud.akatzuma.query_mode_2").withStyle(ChatFormatting.GOLD);
         }
 
-        Component mode = Component.translatable("hud.akatzuma.query_mode").append(mode_name);
-        Component query_block1 = Component.translatable("hud.akatzuma.query_block1").append(blockState1.getBlock().getName().withStyle(ChatFormatting.GREEN));
+        Component mode = new TranslatableComponent("hud.akatzuma.query_mode").append(mode_name);
+        Component query_block1 = new TranslatableComponent("hud.akatzuma.query_block1").append(blockState1.getBlock().getName().withStyle(ChatFormatting.GREEN));
 
         drawCenteredString(gui.getFont(),poseStack, mode, posx, y-15, 0xffffff );
 //        renderItem(blockState1.getBlock().asItem().getDefaultInstance(),center , y-25-gui.getFont().lineHeight);//
@@ -182,7 +191,7 @@ public class BindInvGui {
 
         if(queryFlag == 2){
             int px = center + center/2;
-            Component query_block2 = Component.translatable("hud.akatzuma.query_block2").append(blockState2.getBlock().getName().withStyle(ChatFormatting.GOLD));
+            Component query_block2 = new TranslatableComponent("hud.akatzuma.query_block2").append(blockState2.getBlock().getName().withStyle(ChatFormatting.GOLD));
             drawCenteredString(gui.getFont(),poseStack, query_block2, px, y-15, 0xffffff );
 //            renderItem(blockState2.getBlock().asItem().getDefaultInstance(), px, y-25-gui.getFont().lineHeight); ////
             renderItem(poseStack,blockState2.getBlock().asItem().getDefaultInstance(), px, y-25-gui.getFont().lineHeight, 0, 0);
@@ -201,7 +210,8 @@ public class BindInvGui {
         bufferbuilder.vertex(matrix4f, (float)pX1, (float)pY2, (float)pBlitOffset).uv(pMinU, pMaxV).endVertex();
         bufferbuilder.vertex(matrix4f, (float)pX2, (float)pY2, (float)pBlitOffset).uv(pMaxU, pMaxV).endVertex();
         bufferbuilder.vertex(matrix4f, (float)pX2, (float)pY1, (float)pBlitOffset).uv(pMaxU, pMinV).endVertex();
-        BufferUploader.drawWithShader(bufferbuilder.end());
+//        BufferUploader.drawWithShader(bufferbuilder.end());
+        bufferbuilder.end();
     }
     public static void blit(ResourceLocation pAtlasLocation, PoseStack pose,int pX1, int pX2, int pY1, int pY2, int pBlitOffset, int pUWidth, int pVHeight, float pUOffset, float pVOffset, int pTextureWidth, int pTextureHeight) {
         innerBlit(pAtlasLocation,pose, pX1, pX2, pY1, pY2, pBlitOffset, (pUOffset + 0.0F) / (float)pTextureWidth, (pUOffset + (float)pUWidth) / (float)pTextureWidth, (pVOffset + 0.0F) / (float)pTextureHeight, (pVOffset + (float)pVHeight) / (float)pTextureHeight);
@@ -229,7 +239,7 @@ public class BindInvGui {
         drawString(pFont,pose, pText, pX - pFont.width(pText) / 2, pY, pColor);
     }
 
-    public static void renderItem(PoseStack pose,ItemStack pStack, int pX, int pY, int pSeed, int pGuiOffset) {
+    public static void renderItem(PoseStack pose, ItemStack pStack, int pX, int pY, int pSeed, int pGuiOffset) {
         if (!pStack.isEmpty()) {
             Minecraft minecraft = Minecraft.getInstance();
             MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
@@ -278,5 +288,7 @@ public class BindInvGui {
             pose.popPose();
         }
     }
+
+
 
 }
