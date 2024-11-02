@@ -2,15 +2,17 @@ package com.z227.AkatZumaWorldEdit.Render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import com.mojang.math.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -97,8 +99,9 @@ public class RenderCurveLineBox {
             //将顶点缓冲绑定在0penGL顶点数组上
             vertexBuffer.bind();
             //将缓冲区数据上传到顶点缓冲对象，buffer包含了绘制的顶点数据。
-//            vertexBuffer.upload(buffer.end());
             buffer.end();
+            vertexBuffer.upload(buffer);
+
             //结束顶点缓冲的绑定，后续绘制不会在使用这个顶点缓冲对象了
             VertexBuffer.unbind();
         }
@@ -136,14 +139,75 @@ public class RenderCurveLineBox {
     }
 
 
-    public static void renderLine(BlockPos pos1, BlockPos pos2,VertexConsumer pConsumer, float pRed, float pGreen, float pBlue, float pAlpha) {
+    public static void renderBlockLine2(PoseStack stack, Player player, Matrix4f mat4f, Vec3 view){
+        PlayerMapData PMD = Util.getPMD(player);
+        LineBase lineBase = PMD.getLineBase();
 
-        renderLine(pConsumer, pos1.getX()+0.5f,(float)pos1.getY()+0.5f,pos1.getZ()+0.5f,pos2.getX()+0.5f,pos2.getY()+0.5f,pos2.getZ()+0.5f, pRed, pGreen, pBlue, pAlpha);
+
+        List<BlockPos> posList = lineBase.getPosList();
+        if(posList.size() == 0 ) return;
+
+
+
+        VertexConsumer VertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+
+        float opacity = 1F;
+        final float size = 1.0f;
+
+        //曲线
+        List<BlockPos> curvePosList = lineBase.getCurvePosList();
+        stack.pushPose();
+        stack.translate(-view.x, -view.y, -view.z);
+        for(BlockPos pos : curvePosList){
+
+            RenderLineBox.bufferAddBlockVertex(VertexConsumer, pos.getX(), pos.getY(), pos.getZ(), size, opacity, 67, 17, 151); //第一个选区点
+        }
+
+        for(int i = 0; i <= posList.size()-1; i++){
+            BlockPos p1 = posList.get(i);
+            BlockPos p2 = p1.offset(1,1,1);
+            AABB aabb =  new AABB(p1, p2);
+            //渲染控制点（白色）
+            RenderLineBox.bufferAddBlockVertex(VertexConsumer, aabb, 1, 1, 1, 1);
+
+            //渲染直线
+            if(i < posList.size()-1){
+                BlockPos linePos2 = posList.get(i+1);
+                int r,g,b;
+                if(i % 2 == 0){
+                    r = 1;
+                    g = 200;
+                    b = 200;
+                }else{
+                    r = 200;
+                    g = 55;
+                    b = 55;
+                }
+                renderLine(p1, linePos2,VertexConsumer, r, g, b, 1);
+            }
+
+        }
+
+
+        //渲染右键选中的点位（红色）
+        BlockPos rightPos = lineBase.getRightPos();
+        if(rightPos != null){
+            RenderLineBox.bufferAddBlockVertex(VertexConsumer, rightPos.getX(),rightPos.getY(),rightPos.getZ(), size, opacity, 1, 255, 255);
+        }
+
+        stack.popPose();
+
     }
 
+
+    public static void renderLine(BlockPos pos1, BlockPos pos2,VertexConsumer pConsumer, float pRed, float pGreen, float pBlue, float pAlpha) {
+        renderLine(pConsumer, pos1.getX()+0.5f,(float)pos1.getY()+0.5f,pos1.getZ()+0.5f,pos2.getX()+0.5f,pos2.getY()+0.5f,pos2.getZ()+0.5f, pRed, pGreen, pBlue, pAlpha);
+    }
 
     public static void renderLine(VertexConsumer pConsumer, float pMinX, float pMinY, float pMinZ, float pMaxX, float pMaxY, float pMaxZ, float pRed, float pGreen, float pBlue, float pAlpha) {
         pConsumer.vertex(pMinX, pMinY, pMinZ).color(pRed, pGreen, pBlue, pAlpha).endVertex();
         pConsumer.vertex(pMaxX, pMaxY, pMaxZ).color(pBlue, pGreen, pRed, pAlpha).endVertex();
     }
+
+
 }

@@ -4,7 +4,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -55,9 +54,9 @@ public class WoodAxeItem extends Item {
         Vec3 eye = pPlayer.getEyePosition();
         BlockPos blockPos2 =new BlockPos(eye.x,eye.y, eye.z);
         clickPos(pLevel,blockPos2, pPlayer,false );
-        if(pLevel.isClientSide()){
-            RenderLineBox.updateVertexBuffer();
-        }
+//        if(pLevel.isClientSide()){
+//            RenderLineBox.updateVertexBuffer();
+//        }
         return super.use(pLevel, pPlayer, pUsedHand);
 
     }
@@ -143,9 +142,9 @@ public class WoodAxeItem extends Item {
         BlockPos blockPos2 = context.getClickedPos();
 //        NetworkingHandle.INSTANCE.sendToServer(new C2SPos2(blockPos2));
         clickPos(level,blockPos2,context.getPlayer(), false );
-        if(level.isClientSide()){
-            RenderLineBox.updateVertexBuffer();
-        }
+//        if(level.isClientSide()){
+//            RenderLineBox.updateVertexBuffer();
+//        }
 
         return InteractionResult.SUCCESS;
     }

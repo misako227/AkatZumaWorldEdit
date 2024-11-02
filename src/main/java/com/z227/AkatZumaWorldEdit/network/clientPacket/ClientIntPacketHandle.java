@@ -5,7 +5,6 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -59,7 +58,7 @@ public class ClientIntPacketHandle {
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());;
         if(b)PMD.setPos1(pos);
         else PMD.setPos2(pos);
-        RenderLineBox.updateVertexBuffer();
+//        RenderLineBox.updateVertexBuffer();
     }
 
     // 3|4
@@ -69,7 +68,7 @@ public class ClientIntPacketHandle {
         PlayerMapData PMD = Util.getPMD(player);
         if(b)PMD.setPos1(PMD.getTempPos());
         else PMD.setPos2(PMD.getTempPos());
-        RenderLineBox.updateVertexBuffer();
+//        RenderLineBox.updateVertexBuffer();
     }
 
     public static void setClientCopyMap(){

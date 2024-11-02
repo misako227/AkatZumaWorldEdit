@@ -92,7 +92,7 @@ public class RenderLineBox {
     }
 
 
-    public static void bufferAddBlockVertex(BufferBuilder buffer, AABB pBox,float opacity, float red, float green, float blue) {
+    public static void bufferAddBlockVertex(VertexConsumer buffer, AABB pBox,float opacity, float red, float green, float blue) {
         double x = pBox.minX;
         double y = pBox.minY;
         double z = pBox.minZ;
@@ -135,11 +135,11 @@ public class RenderLineBox {
         buffer.vertex(x, y, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(x, maxY, z).color(red, green, blue, opacity).endVertex();
     }
-    public static void bufferAddBlockVertex(BufferBuilder buffer, double x, double y, double z,float size,float opacity, float red, float green, float blue) {
+    public static void bufferAddBlockVertex(VertexConsumer buffer, double x, double y, double z,float size,float opacity, float red, float green, float blue) {
         bufferAddBlockVertex(buffer, x, y, z, size, size, size, opacity, red, green, blue);
     }
 
-    public static void bufferAddBlockVertex(BufferBuilder buffer, double x, double y, double z,double maxX, double maxY, double maxZ,float opacity, float red, float green, float blue) {
+    public static void bufferAddBlockVertex(VertexConsumer buffer, double x, double y, double z,double maxX, double maxY, double maxZ,float opacity, float red, float green, float blue) {
 
         buffer.vertex(x, y + maxY, z).color(red, green, blue, opacity).endVertex();
         buffer.vertex(x+ maxX, y + maxY, z).color(red, green, blue, opacity).endVertex();

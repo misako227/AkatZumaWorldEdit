@@ -9,7 +9,6 @@ import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.C2SUseBrush;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
@@ -288,7 +287,7 @@ public class ClientEventRegister {
             if(pos1 == null) return;
             PMD.setPos1(addPos(pos1, event.getScrollDelta(), player));
             PMD.setUpdatePos(true);
-            RenderLineBox.updateVertexBuffer();
+//            RenderLineBox.updateVertexBuffer();
             event.setCanceled(true);
             return;
         }
@@ -297,7 +296,7 @@ public class ClientEventRegister {
             if(pos2 == null) return;
             PMD.setPos2(addPos(pos2, event.getScrollDelta(), player));
             PMD.setUpdatePos(true);
-            RenderLineBox.updateVertexBuffer();
+//            RenderLineBox.updateVertexBuffer();
             event.setCanceled(true);
         }
     }

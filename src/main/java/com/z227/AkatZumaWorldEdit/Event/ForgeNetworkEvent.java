@@ -10,7 +10,6 @@ import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
@@ -182,7 +181,7 @@ public class ForgeNetworkEvent {
         if(item instanceof WoodAxeItem){
             NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
             WoodAxeItem.clickPos(world,pos,player, true);
-            RenderLineBox.updateVertexBuffer();
+//            RenderLineBox.updateVertexBuffer();
 
             return;
         }

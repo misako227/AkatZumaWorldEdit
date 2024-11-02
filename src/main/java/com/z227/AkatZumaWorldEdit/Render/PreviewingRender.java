@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.opengl.GL11;
 
 import java.util.BitSet;
 import java.util.List;
@@ -106,13 +107,22 @@ public class PreviewingRender {
     //选择框
     public static void renderLine(PoseStack stack, BlockPos pStart, BlockPos pEnd){
         if (pStart == null || pEnd == null) return;
+
         VertexConsumer VertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
         BlockPos p1 = new BlockPos(Math.min(pStart.getX(), pEnd.getX()), Math.min(pStart.getY(), pEnd.getY()), Math.min(pStart.getZ(), pEnd.getZ()));
         BlockPos p2 = new BlockPos(Math.max(pStart.getX(), pEnd.getX()) + 1, Math.max(pStart.getY(), pEnd.getY()) + 1, Math.max(pStart.getZ(), pEnd.getZ()) + 1);
         AABB aabb =  new AABB(p1, p2);
+        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+
+        stack.pushPose();
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        stack.translate(-camvec.x, -camvec.y,-camvec.z);
         LevelRenderer.renderLineBox(stack,VertexConsumer, aabb,48, 1, 167,1);
         renderLineBox(stack,VertexConsumer, pStart,1, 170, 1, 1,1);
         renderLineBox(stack,VertexConsumer, pEnd,1, 1, 170, 170,1);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        stack.popPose();
+
     }
 
     public static void renderLineBox(PoseStack stack,VertexConsumer vertexConsumer,BlockPos pos,float size,float r,float g,float b, float opacity){

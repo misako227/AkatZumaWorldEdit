@@ -141,7 +141,7 @@ public class BindInvGui {
         int maxWidth = Math.max(nameWidth,posWidth);
 
         //渲染边框
-        blit(CHECK_BOX,poseStack, offset - (maxWidth/2) - 4,y-17, maxWidth+8,gui.getFont().lineHeight*4+6,0, 0, 128,52,128, 52);
+//        blit(CHECK_BOX,poseStack, offset - (maxWidth/2) - 4,y-17, maxWidth+8,gui.getFont().lineHeight*4+6,0, 0, 128,52,128, 52);
 
         drawCenteredString(gui.getFont(),poseStack, blockName, posx, y-15, color );     // name
         if(pos.length == 3){
@@ -253,9 +253,11 @@ public class BindInvGui {
                 pose.scale(16.0F, 16.0F, 16.0F);
                 pose.scale(1.0F, -1.0F, 1.0F);
                 boolean flag = !bakedmodel.usesBlockLight();
-                if (flag) {
-                    Lighting.setupForFlatItems();
-                }
+//                if (flag) {
+//                    Lighting.setupForFlatItems();
+//                }
+                Lighting.setupForFlatItems();
+
 
                 itemRenderer.render(pStack, ItemTransforms.TransformType.GUI, false, pose, bufferSource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
 

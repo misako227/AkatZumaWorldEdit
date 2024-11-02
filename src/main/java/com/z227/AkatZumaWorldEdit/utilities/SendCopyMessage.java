@@ -7,6 +7,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ClientCommandHandler;
 
 public class SendCopyMessage {
     public static Component send(String message) {
@@ -34,10 +35,10 @@ public class SendCopyMessage {
 
     public static void sendCommand(String command){
         LocalPlayer Lplayer = Minecraft.getInstance().player;
-        if (Lplayer != null) {//todo  发送指令
+        if (Lplayer != null) {
 //            Lplayer.connection.sendCommand(command);
-//            Lplayer.connection.send(new ServerboundPlayerCommandPacket())
 //            Lplayer.commandSigned(command, new TextComponent("[").append(AkatZumaWorldEdit.Akat));
+            ClientCommandHandler.sendMessage("/" + command);
         }
     }
 }
