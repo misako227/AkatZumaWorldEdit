@@ -39,6 +39,10 @@ public class BindInvGui {
     public static Component BrushMaskModeWhite = Component.translatable("hud.akatzuma.mask_mode_white");
     public static Component BrushMaskModeBlack = Component.translatable("hud.akatzuma.mask_mode_black");
 
+
+
+
+
     public static final IGuiOverlay InvPosHUD = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if(player == null) return;
@@ -166,6 +170,8 @@ public class BindInvGui {
             guiGraphics.drawCenteredString(gui.getFont(), query_block2, px, y-15, 0xffffff );
             guiGraphics.renderItem(blockState2.getBlock().asItem().getDefaultInstance(), px, y-25-gui.getFont().lineHeight);
         }
+
+
     }
 
 }

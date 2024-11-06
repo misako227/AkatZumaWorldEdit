@@ -122,6 +122,12 @@ public class LanguageDataGenerator {
             this.add("item.line_item.desc5", "§6 Alt+右键§f删除选中的点位");
             this.add("item.line_item.desc6", "§b Ctrl+Alt+右键§f删除所有点位");
             this.add("chat.akatzuma.line.delall", "§a 已删除所有点位");
+
+
+
+            //imgui
+            this.add("key.akatzumaworldedit.editmode", "打开编辑模式");
+            this.add("akatzuma.screen.edit_mode", "编辑模式界面");
         }
     }
 

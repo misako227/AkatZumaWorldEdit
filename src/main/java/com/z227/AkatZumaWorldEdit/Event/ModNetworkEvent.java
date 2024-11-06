@@ -41,6 +41,8 @@ public class ModNetworkEvent {
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Projector_Item.get(), true);
 //        AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.BindInventory.get(), true);
         AkatZumaWorldEdit.USEITEM.put(AkatZumaWorldEdit.Line_Item.get(), true);
+
+
     }
 
     @SubscribeEvent
@@ -49,8 +51,6 @@ public class ModNetworkEvent {
         NetworkingHandle.register();
 
     }
-
-
 
 
 

@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
+import com.z227.AkatZumaWorldEdit.utilities.ConfigFileUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -65,6 +66,7 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Item> Building_Consumable_Item;
 
 
+
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
         BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -91,6 +93,7 @@ public class AkatZumaWorldEdit{
         AkatZumaCreativeModeTab.TABS.register(bus);
 
 
+        ConfigFileUtil.createConfigDir();
 
     }
 

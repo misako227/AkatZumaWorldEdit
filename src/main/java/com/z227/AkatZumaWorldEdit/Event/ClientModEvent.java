@@ -15,6 +15,7 @@ public class ClientModEvent {
     @SubscribeEvent
     public static void registerKey(RegisterKeyMappingsEvent event){
         event.register(ClientEventRegister.UNDO_KEY);
+        event.register(ClientEventRegister.EDITMODE_KEY);
     }
 
 

@@ -15,6 +15,7 @@ import com.z227.AkatZumaWorldEdit.network.brushPacket.C2SUseBrush;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import com.z227.ImGuiRender.EditModeData;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -62,10 +63,26 @@ public class ClientEventRegister {
             85,
             "key.akatzuma");
 
+    public static final KeyMapping EDITMODE_KEY = new KeyMapping("key.akatzumaworldedit.editmode",
+            KeyConflictContext.IN_GAME,
+
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_F12,
+            "key.akatzuma");
+
 
 //    @SubscribeEvent
 //    public static void leftClickAir(TickEvent.ClientTickEvent event) {
 //        System.out.println(Minecraft.getInstance().options.keyAttack.isDown());
+//    }
+
+//    @SubscribeEvent
+//    public static void rGuiOverlayEvent(ScreenEvent.Opening event) {
+//        if(event.getNewScreen() instanceof TitleScreen){
+//            System.out.println("TitleScreen");
+//            event.setNewScreen(new EditModeScreen(Component.translatable("akatzuma.screen.edit_mode")));
+//        }
+////        System.out.println(event.getCurrentScreen().toString());
 //    }
 
 
@@ -124,6 +141,15 @@ public class ClientEventRegister {
         }
     }
 
+//    @SubscribeEvent
+//    public static void onClickMouse(InputEvent.MouseButton.Pre event) {
+//        if(event.getButton() == 1 ){
+////            EditModeData.setEditMode(false);
+//            Minecraft.getInstance().mouseHandler.grabMouse();
+//        }
+//
+//    }
+
 
 
 
@@ -133,6 +159,20 @@ public class ClientEventRegister {
     public static void onKeyboardInput(InputEvent.Key event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null)return;
+
+
+        //ImGui
+
+        if(Util.isDownKey(GLFW.GLFW_KEY_ESCAPE) && EditModeData.getEditMode()){
+            EditModeData.setEditMode(false);
+            return;
+        }
+
+        if (EDITMODE_KEY.consumeClick()) {
+            EditModeData.setEditMode();
+            return;
+        }
+        //----------ImGui
 
         if (UNDO_KEY.consumeClick()) {
             if(lastTime == -1){
