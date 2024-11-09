@@ -30,6 +30,7 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
+import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -291,6 +292,10 @@ public class Util {
     }
     public static boolean isDownLAlt(){
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 342);
+    }
+
+    public static boolean isDownMouse(int key){
+        return GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), key) == 1;
     }
 
     public static boolean isLoadSopBackpacks(){

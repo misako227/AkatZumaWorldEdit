@@ -5,6 +5,11 @@
 
 MCMOD：https://www.mcmod.cn/class/13584.html
 
+
+[ImGui 编辑模式](/EditMode.md)
+
+
+
 ### 指令列表
 
  指令   | 描述  |

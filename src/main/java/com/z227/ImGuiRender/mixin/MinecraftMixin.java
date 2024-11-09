@@ -1,6 +1,7 @@
 package com.z227.ImGuiRender.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.z227.ImGuiRender.EditModeData;
 import com.z227.ImGuiRender.EditModeUI;
 import com.z227.ImGuiRender.ImGuiInit;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,11 @@ public class MinecraftMixin {
 
         ImGuiInit.onFrameRender();
 
+    }
+
+    @Inject(method = "setWindowActive", at = @At(value = "HEAD"), cancellable = true)
+    public void setWindowActive(boolean pFocused, CallbackInfo ci) {
+        if (pFocused == false && EditModeData.getEditMode()) ci.cancel();
     }
 
 

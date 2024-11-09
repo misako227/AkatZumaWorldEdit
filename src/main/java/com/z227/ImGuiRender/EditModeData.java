@@ -17,6 +17,7 @@ public class EditModeData {
         editMode = !editMode;
         if(editMode){
             Minecraft.getInstance().mouseHandler.releaseMouse();
+            Minecraft.getInstance().setWindowActive(true);
         }else{
             Minecraft.getInstance().mouseHandler.grabMouse();
         }

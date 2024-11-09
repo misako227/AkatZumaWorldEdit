@@ -78,10 +78,8 @@ public class ClientEventRegister {
 
 //    @SubscribeEvent
 //    public static void rGuiOverlayEvent(ScreenEvent.Opening event) {
-//        if(event.getNewScreen() instanceof TitleScreen){
-//            System.out.println("TitleScreen");
-//            event.setNewScreen(new EditModeScreen(Component.translatable("akatzuma.screen.edit_mode")));
-//        }
+//        Screen screen = event.getScreen();
+//        System.out.println(screen);
 ////        System.out.println(event.getCurrentScreen().toString());
 //    }
 
@@ -141,14 +139,23 @@ public class ClientEventRegister {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onClickMouse(InputEvent.MouseButton.Pre event) {
-//        if(event.getButton() == 1 ){
-////            EditModeData.setEditMode(false);
-//            Minecraft.getInstance().mouseHandler.grabMouse();
-//        }
-//
-//    }
+    //--ImGui
+    @SubscribeEvent
+    public static void onClickMouse(InputEvent.MouseButton.Pre event) {
+        if(EditModeData.getEditMode() && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ){
+            if(event.getAction() == GLFW.GLFW_PRESS){
+                Minecraft.getInstance().mouseHandler.grabMouse();
+                event.setCanceled(true);
+            }else{
+                Minecraft.getInstance().mouseHandler.releaseMouse();
+                event.setCanceled(true);
+            }
+        }
+
+        GLFW.glfwGetCursorPos();
+
+    }
+
 
 
 
@@ -161,17 +168,33 @@ public class ClientEventRegister {
         if (player == null)return;
 
 
-        //ImGui
+        //--ImGui
 
         if(Util.isDownKey(GLFW.GLFW_KEY_ESCAPE) && EditModeData.getEditMode()){
             EditModeData.setEditMode(false);
             return;
         }
 
+
+
         if (EDITMODE_KEY.consumeClick()) {
             EditModeData.setEditMode();
             return;
         }
+
+        if(EditModeData.getEditMode()){
+            if(event.getKey() == GLFW.GLFW_KEY_LEFT_ALT){
+                if(event.getAction() == GLFW.GLFW_PRESS){
+                    Minecraft.getInstance().mouseHandler.grabMouse();
+                    return;
+                }
+                if(event.getAction() == GLFW.GLFW_RELEASE){
+                    Minecraft.getInstance().mouseHandler.releaseMouse();
+                    return;
+                }
+            }
+        }
+
         //----------ImGui
 
         if (UNDO_KEY.consumeClick()) {

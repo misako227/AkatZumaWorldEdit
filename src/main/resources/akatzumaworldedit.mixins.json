@@ -10,7 +10,8 @@
   ],
   "client": [
     "MinecraftMixin",
-    "MouseHandlerMixin"
+    "MouseHandlerMixin",
+    "GuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1
