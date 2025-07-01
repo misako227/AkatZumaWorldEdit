@@ -6,10 +6,12 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Event.ImguiMethod.ImguiMouseEvent;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,6 +34,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.util.BitSet;
@@ -92,12 +96,37 @@ public class PreviewingRender {
                         RenderCurveLineBox.renderBlockLine(stack, player, projectionMatrix, view);
                     }
 
+                    if(ImguiMouseEvent.pos1 != null && ImguiMouseEvent.pos2 != null){
+                        stack.pushPose();
+                        stack.translate(-view.x, -view.y, -view.z);
+                        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+                        renderLine(vertexConsumer, stack, ImguiMouseEvent.pos1,ImguiMouseEvent.pos2, 1.0F, 0.0F,0.0F, 1.0F);
+                        AABB aabb = new AABB(ImguiMouseEvent.pos1, ImguiMouseEvent.pos2);
+                        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 1.0F, 1.0F, 0.0F, 1.0F);
+                        stack.popPose();
+                    }
+
 
                     return;
                 }
             }
 
 
+    }
+
+    public static void renderLine(VertexConsumer pConsumer,PoseStack pPoseStack, BlockPos pos1, BlockPos pos2, float pRed, float pGreen, float pBlue, float pAlpha) {
+
+        Matrix4f matrix4f = pPoseStack.last().pose();
+        Matrix3f matrix3f = pPoseStack.last().normal();
+        float pMinX = (float)pos1.getX();
+        float pMinY = (float)pos1.getY();
+        float pMinZ = (float)pos1.getZ();
+        float pMaxX = (float)pos2.getX();
+        float pMaxY = (float)pos2.getY();
+        float pMaxZ = (float)pos2.getZ();
+
+        pConsumer.vertex(matrix4f, pMinX, pMinY, pMinZ).color(pRed, pGreen, pBlue, pAlpha).normal(matrix3f, 1.0F, 0.0F, 0.0F).endVertex();
+        pConsumer.vertex(matrix4f, pMaxX, pMaxY, pMaxZ).color(pBlue, pGreen, pRed, pAlpha).normal(matrix3f, 1.0F, 0.0F, 0.0F).endVertex();
     }
 
 

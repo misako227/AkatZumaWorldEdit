@@ -20,12 +20,14 @@ public class MinecraftMixin {
     @Inject(method = {"<init>"}, at = {@At("RETURN")})
     public void init(GameConfig gameConfig, CallbackInfo ci) {
         EditModeUI.init();
+        ImGuiInit.onFirstFrameRender();
     }
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;blitToScreen(II)V", shift = At.Shift.AFTER))
     public void afterMainBlit(CallbackInfo ci) {
         if (!RenderSystem.isOnRenderThread()) return;
-
+        Minecraft.getInstance().getProfiler().push("ImGuiRender");
         ImGuiInit.onFrameRender();
+        Minecraft.getInstance().getProfiler().pop();
 
     }
 

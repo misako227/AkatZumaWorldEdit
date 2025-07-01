@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
+import com.z227.AkatZumaWorldEdit.Event.ImguiMethod.ImguiMouseEvent;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
@@ -136,23 +137,46 @@ public class ClientEventRegister {
 
 
 
+
+
         }
     }
 
-    //--ImGui
+    //++ImGui Render
     @SubscribeEvent
     public static void onClickMouse(InputEvent.MouseButton.Pre event) {
-        if(EditModeData.getEditMode() && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT ){
-            if(event.getAction() == GLFW.GLFW_PRESS){
-                Minecraft.getInstance().mouseHandler.grabMouse();
-                event.setCanceled(true);
-            }else{
-                Minecraft.getInstance().mouseHandler.releaseMouse();
-                event.setCanceled(true);
+
+        if(EditModeData.getEditMode()){
+            int button = event.getButton();
+            int action = event.getAction();
+
+
+
+            switch (button) {
+                //长按左右键抓取鼠标到游戏
+//                case GLFW.GLFW_MOUSE_BUTTON_RIGHT: {
+//                    if(action == GLFW.GLFW_PRESS){
+//                        Minecraft.getInstance().mouseHandler.grabMouse();
+//                        event.setCanceled(true);
+//                    }else{
+//                        Minecraft.getInstance().mouseHandler.releaseMouse();
+//                        event.setCanceled(true);
+//                    }
+//                    break;
+//                }
+                //左键
+                case GLFW.GLFW_MOUSE_BUTTON_RIGHT: {
+//                    if(action == GLFW.GLFW_PRESS){
+                        ImguiMouseEvent.screenToWorld();
+//                    }
+
+
+                }
             }
+
+
         }
 
-        GLFW.glfwGetCursorPos();
 
     }
 
@@ -168,34 +192,22 @@ public class ClientEventRegister {
         if (player == null)return;
 
 
-        //--ImGui
+        //++++ImGui Render
 
+        //ESC退出编辑模式
         if(Util.isDownKey(GLFW.GLFW_KEY_ESCAPE) && EditModeData.getEditMode()){
             EditModeData.setEditMode(false);
             return;
         }
 
 
-
+        //按键切换编辑模式
         if (EDITMODE_KEY.consumeClick()) {
             EditModeData.setEditMode();
             return;
         }
 
-        if(EditModeData.getEditMode()){
-            if(event.getKey() == GLFW.GLFW_KEY_LEFT_ALT){
-                if(event.getAction() == GLFW.GLFW_PRESS){
-                    Minecraft.getInstance().mouseHandler.grabMouse();
-                    return;
-                }
-                if(event.getAction() == GLFW.GLFW_RELEASE){
-                    Minecraft.getInstance().mouseHandler.releaseMouse();
-                    return;
-                }
-            }
-        }
-
-        //----------ImGui
+        //----ImGui Render
 
         if (UNDO_KEY.consumeClick()) {
             if(lastTime == -1){

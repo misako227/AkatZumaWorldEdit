@@ -30,7 +30,7 @@ public class ImGuiInit {
 
     public static void onFrameRender() {
         //todo, 此处退出会崩溃,siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), reading address 0x000002ad14d96000
-//        if(!EditModeData.getEditMode()) return;
+        if(!EditModeData.getEditMode()) return;
         imGuiGlfw.newFrame();
         imGuiGl3.newFrame();
         ImGui.newFrame();

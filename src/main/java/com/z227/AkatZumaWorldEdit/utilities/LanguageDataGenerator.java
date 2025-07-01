@@ -125,9 +125,11 @@ public class LanguageDataGenerator {
 
 
 
-            //imgui
+            //++++++++++++++++++IMGUI
             this.add("key.akatzumaworldedit.editmode", "打开编辑模式");
             this.add("akatzuma.screen.edit_mode", "编辑模式界面");
+
+            //-----------------IMGUI
         }
     }
 
