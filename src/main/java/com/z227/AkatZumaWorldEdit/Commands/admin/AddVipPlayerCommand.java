@@ -31,18 +31,18 @@ public class AddVipPlayerCommand {
                                         .requires((commandSource) -> commandSource.hasPermission(2))
 //                                        .requires((commandSource) -> commandSource.getPlayer()!=null)
                                         .then(Commands.literal("viplayer")
-                                            .then(Commands.argument("玩家名字", StringArgumentType.string())
-                                                .executes((context)->{
-                                                    addVipPlayer(context);
-                                                    return 1;
-                                                })))
+                                                .then(Commands.argument("玩家名字", StringArgumentType.string())
+                                                        .executes((context)->{
+                                                            addVipPlayer(context);
+                                                            return 1;
+                                                        })))
                                         .then(Commands.literal("whitelist")
                                                 .then(Commands.argument("num", IntegerArgumentType.integer(-1))
-                                                .then(Commands.argument("block", BlockStateArgument.block(pContext))
-                                                        .executes((context)->{
-                                                            addBlock(context,false);
-                                                            return 1;
-                                                        }))))
+                                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                                .executes((context)->{
+                                                                    addBlock(context,false);
+                                                                    return 1;
+                                                                }))))
                                         .then(Commands.literal("vipwhitelist")
                                                 .then(Commands.argument("num", IntegerArgumentType.integer(-1))
                                                         .then(Commands.argument("block", BlockStateArgument.block(pContext))
@@ -51,11 +51,11 @@ public class AddVipPlayerCommand {
                                                                     return 1;
                                                                 }))))
                                         .then(Commands.literal("replaceList")
-                                                        .then(Commands.argument("block", BlockStateArgument.block(pContext))
-                                                                .executes((context)->{
-                                                                    addreplaceList(context);
-                                                                    return 1;
-                                                                })))
+                                                .then(Commands.argument("block", BlockStateArgument.block(pContext))
+                                                        .executes((context)->{
+                                                            addreplaceList(context);
+                                                            return 1;
+                                                        })))
                                         .then(Commands.literal("range")
                                                 .then(Commands.argument("num",IntegerArgumentType.integer(0))
                                                         .executes((context)->{

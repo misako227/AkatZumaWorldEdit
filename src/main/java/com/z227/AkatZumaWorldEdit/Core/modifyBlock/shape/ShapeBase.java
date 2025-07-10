@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.RotateBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +25,7 @@ public class ShapeBase {
     int height,blockNum;
     String shape;
     BlockPos playerPos;
-    Map<BlockPos, BlockState> undoMap;
+    UndoData undoMap;
     int xOrigin;
     int yOrigin;
     int zOrigin;
@@ -71,8 +72,8 @@ public class ShapeBase {
     public boolean init(){
         if(checkPos(this.player,this.PMD)){
 
-            if(PlaceBlock.canPlaceBlock(this.pos1,this.pos2,this.world,this.player,this.blockState,this.blockNum, this.permissionLevel,PMD)) {
-                this.undoMap  = new HashMap<>();
+            if(PlaceBlock.canPlaceBlock(this.pos1,this.pos2,this.world,this.player,this.blockState,this.blockNum, this.permissionLevel)) {
+                this.undoMap  = new UndoData(this.world);
                 PMD.getUndoDataMap().push(undoMap);
 //                this.world.setBlock(this.pos1, Blocks.COBBLESTONE.defaultBlockState(), 2);
 //                this.world.setBlock(this.pos2, Blocks.COBBLESTONE.defaultBlockState(), 2);

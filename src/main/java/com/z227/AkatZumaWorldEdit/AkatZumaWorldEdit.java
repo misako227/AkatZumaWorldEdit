@@ -6,6 +6,8 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -64,6 +66,9 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Block> Building_Consumable_Block;
     public static final RegistryObject<Item> Building_Consumable_Item;
 
+    public static final DeferredRegister<Attribute> ATTRIBUTE_REGISTRY;
+    public static final RegistryObject<Attribute> SET_FLAG_ATTRIBUTE;
+
 
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
@@ -77,6 +82,12 @@ public class AkatZumaWorldEdit{
         Building_Consumable_Block = BLOCKS.register("building_consumable", () -> new BuildingConsumable(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(0.2f, 1.5F)));
         Building_Consumable_Item = ITEMS.register("building_consumable",()-> new BlockItem(Building_Consumable_Block.get(), new Item.Properties()));
 
+
+        ATTRIBUTE_REGISTRY = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, MODID);
+        SET_FLAG_ATTRIBUTE = ATTRIBUTE_REGISTRY.register("set_flag", () ->
+                new RangedAttribute("attribute.akatzuma.set_flag", 0.0D, 0.0D, 1024.0D)
+                .setSyncable(true)); // 如果需要同步到客户端，则设置为 true)
+
     }
 
 
@@ -84,6 +95,7 @@ public class AkatZumaWorldEdit{
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);
         BLOCKS.register(bus);
+        ATTRIBUTE_REGISTRY.register(bus);
 
 
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeModeTab::buildContents);

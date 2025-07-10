@@ -9,6 +9,7 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
@@ -177,7 +178,8 @@ public class BindInvPosCommand {
 
         if(setSingleBlock(world, blockPos, blockState, player, queryFlag)){
 //            world.setBlock(blockPos, blockState, 16);
-            MySetBlock.setBlockNotUpdate(world, blockPos,world.getBlockState(blockPos), blockState);
+            UndoData undoData = new UndoData(world);
+            MySetBlock.setBlockAddUndo(world, blockPos, blockState, player, undoData);
         }
 
     }

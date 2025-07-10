@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.network.lineItemPacket;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
@@ -15,9 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class C2SPlaceCurvePacket {
@@ -59,10 +58,10 @@ public class C2SPlaceCurvePacket {
 
         if(PlaceBlock.canPlaceBlockList(curvePosList, level, player, blockState, curvePosList.size(), player.hasPermissions(2))){
             PlayerMapData PMD = Util.getPMD(player);
-            Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+            UndoData undoMap  = new UndoData(level);
             PMD.getUndoDataMap().push(undoMap);
             for(BlockPos pos : curvePosList){
-                MySetBlock.setBlockNotUpdateAddUndo(level, pos,blockState, undoMap);
+                MySetBlock.setBlockAddUndo(level, pos,blockState,player, undoMap);
             }
 
 

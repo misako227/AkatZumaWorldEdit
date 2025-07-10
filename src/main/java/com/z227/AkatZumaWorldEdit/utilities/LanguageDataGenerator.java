@@ -83,6 +83,9 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.success.add_viplayer", "添加成功 ");
             this.add("chat.akatzuma.success.del_viplayer", "删除成功 ");
             this.add("chat.akatzuma.error.not_viplayer", "没有找到:");
+            this.add("chat.akatzuma.get_world_name", "当前世界名字:");
+            this.add("chat.akatzuma.set_flag_state_1", "放置方块更新§a已开启");
+            this.add("chat.akatzuma.set_flag_state_0", "放置方块更新§c已关闭");
 
             this.add("chat.akatzuma.set.success", "已放置方块");
             this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");

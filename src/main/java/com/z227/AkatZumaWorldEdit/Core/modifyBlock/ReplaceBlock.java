@@ -40,7 +40,7 @@ public class ReplaceBlock {
             if(checkReplaceBlock()){
                 addToReplaceMap();
                 if(this.replaceMap.size()>0){
-                    return PlaceBlock.canPlaceBlock(this.pos1, this.pos2, this.world, this.player, this.outputState,this.replaceMap.size(), this.permissionLevel, this.PMD);
+                    return PlaceBlock.canPlaceBlock(this.pos1, this.pos2, this.world, this.player, this.outputState,this.replaceMap.size(), this.permissionLevel);
                 }
             }
 
@@ -81,13 +81,13 @@ public class ReplaceBlock {
     }
 
 
-    public void replace(Map<BlockPos,BlockState> undoMap){
+    public void replace(UndoData undoMap){
         for (Map.Entry<BlockPos, BlockState> entry : this.replaceMap.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
 //            undoMap.put(pos, state);
 //            this.world.setBlock(pos, this.outputState, 2);
-            MySetBlock.setBlockNotUpdateAddUndo(this.world, pos ,this.outputState, undoMap);
+            MySetBlock.setBlockAddUndo(this.world, pos, this.outputState, this.player, undoMap);
         }
 //        MutableComponent blockName = this.outputState.getBlock().getName().withStyle(ChatFormatting.GREEN);
 //        Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));

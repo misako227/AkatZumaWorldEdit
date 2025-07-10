@@ -380,7 +380,7 @@ public class CopyBlock {
 //    }
 
 
-    public boolean pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap, boolean air) {
+    public boolean pasteBlock(ServerLevel serverlevel, UndoData undoMap, boolean air) {
 //        boolean isLowHeight = false;
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
@@ -389,7 +389,7 @@ public class CopyBlock {
         getPastePosAndRotation(rotation);
         //粘帖前权限检查
 //        BlockPos pos1 = pastePos1,pos2= pastePos2;
-        if (!PlaceBlock.canPlaceBlock( tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
+        if (!PlaceBlock.canPlaceBlock( tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel)){
             return false;
         }
         this.PMD.getUndoDataMap().push(undoMap);

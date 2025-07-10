@@ -4,12 +4,14 @@ package com.z227.AkatZumaWorldEdit.Commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.z227.AkatZumaWorldEdit.Commands.admin.AddVipPlayerCommand;
 import com.z227.AkatZumaWorldEdit.Commands.admin.DelVipPlayerCommand;
+import com.z227.AkatZumaWorldEdit.Commands.admin.GetWorldNameCommand;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushCommand;
 import com.z227.AkatZumaWorldEdit.Commands.brush.MaskCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.CopyCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.FlipCommand;
 import com.z227.AkatZumaWorldEdit.Commands.copy.PasteCommand;
 import com.z227.AkatZumaWorldEdit.Commands.otherCommand.BindInvPosCommand;
+import com.z227.AkatZumaWorldEdit.Commands.otherCommand.SetFlagCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.CylinderCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.EllipseCommand;
 import com.z227.AkatZumaWorldEdit.Commands.shape.HollowCylinderCommand;
@@ -51,6 +53,8 @@ public class CommandHandler {
 
         AddVipPlayerCommand.register(dispatcher,commandbuildcontext);
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
+        GetWorldNameCommand.register(dispatcher,commandbuildcontext);
+        SetFlagCommand.register(dispatcher,commandbuildcontext);
 
 
     }

@@ -53,7 +53,7 @@ public class StackBlock {
             calcMaxPos();
             if(!addStackMap())return false;
             //放置前权限检查
-            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState,-1, this.permissionLevel, this.PMD);
+            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState,-1, this.permissionLevel);
         }
 //
         return false;
@@ -111,7 +111,7 @@ public class StackBlock {
         return true;
     }
 
-    public void stack(Map<BlockPos, BlockState> undoMap){
+    public void stack(UndoData undoMap){
         int x = this.stackVec3.getX(),
             y = this.stackVec3.getY(),
             z = this.stackVec3.getZ();
@@ -128,8 +128,9 @@ public class StackBlock {
                     isLowHeight=true;
                     continue;
                 }
-                undoMap.put(newPos, world.getBlockState(newPos));
-                world.setBlock(newPos, state, 2);
+//                undoMap.put(newPos, world.getBlockState(newPos));
+//                world.setBlock(newPos, state, 2);
+                MySetBlock.setBlockAddUndo(world,newPos,state,player,undoMap);
             }
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);

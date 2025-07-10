@@ -92,7 +92,7 @@ public class PlaceBlock {
 
 
     //遍历两个坐标之间的每个点
-    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState, Map<BlockPos,BlockState> undoMap) {
+    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState, UndoData undoMap) {
         int minX = Math.min(pos1.getX(), pos2.getX());
         int minY = Math.min(pos1.getY(), pos2.getY());
         int minZ = Math.min(pos1.getZ(), pos2.getZ());
@@ -104,11 +104,11 @@ public class PlaceBlock {
                 for (int z = minZ; z <= maxZ; z++) {
 
                     BlockPos v3 = new BlockPos(x, y, z);
-                    BlockState old =  world.getBlockState(v3);
-                    undoMap.put(v3,old);
+//                    BlockState old =  world.getBlockState(v3);
+//                    undoMap.put(v3,old);
 //                    world.setBlock(v3,blockState, 16);
 //                    world.sendBlockUpdated(v3, old,blockState,16);
-                    MySetBlock.setBlockNotUpdate(world,v3,old,blockState);
+                    MySetBlock.setBlockAddUndo(world, v3, blockState, player, undoMap);
 
                 }
             }
@@ -277,7 +277,7 @@ public class PlaceBlock {
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
         //如果不是管理员
-        return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
+        return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel);
     }
 
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int num, boolean permissionLevel, PlayerMapData PMD) {
@@ -285,7 +285,7 @@ public class PlaceBlock {
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
         //如果不是管理员
-        return canPlaceBlock(pos1, pos2, world, player, blockState, num, permissionLevel, PMD);
+        return canPlaceBlock(pos1, pos2, world, player, blockState, num, permissionLevel);
     }
 
 
@@ -321,8 +321,11 @@ public class PlaceBlock {
     public static boolean checkVip(Player player){
         return AkatZumaWorldEdit.VipPlayerMap.containsKey(player.getName().getString());
     }
+    /*
+      * @param deductNum -1扣除数量为选区大小，其他值为指定扣除数量，填入大于0的值
+     */
 
-    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel, PlayerMapData PMD) {
+    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel) {
 
         //如果不是管理员
         if (!permissionLevel) {

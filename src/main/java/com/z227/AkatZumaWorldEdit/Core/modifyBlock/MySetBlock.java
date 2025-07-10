@@ -1,8 +1,10 @@
 package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -26,7 +28,7 @@ public class MySetBlock {
         }
     }
 
-    public static void shapeSetBlock(@NotNull Level world, BlockPos pos, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap, Map<BlockPos, BlockState> undoMap) {
+    public static void shapeSetBlock(@NotNull Level world, BlockPos pos, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap, UndoData undoMap) {
 
         BlockState old = world.getBlockState(pos);
         if (old == blockState) return;
@@ -45,8 +47,50 @@ public class MySetBlock {
 
     }
 
+    //flag 是否更新方块
+    public static void setBlockAddUndo(ServerLevel world, BlockPos pos, BlockState blockState, Player player, UndoData undoMap) {
+        BlockState old = world.getBlockState(pos);
+        undoMap.put(pos, old);
 
-    public static void setBlockNotUpdate(ServerLevel world, BlockPos pos,BlockState old, BlockState blockState) {
+        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+        if(attribute != null) {
+            double v = attribute.getBaseValue();
+            boolean flag = v > 0;
+            if (flag) {
+                world.setBlock(pos, blockState, 2);
+                return;
+            }
+        }
+
+        if(old != blockState){
+            setBlockState(world,pos,blockState,false);
+            sendBlockUpdated(world,pos );
+        }
+
+    }
+
+    public static void setBlock(ServerLevel world, BlockPos pos, BlockState blockState, Player player) {
+        BlockState old = world.getBlockState(pos);
+//        undoMap.put(pos, old);
+
+        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+        if(attribute != null) {
+            boolean flag = attribute.getValue() > 0;
+            if (flag) {
+                world.setBlock(pos, blockState, 2);
+                return;
+            }
+        }
+
+        if(old != blockState){
+            setBlockState(world,pos,blockState,false);
+            sendBlockUpdated(world,pos );
+        }
+
+    }
+
+    //弃用
+    private static void setBlockNotUpdate(ServerLevel world, BlockPos pos,BlockState old, BlockState blockState) {
 //        world.setBlock(pos,blockState, 16);
 //        world.sendBlockUpdated(pos, old,blockState,16);
 //        setBlockState(world,pos,blockState,false);
@@ -56,9 +100,10 @@ public class MySetBlock {
         }
     }
 
-    public static void setBlockNotUpdateAddUndo(ServerLevel world, BlockPos pos, BlockState blockState,Map undoMap) {
+    //弃用
+    private static void setBlockNotUpdateAddUndo(ServerLevel world, BlockPos pos, BlockState blockState,UndoData undoMap) {
         BlockState old = world.getBlockState(pos);
-        undoMap.putIfAbsent(pos, old);
+        undoMap.put(pos, old);
 //        world.setBlock(pos,blockState, 16);
 //        world.sendBlockUpdated(pos, old,blockState,16);
         if(old != blockState){

@@ -5,19 +5,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.ReplaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ReplaceCommand {
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
@@ -48,7 +45,7 @@ public class ReplaceCommand {
 
         ReplaceBlock replaceBlock = new ReplaceBlock(PMD,serverlevel,player,inputState,outputState);
         if(replaceBlock.init()){
-            Map<BlockPos,BlockState> undoMap  = new HashMap<>();
+            UndoData undoMap  = new UndoData(serverlevel);
             PMD.getUndoDataMap().push(undoMap);//添加到undo
             replaceBlock.replace(undoMap);
             SendCopyMessage.sendSuccessMsg(outputState, player, context.getInput());

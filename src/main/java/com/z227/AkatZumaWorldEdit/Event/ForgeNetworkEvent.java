@@ -24,6 +24,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -45,6 +47,7 @@ import net.minecraftforge.registries.tags.ITag;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 
@@ -63,6 +66,17 @@ public class ForgeNetworkEvent {
             Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT(),player);
         });
 //        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
+
+        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+        if (attribute == null) {
+            // 添加修饰符, 0 = 不更新方块，1 = 更新方块
+            attribute.addPermanentModifier(new AttributeModifier(
+                    UUID.randomUUID(),
+                    "set_flag",
+                    1,
+                    AttributeModifier.Operation.ADDITION
+            ));
+        }
 
     }
 
@@ -148,7 +162,7 @@ public class ForgeNetworkEvent {
 
             ITag<Block> tempTag =  ForgeRegistries.BLOCKS.tags().getTag(BlockTags.create(new ResourceLocation(tagName.group(1), tagName.group(2))));
             if(tempTag.size()==0) return;
-            tempTag.forEach(block -> {output.put(BlockStateString.getBlockName(block), -1);});
+            tempTag.forEach(block -> {output.put(BlockStateString.getBlockName(block), -2);});
         });
 
     }

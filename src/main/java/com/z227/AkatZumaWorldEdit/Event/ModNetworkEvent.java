@@ -7,7 +7,9 @@ import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.utilities.AkatRecipe;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.LanguageDataGenerator;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -50,6 +52,15 @@ public class ModNetworkEvent {
 
     }
 
+    @SubscribeEvent
+    public static void onEntityAttributeModification(EntityAttributeModificationEvent event) {
+        event.getTypes().forEach(entityType -> {
+            if (entityType.equals(EntityType.PLAYER)) {
+                event.add(entityType, AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get(), 0);
+            }
+        });
+    }
+
 
 
 
@@ -87,7 +98,7 @@ public class ModNetworkEvent {
             if(matcher==null) return;
             if(b)tempKey = matcher.group(2) +  ":" + matcher.group(3);
             else tempKey = matcher.group(1) +  ":" + matcher.group(2);
-            output.put(tempKey, b ? Integer.parseInt(matcher.group(1)) : -1);
+            output.put(tempKey, b ? Integer.parseInt(matcher.group(1)) : -2);
 
         });
     }

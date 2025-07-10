@@ -27,18 +27,18 @@ public class DelVipPlayerCommand {
         dispatcher.register(
                 Commands.literal(AkatZumaWorldEdit.MODID)
                         .then(Commands.literal("del")
-                                        .requires((commandSource) -> commandSource.hasPermission(2))
-                                        .then(Commands.literal("viplayer")
-                                                .then(Commands.argument("玩家名字", StringArgumentType.string())
-                                                        .executes((context)->{
-                                                            delVipPlayer(context);
-                                                            return 1;
-                                                        })))
+                                .requires((commandSource) -> commandSource.hasPermission(2))
+                                .then(Commands.literal("viplayer")
+                                        .then(Commands.argument("玩家名字", StringArgumentType.string())
+                                                .executes((context)->{
+                                                    delVipPlayer(context);
+                                                    return 1;
+                                                })))
                                 .then(Commands.literal("whitelist")
                                         .then(Commands.argument("num", IntegerArgumentType.integer(-1))
                                                 .then(Commands.argument("block", BlockStateArgument.block(pContext))
                                                         .executes((context1)->{delWhiteList(context1, false);return 1; })
-                                )))
+                                                )))
                                 .then(Commands.literal("vipwhitelist")
                                         .then(Commands.argument("num", IntegerArgumentType.integer(-1))
                                                 .then(Commands.argument("block", BlockStateArgument.block(pContext))
