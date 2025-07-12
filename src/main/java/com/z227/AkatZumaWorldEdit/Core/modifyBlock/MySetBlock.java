@@ -52,6 +52,7 @@ public class MySetBlock {
         BlockState old = world.getBlockState(pos);
         undoMap.put(pos, old);
 
+        //todo flag放到参数中
         AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
         if(attribute != null) {
             double v = attribute.getBaseValue();
