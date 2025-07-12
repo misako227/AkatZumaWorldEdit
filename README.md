@@ -9,7 +9,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
  指令   | 描述  |
  ----  | ----  |
-[/a set](#aset) | 设置选区内方块 |
+[/a set](#a_set) | 设置选区内方块 |
 /a stack      | 堆叠选区内方块 |
 /a copy      | 复制 |
 /a paste      | 粘帖 |
@@ -162,7 +162,8 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 - - -
 
-#### <a id="aset">/a set 设置选区内方块</a>
+<a id="a_set"></a>
+#### /a set 设置选区内方块
 `/a set <方块ID>`
 将选区设置成指定的方块
 
