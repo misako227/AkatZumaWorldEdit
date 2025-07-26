@@ -8,6 +8,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -42,7 +43,7 @@ public class SetCommand {
 
         ServerPlayer player = context.getSource().getPlayer();
 
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
 
 

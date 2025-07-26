@@ -1,6 +1,6 @@
 package com.z227.AkatZumaWorldEdit;
 
-import com.mojang.logging.LogUtils;
+import com.z227.AkatZumaWorldEdit.ConfigFile.AkatZumaLogger;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
@@ -21,7 +21,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +30,8 @@ import java.util.UUID;
 @Mod(AkatZumaWorldEdit.MODID)
 public class AkatZumaWorldEdit{
     public static final String MODID = "akatzumaworldedit";
-//    public static final String MODNAME = "AkatZumaWorldEdit";
-    public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final AkatZumaLogger LOGGER = AkatZumaLogger.getInstance();
 
 
     public static Component Akat = Component.literal("AkatZuma").withStyle(ChatFormatting.GOLD)
@@ -70,6 +68,8 @@ public class AkatZumaWorldEdit{
     public static final RegistryObject<Attribute> SET_FLAG_ATTRIBUTE;
 
 
+
+
     static {
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
         BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
@@ -91,6 +91,8 @@ public class AkatZumaWorldEdit{
     }
 
 
+
+
     public AkatZumaWorldEdit() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);
@@ -102,8 +104,23 @@ public class AkatZumaWorldEdit{
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
         AkatZumaCreativeModeTab.TABS.register(bus);
 
+        init();
 
 
+
+    }
+
+    private static String getCallerCallerClassName() {
+        // 0 - this method
+        // 1 - caller
+        // 2 - caller caller
+        // 获取调用者调用者的类名
+        StackWalker.StackFrame caller = StackWalker.getInstance().walk(s -> s.skip(2).findFirst()).orElseThrow(() -> new AssertionError("No caller found"));
+        return caller.getClassName();
+    }
+
+    public static void init(){
+//        AkatZumaLog.onInitialize();
     }
 
 

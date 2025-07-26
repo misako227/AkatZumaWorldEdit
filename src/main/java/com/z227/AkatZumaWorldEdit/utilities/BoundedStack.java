@@ -34,8 +34,12 @@ public class BoundedStack<T> {
         return stack.pollFirst();
     }
 
-    public T peek() {
-        return stack.peek();
+    public T peekFirst() {
+        return stack.peekFirst();
+    }
+
+    public T peekLast() {
+        return stack.peekLast();
     }
 
     public int size() {

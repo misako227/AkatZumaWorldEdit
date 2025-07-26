@@ -90,6 +90,7 @@ public class AddVipPlayerCommand {
         if(player!=null) AkatZumaWorldEdit.sendAkatMessage(Component.literal("")
                 .append(component).withStyle(ChatFormatting.GREEN)
                 .append(playerName), player);
+        System.out.println("[AkatZumaWorldEdit]: "+component.getString() +playerName);
         AkatZumaWorldEdit.LOGGER.info(component.getString() +playerName);
 
     }

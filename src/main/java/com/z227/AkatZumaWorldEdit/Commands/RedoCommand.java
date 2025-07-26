@@ -12,6 +12,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class RedoCommand {
@@ -22,7 +23,7 @@ public class RedoCommand {
             Commands.literal(AkatZumaWorldEdit.MODID)
                 .then(Commands.literal("redo")
                     .executes((context)->{
-                        redo(context);
+                        redoContext(context);
                         return 1;
                     })
             )
@@ -33,12 +34,19 @@ public class RedoCommand {
 
 }
 
-    public static void redo(CommandContext<CommandSourceStack> context){
+    public static void redoContext(CommandContext<CommandSourceStack> context){
 
         Player player = context.getSource().getPlayer();
+        ServerLevel serverlevel = context.getSource().getLevel();
+        redo(player,serverlevel);
+
+
+    }
+
+    public static void redo(Player player, ServerLevel serverlevel){
+
         //此处判断上一次操作是否完成
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        ServerLevel serverlevel = context.getSource().getLevel();
         Component component;
         // 判断上次操作是否完成
         if (!PMD.isFlag()) {
@@ -49,16 +57,27 @@ public class RedoCommand {
         // 设置标志位
         PMD.setFlag(false);
 
-        UndoData redoMap  = PMD.getRedoDataMap().pop();
+        UndoData redoMap  = PMD.getRedoDataMap().peekFirst();
         component = Component.translatable("chat.akatzuma.error.not_redo");
 
         if(redoMap!=null){
             if(!redoMap.equalsLevel(serverlevel)){
-                //todo 提示错误
+
+                component = Component.translatable("chat.akatzuma.error.level_not_match");
+                AkatZumaWorldEdit.sendAkatMessage(component, player);
                 PMD.setFlag(true);
                 return;
             }
-            UndoBlock.redoSetBlock(serverlevel, redoMap, player);
+            //出栈
+            PMD.getRedoDataMap().pop();
+
+            AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+            boolean flag = false;
+            if(attribute != null) {
+                double v = attribute.getBaseValue();
+                flag = v > 0;
+            }
+            UndoBlock.redoSetBlock(serverlevel, redoMap, flag);
             component = Component.translatable("chat.akatzuma.success_redo");
         }
 

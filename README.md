@@ -22,7 +22,7 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 [/a hcyl](#a_hcyl )         | 空心圆形/圆柱体 |
 [/a sphere](#a_sphere)      | 球 |
 [/a ellipse](#a_ellipse)    | 椭圆 |
-[/a brush](#a_brush) |      | 笔刷 |
+[/a brush](#a_brush)        | 笔刷 |
 [/a mask](#a_mask)          | 蒙版 |
 [/a brush unbind](#a_brush_unbind) | 解除绑定笔刷 |
 
@@ -260,6 +260,11 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ### /a undo 撤销
 `/a undo`
 撤销上一次操作，撤销次数在配置文件中设置
+
+<a id="a_redo"></a>
+### /a redo 撤销undo
+`/a redo`
+撤销上一次undo操作
 
 
 

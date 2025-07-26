@@ -1,4 +1,4 @@
-package com.z227.AkatZumaWorldEdit.Render;
+package com.z227.AkatZumaWorldEdit.Render.renderLine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -6,9 +6,15 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL11C;
 
+
+@OnlyIn(Dist.CLIENT)
 public class RenderLineBox {
     private static VertexBuffer vertexBuffer;
     public static boolean requestedRefresh = false;
@@ -16,6 +22,7 @@ public class RenderLineBox {
     public static void updateVertexBuffer() {
         vertexBuffer = null;
         requestedRefresh = true;
+
     }
 
     public static void renderBlockLine(PoseStack stack, BlockPos pStart, BlockPos pEnd, Matrix4f mat4f, Vec3 view) {
@@ -32,6 +39,7 @@ public class RenderLineBox {
 
 
 
+
             //设置BufferBuilder的绘制模式和顶点格式
             //VertexFormat.Mode.DEBUG 表示绘制模式为调试线,
             //DefaultVertexFormat.POSITION_COLOR 表示顶点格式为位置+颜色模式，即每个顶点具有位置信息和颜色信息
@@ -44,15 +52,19 @@ public class RenderLineBox {
             BlockPos p1 = new BlockPos(Math.min(pStart.getX(), pEnd.getX()), Math.min(pStart.getY(), pEnd.getY()), Math.min(pStart.getZ(), pEnd.getZ()));
             BlockPos p2 = new BlockPos(Math.max(pStart.getX(), pEnd.getX()) + 1, Math.max(pStart.getY(), pEnd.getY()) + 1, Math.max(pStart.getZ(), pEnd.getZ()) + 1);
             AABB aabb =  new AABB(p1, p2);
-            bufferAddBlockVertex(buffer, aabb, opacity, 48, 1, 167);      //选区框
+            Matrix3f matrix3f = stack.last().normal();
+            bufferAddBlockVertex( buffer, aabb, opacity, 48, 1, 167);      //选区框
             bufferAddBlockVertex(buffer, pStart.getX(), pStart.getY(), pStart.getZ(), size, opacity, 170, 1, 1); //第一个选区点
             bufferAddBlockVertex(buffer, pEnd.getX(), pEnd.getY(), pEnd.getZ(), size, opacity,1, 170, 170); //第二个选区点
+
+//            RenderLinePos.bufferAddBlockVertex(buffer,matrix3f, aabb, opacity, 48, 1, 167);
+//            LevelRenderer.renderLineBox(stack,buffer, aabb, 48, 1, 167, opacity);
 
             //将顶点缓冲绑定在0penGL顶点数组上
             vertexBuffer.bind();
             //将缓冲区数据上传到顶点缓冲对象，buffer包含了绘制的顶点数据。
             vertexBuffer.upload(buffer.end());
-            //结束顶点缓冲的绑定，后续绘制不会在使用这个顶点缓冲对象了
+//            结束顶点缓冲的绑定，后续绘制不会在使用这个顶点缓冲对象了
             VertexBuffer.unbind();
         }
 
@@ -60,33 +72,47 @@ public class RenderLineBox {
 //            = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
 
             //启动混合模式，控制颜色和深度值合并在一起，即RGB通道和透明度通道
-            GL11.glEnable(GL11.GL_BLEND);
+//            GL11.glEnable(GL11.GL_BLEND);
             //设置混合函数，设置混合函数是源颜色的透明通道和目标颜色的1-透明通道进行混合
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            //抗锯齿
-            GL11.glEnable(GL11.GL_LINE_SMOOTH);
+//            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
             //禁用深度测试
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+//            GL11.glDisable(GL11.GL_DEPTH_TEST);
+
 
             //设置渲染系统的着色器为位置颜色着色器，返回的是着色器对象
-//            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+//            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
 
 //                PoseStack matrix = event.getPoseStack();
             stack.pushPose();
+            // 禁用背面剔除
+            RenderSystem.disableCull();
+            RenderSystem.depthFunc(GL11C.GL_ALWAYS);
+            RenderSystem.lineWidth(3.0F);
+            //抗锯齿
+            GL11.glEnable(GL11.GL_LINE_SMOOTH);
+
             stack.translate(-view.x, -view.y, -view.z);
 
+            OptifinePipelineProvider.beginLeash().run();
             vertexBuffer.bind();
+
             //绘制场景模型
-//            Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(LINES)
             vertexBuffer.drawWithShader(stack.last().pose(), mat4f, RenderSystem.getShader());
             VertexBuffer.unbind();
+            OptifinePipelineProvider.endLeash().run();
+
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+            // 启用背面剔除
+            RenderSystem.enableCull();
+
             stack.popPose();
 
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+//            GL11.glEnable(GL11.GL_DEPTH_TEST);
             //关闭混合
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+//            GL11.glDisable(GL11.GL_BLEND);
+
         }
     }
 

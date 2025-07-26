@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -65,8 +66,10 @@ public class LineCommand {
                 UndoData undoMap  = new UndoData(serverLevel);
                 PMD.getUndoDataMap().push(undoMap);
                 List<BlockPos> posList = drawLine(pos1, pos2);
+
+                boolean flag = PlayerUtil.isSetUpdateBlock(player);
                 for (BlockPos pos : posList) {
-                    MySetBlock.setBlockAddUndo(serverLevel, pos, blockState,player, undoMap);
+                    MySetBlock.setBlockAddUndo(serverLevel, pos, blockState, flag, undoMap);
                 }
             }
         }

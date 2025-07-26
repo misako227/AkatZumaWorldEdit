@@ -6,7 +6,7 @@
   "chat.item.query_block_state.right": "方块状态:",
   "item.akatzumaworldedit.wood_axe": "§b选区斧头",
   "block.akatzumaworldedit.building_consumable": "§b建筑耗材",
-  "item.akatzumaworldedit.building_consumable.desc": "用于copy等指令消耗的材料\n(可穿戴到头部)",
+  "item.akatzumaworldedit.building_consumable.desc": "用于copy等指令消耗的材料\\n(可穿戴到头部)",
   "item.wood_axe.desc1": "§a左键§9方块§f/§9空气§f选取第一个点",
   "item.wood_axe.desc2": "§6右键§9方块§f/§9空气§f选取第二个点",
   "item.wood_axe.desc3": "§eCtrl+滚轮§f扩大/缩小选区位置1",
@@ -88,5 +88,10 @@
   "item.line_item.desc4": "§6 Ctrl+右键§f放置查询的方块",
   "item.line_item.desc5": "§6 Alt+右键§f删除选中的点位",
   "item.line_item.desc6": "§b Ctrl+Alt+右键§f删除所有点位",
-  "chat.akatzuma.line.delall": "§a 已删除所有点位"
+  "chat.akatzuma.line.delall": "§a 已删除所有点位",
+  "chat.akatzuma.error.level_not_match": "§c请在原来的世界执行撤销操作",
+  "chat.akatzuma.log.block_list": "普通黑白名单: ",
+  "chat.akatzuma.log.block_list_vip": "vip黑白名单: ",
+  "chat.akatzuma.log.block_list_size": "普通黑白名单数量: ",
+  "chat.akatzuma.log.block_list_vip_size": "vip黑白名单数量: "
 }

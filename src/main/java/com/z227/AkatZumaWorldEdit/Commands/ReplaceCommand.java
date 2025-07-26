@@ -7,6 +7,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.ReplaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -35,7 +36,7 @@ public class ReplaceCommand {
 
     public static void replace(CommandContext<CommandSourceStack> context) {
         Player player = context.getSource().getPlayer();
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
 
         BlockInput blockInput =  BlockStateArgument.getBlock(context, "被替换的方块");
         BlockInput blockOutput =  BlockStateArgument.getBlock(context, "替换成的方块");

@@ -10,7 +10,7 @@ import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
@@ -104,13 +104,16 @@ public class ForgeNetworkEvent {
     public static void ServerStarted(ServerStartedEvent event){
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
         addTagsToMap(Config.VIPBLACKListTags.get(), AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
-
         int defaultSize = AkatZumaWorldEdit.defaultBlockMap.size();
         int vipSize = AkatZumaWorldEdit.VipBlockMap.size();
-        Util.logDebug("普通黑白名单："+AkatZumaWorldEdit.defaultBlockMap);
-        Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defaultSize + "，vip黑白名单总数："+ vipSize);
+
+        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
+//        Util.logInfo("："+AkatZumaWorldEdit.defaultBlockMap);
+//        Util.logInfo("："+AkatZumaWorldEdit.VipBlockMap);
+        Util.logInfo(
+                Component.translatable("chat.akatzuma.log.block_list_size").getString()
+                + defaultSize + ", "
+                + Component.translatable("chat.akatzuma.log.block_list_vip_size").getString() + vipSize);
         Util.setLoadSop();
     }
 
@@ -192,6 +195,7 @@ public class ForgeNetworkEvent {
 
             return;
         }
+        //todo
         if(item instanceof WoodAxeItem){
             NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
             WoodAxeItem.clickPos(world,pos,player, true);

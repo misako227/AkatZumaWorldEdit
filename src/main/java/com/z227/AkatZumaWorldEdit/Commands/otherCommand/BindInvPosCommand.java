@@ -13,6 +13,7 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
@@ -175,11 +176,11 @@ public class BindInvPosCommand {
 //        System.out.println(queryFlag);
 //        System.out.println(blockState);
 //        System.out.println(blockPos);
-
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         if(setSingleBlock(world, blockPos, blockState, player, queryFlag)){
 //            world.setBlock(blockPos, blockState, 16);
             UndoData undoData = new UndoData(world);
-            MySetBlock.setBlockAddUndo(world, blockPos, blockState, player, undoData);
+            MySetBlock.setBlockAddUndo(world, blockPos, blockState, flag, undoData);
         }
 
     }

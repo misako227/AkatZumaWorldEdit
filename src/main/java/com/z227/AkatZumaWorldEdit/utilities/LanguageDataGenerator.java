@@ -125,27 +125,19 @@ public class LanguageDataGenerator {
             this.add("item.line_item.desc5", "§6 Alt+右键§f删除选中的点位");
             this.add("item.line_item.desc6", "§b Ctrl+Alt+右键§f删除所有点位");
             this.add("chat.akatzuma.line.delall", "§a 已删除所有点位");
+
+            //undo
+            this.add("chat.akatzuma.error.level_not_match", "§c请在原来的世界执行撤销操作");
+
+            //log
+            this.add("chat.akatzuma.log.block_list", "普通黑白名单: ");
+            this.add("chat.akatzuma.log.block_list_vip", "vip黑白名单: ");
+            this.add("chat.akatzuma.log.block_list_size", "普通黑白名单数量: ");
+            this.add("chat.akatzuma.log.block_list_vip_size", "vip黑白名单数量: ");
         }
     }
 
-    // 英文语言文件
-    public static class EnglishLanguageProvider extends LanguageProvider {
-        public EnglishLanguageProvider(PackOutput packOutput) {
-            super(packOutput,  AkatZumaWorldEdit.MODID,"en_us");
-        }
 
-        @Override
-        protected void addTranslations() {
-            this.add("chat.item.wood_axe.left", "left:");
-            this.add("chat.item.wood_axe.right", "right:");
-            this.add("item.akatzumaworldedit.wood_axe","§bwooden axe");
-            this.add("item.akatzumaworldedit.query_blockstate_item", "§bquery block state");
-
-            this.add("chat.akatzuma.success.add_viplayer", "添加成功:");
-            this.add("chat.akatzuma.success.del_viplayer", "删除成功:");
-            this.add("chat.akatzuma.error.not_viplayer",   "没有找到:");
-        }
-    }
 
 
 }

@@ -4,9 +4,11 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Event.PermissionEventRegister;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.messagePacket.S2CInventoryNotEnough;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.RemoveItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
@@ -99,6 +101,7 @@ public class PlaceBlock {
         int maxX = Math.max(pos1.getX(), pos2.getX());
         int maxY = Math.max(pos1.getY(), pos2.getY());
         int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
@@ -108,7 +111,7 @@ public class PlaceBlock {
 //                    undoMap.put(v3,old);
 //                    world.setBlock(v3,blockState, 16);
 //                    world.sendBlockUpdated(v3, old,blockState,16);
-                    MySetBlock.setBlockAddUndo(world, v3, blockState, player, undoMap);
+                    MySetBlock.setBlockAddUndo(world, v3, blockState, flag, undoMap);
 
                 }
             }
@@ -385,7 +388,7 @@ public class PlaceBlock {
 
             //TODO 添加权限节点
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative()){
+            if(checkInventory && n > 0 && !player.isCreative() && !PlayerUtil.getPermission(player, PermissionEventRegister.Check_Inv)){
 //            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够

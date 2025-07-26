@@ -6,7 +6,7 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 ;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -77,11 +77,11 @@ public class ClientIntPacketHandle {
 
 
         PlayerMapData PMD = Util.getPMD(player);
-        if(!mc.isLocalServer()){
+        if(!mc.isLocalServer()){//多人
             CopyBlock copyBlock = new CopyBlock(PMD, player);
             copyBlock.checkPosAddCopyMap(level);
             PMD.setCopyBlock(copyBlock);
-        }else{
+        }else{//单人
             CopyBlock copyBlock = PMD.getCopyBlock();
             copyBlock.getClientCopyMap().clear();
             copyBlock.checkPosAddCopyMap(level);

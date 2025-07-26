@@ -139,6 +139,7 @@ public class CopyBlock {
                     //添加到copyMap
                     this.copyMap.put(transfPos, state);
 
+                    //客户端
                     if(serverlevel.isClientSide){
                         if(state.getBlock().equals(Blocks.AIR)) continue;
 //                        BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();

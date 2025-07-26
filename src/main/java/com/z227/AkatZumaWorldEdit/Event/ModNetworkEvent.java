@@ -6,6 +6,7 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.utilities.AkatRecipe;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.EnglishLanguageProvider;
 import com.z227.AkatZumaWorldEdit.utilities.LanguageDataGenerator;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -28,7 +29,7 @@ public class ModNetworkEvent {
     public static void onGatherData(GatherDataEvent event) {
         var gen = event.getGenerator();
         var packOutput = gen.getPackOutput();
-        gen.addProvider(event.includeClient(), new LanguageDataGenerator.EnglishLanguageProvider(packOutput));
+        gen.addProvider(event.includeClient(), new EnglishLanguageProvider(packOutput));
         gen.addProvider(event.includeClient(), new LanguageDataGenerator.ChineseLanguageProvider(packOutput));
         gen.addProvider(event.includeServer(), new AkatRecipe(packOutput));
     }

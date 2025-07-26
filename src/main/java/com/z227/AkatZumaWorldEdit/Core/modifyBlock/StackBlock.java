@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -119,6 +120,7 @@ public class StackBlock {
             height = this.cube.getY(),
             width = this.cube.getZ();
         boolean isLowHeight = false;
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         for (int i = 1; i <= stackNum; i++) {
             for (Map.Entry<BlockPos, BlockState> entry : stackMap.entrySet()) {
                 BlockPos pos = entry.getKey();
@@ -130,7 +132,7 @@ public class StackBlock {
                 }
 //                undoMap.put(newPos, world.getBlockState(newPos));
 //                world.setBlock(newPos, state, 2);
-                MySetBlock.setBlockAddUndo(world,newPos,state,player,undoMap);
+                MySetBlock.setBlockAddUndo(world,newPos,state,flag,undoMap);
             }
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);

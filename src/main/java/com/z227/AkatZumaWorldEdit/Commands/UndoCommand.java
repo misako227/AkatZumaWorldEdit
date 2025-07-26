@@ -13,6 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class UndoCommand {
@@ -23,7 +24,7 @@ public class UndoCommand {
             Commands.literal(AkatZumaWorldEdit.MODID)
                 .then(Commands.literal("undo")
                     .executes((context)->{
-                        undo(context);
+                        undoContext(context);
                         return 1;
                     })
             )
@@ -34,12 +35,18 @@ public class UndoCommand {
 
 }
 
-    public static void undo(CommandContext<CommandSourceStack> context){
-
+    public static void undoContext(CommandContext<CommandSourceStack> context) {
         Player player = context.getSource().getPlayer();
+        ServerLevel serverlevel = context.getSource().getLevel();
+        undo(player, serverlevel);
+    }
+
+
+    public static void undo(Player player, ServerLevel serverlevel) {
+
         //此处判断上一次操作是否完成
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
-        ServerLevel serverlevel = context.getSource().getLevel();
+
         Component component;
         // 判断上次操作是否完成
         if (!PMD.isFlag()) {
@@ -52,19 +59,29 @@ public class UndoCommand {
 
 //        Map<BlockPos,BlockState> undoMap  = PMD.getUndoDataMap().pop();
 //        Map<BlockPos,BlockState> redoMap  = new HashMap<>();
-        UndoData undoMap  = PMD.getUndoDataMap().pop();
+        UndoData undoMap  = PMD.getUndoDataMap().peekFirst();
         UndoData redoMap  = new UndoData(serverlevel);
 
         component = Component.translatable("chat.akatzuma.error.not_undo");
 
         if(undoMap!=null){
             if(!undoMap.equalsLevel(serverlevel)){
-                //todo 提示错误
+
+                component = Component.translatable("chat.akatzuma.error.level_not_match");
+                AkatZumaWorldEdit.sendAkatMessage(component, player);
                 PMD.setFlag(true);
                 return;
             }
+            PMD.getUndoDataMap().pop();
             PMD.getRedoDataMap().push(redoMap);
-            UndoBlock.undoSetBlock(serverlevel,undoMap, redoMap, player);
+
+            AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+            boolean flag = false;
+            if(attribute != null) {
+                double v = attribute.getBaseValue();
+                flag = v > 0;
+            }
+            UndoBlock.undoSetBlock(serverlevel,undoMap, redoMap, flag);
             component = Component.translatable("chat.akatzuma.success_undo").append("(" + undoMap.getUndoMap().size()+ ")").withStyle(ChatFormatting.DARK_PURPLE);
         }
 

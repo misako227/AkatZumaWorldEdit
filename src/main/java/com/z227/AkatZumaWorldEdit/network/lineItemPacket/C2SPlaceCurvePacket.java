@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
@@ -60,8 +61,9 @@ public class C2SPlaceCurvePacket {
             PlayerMapData PMD = Util.getPMD(player);
             UndoData undoMap  = new UndoData(level);
             PMD.getUndoDataMap().push(undoMap);
+            boolean flag = PlayerUtil.isSetUpdateBlock(player);
             for(BlockPos pos : curvePosList){
-                MySetBlock.setBlockAddUndo(level, pos,blockState,player, undoMap);
+                MySetBlock.setBlockAddUndo(level, pos,blockState,flag, undoMap);
             }
 
 

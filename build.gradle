@@ -57,7 +57,7 @@ minecraft {
     // However, it must be at "META-INF/accesstransformer.cfg" in the final mod jar to be loaded by Forge.
     // This default location is a best practice to automatically put the file in the right place in the final jar.
     // See https://docs.minecraftforge.net/en/latest/advanced/accesstransformers/ for more information.
-     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+//     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -150,6 +150,7 @@ dependencies {
     implementation fg.deobf("curse.maven:sophisticatedstorage-619320:4859704")
     implementation fg.deobf("curse.maven:sophisticatedbackpacks-422301:4859687")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
+    implementation fg.deobf("curse.maven:worldedit-225608:4586218")
 
 
 

@@ -221,14 +221,14 @@ public class Util {
         return map.values().stream().mapToInt(Integer::intValue).sum();
     }
 
-    public static void logDebug(Player player, Component component){
-        AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  component.getString());
+    public static void logInfo(Player player, Component component){
+        AkatZumaWorldEdit.LOGGER.info("["+ player.getName().getString() + "]"+  component.getString());
     }
-    public static void logDebug(String str){
-        AkatZumaWorldEdit.LOGGER.debug(str);
+    public static void logInfo(String str){
+        AkatZumaWorldEdit.LOGGER.info(str);
     }
-    public static void logDebug(Player player, String str){
-        AkatZumaWorldEdit.LOGGER.debug("["+ player.getName().getString() + "]"+  str);
+    public static void logInfo(Player player, String str){
+        AkatZumaWorldEdit.LOGGER.info("["+ player.getName().getString() + "]"+  str);
     }
     public static String logString(String message) {
         return "[" + message + "]";
@@ -241,7 +241,7 @@ public class Util {
         PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
-        Util.logDebug(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
+        logInfo(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
     }
 
     public static void recordPosLog(String str, Player player) {
@@ -251,13 +251,13 @@ public class Util {
         PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
-        Util.logDebug(playerName+playerCommand+playerPos+pos1+pos2);
+        logInfo(playerName+playerCommand+playerPos+pos1+pos2);
     }
 
 
-    public static void logInfo(String str){
-        AkatZumaWorldEdit.LOGGER.info(str);
-    }
+//    public static void logInfo(String str){
+//        AkatZumaWorldEdit.LOGGER.info(str);
+//    }
 
     public static PlayerMapData getPMD(Player player){
         return AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
@@ -306,15 +306,28 @@ public class Util {
     }
 
     public static void setLoadSop() {
-        if(ModList.get().isLoaded("sophisticatedbackpacks")){
-            AkatZumaWorldEdit.loadSopBackpacks = true;
-        }
-        if(ModList.get().isLoaded("sophisticatedstorage")){
-            AkatZumaWorldEdit.loadSopStorage = true;
-        }
-        if(ModList.get().isLoaded("curios")){
-            AkatZumaWorldEdit.loadCurios = true;
-        }
+        ModList.get().getMods().forEach(modContainer -> {
+            if(modContainer.getModId().equals("sophisticatedbackpacks")){
+                AkatZumaWorldEdit.loadSopBackpacks = true;
+                return;
+            }
+            if(modContainer.getModId().equals("sophisticatedstorage")){
+                AkatZumaWorldEdit.loadSopStorage = true;
+                return;
+            }
+            if(modContainer.getModId().equals("curios")){
+                AkatZumaWorldEdit.loadCurios = true;
+            }
+        });
+//        if(ModList.get().isLoaded("sophisticatedbackpacks")){
+//            AkatZumaWorldEdit.loadSopBackpacks = true;
+//        }
+//        if(ModList.get().isLoaded("sophisticatedstorage")){
+//            AkatZumaWorldEdit.loadSopStorage = true;
+//        }
+//        if(ModList.get().isLoaded("curios")){
+//            AkatZumaWorldEdit.loadCurios = true;
+//        }
 
 
 

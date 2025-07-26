@@ -8,6 +8,7 @@ import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -73,6 +74,7 @@ public class PreviewingRender {
 
 
                     RenderLineBox.renderBlockLine(stack, pStart, pEnd, projectionMatrix, view);
+//                    RenderLinePos.renderBlockLineTess(stack, pStart, pEnd, view);
 
                     if(item instanceof ProjectorItem){
                         CopyBlock copyBlock = PMD.getCopyBlock();

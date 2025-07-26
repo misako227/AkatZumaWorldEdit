@@ -1,10 +1,11 @@
 package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
-import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
+import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -47,20 +48,15 @@ public class MySetBlock {
 
     }
 
-    //flag 是否更新方块
-    public static void setBlockAddUndo(ServerLevel world, BlockPos pos, BlockState blockState, Player player, UndoData undoMap) {
+
+    //flag 是否更新方块, true则更新方块
+    public static void setBlockAddUndo(ServerLevel world, BlockPos pos, BlockState blockState, boolean flag, UndoData undoMap) {
         BlockState old = world.getBlockState(pos);
         undoMap.put(pos, old);
 
-        //todo flag放到参数中
-        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
-        if(attribute != null) {
-            double v = attribute.getBaseValue();
-            boolean flag = v > 0;
-            if (flag) {
-                world.setBlock(pos, blockState, 2);
-                return;
-            }
+        if (flag) {
+            world.setBlock(pos, blockState, 2);
+            return;
         }
 
         if(old != blockState){
@@ -70,17 +66,13 @@ public class MySetBlock {
 
     }
 
-    public static void setBlock(ServerLevel world, BlockPos pos, BlockState blockState, Player player) {
+    //没有undo，给redo使用
+    public static void setBlock(ServerLevel world, BlockPos pos, BlockState blockState, boolean flag) {
         BlockState old = world.getBlockState(pos);
-//        undoMap.put(pos, old);
 
-        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
-        if(attribute != null) {
-            boolean flag = attribute.getValue() > 0;
-            if (flag) {
-                world.setBlock(pos, blockState, 2);
-                return;
-            }
+        if (flag) {
+            world.setBlock(pos, blockState, 2);
+            return;
         }
 
         if(old != blockState){
@@ -88,6 +80,31 @@ public class MySetBlock {
             sendBlockUpdated(world,pos );
         }
 
+    }
+
+    //遍历两个坐标放置方块，并添加到undo
+    public static void setBlockFromPos(BlockPos pos1, BlockPos pos2, ServerLevel serverlevel, Player player, BlockState blockState) {
+        int minX = Math.min(pos1.getX(), pos2.getX());
+        int minY = Math.min(pos1.getY(), pos2.getY());
+        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+        int maxX = Math.max(pos1.getX(), pos2.getX());
+        int maxY = Math.max(pos1.getY(), pos2.getY());
+        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+
+        PlayerMapData PMD = Util.getPMD(player);
+        UndoData undoData = new UndoData(serverlevel);
+        PMD.getUndoDataMap().push(undoData);//添加到undo
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    BlockPos v3 = new BlockPos(x, y, z);
+                    MySetBlock.setBlockAddUndo(serverlevel, v3, blockState, flag, undoData);
+
+                }
+            }
+        }
     }
 
     //弃用

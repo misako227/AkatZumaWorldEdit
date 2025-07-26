@@ -9,7 +9,7 @@ import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.brushPacket.C2SUseBrush;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
@@ -59,7 +59,7 @@ public class ClientEventRegister {
             KeyConflictContext.IN_GAME,
             KeyModifier.CONTROL,
             InputConstants.Type.KEYSYM,
-            85,
+            GLFW.GLFW_KEY_Z,
             "key.akatzuma");
 
 
@@ -140,7 +140,7 @@ public class ClientEventRegister {
                 lastTime=System.currentTimeMillis();
                 return;
             }
-            if(System.currentTimeMillis()-lastTime > 1000){
+            if(System.currentTimeMillis()-lastTime > 500){
                 SendCopyMessage.sendCommand("a undo");
                 lastTime=System.currentTimeMillis();
             }else{
@@ -217,7 +217,7 @@ public class ClientEventRegister {
         if (brushMap.isEmpty()) return;
         if (brushMap.get(item) == null) return;
 
-        BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player,120);
+        BlockHitResult blockHitResult = PlayerUtil.getPlayerPOVHitResult(player);
         BlockPos blockPos = blockHitResult.getBlockPos();
         if(player.level().getBlockState(blockPos).isAir()) return;
         NetworkingHandle.INSTANCE.sendToServer(new C2SUseBrush(blockPos));

@@ -1,14 +1,19 @@
 package com.z227.AkatZumaWorldEdit.utilities;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.server.permission.PermissionAPI;
+import net.minecraftforge.server.permission.nodes.PermissionNode;
 
 public class PlayerUtil {
     //获取玩家朝向，大于-45度 y = 1，小于45度 y = -1
@@ -57,7 +62,26 @@ public class PlayerUtil {
 
     }
     public static BlockHitResult getPlayerPOVHitResult(Player player){
-        return getPlayerPOVHitResult(player, 120);
+        return getPlayerPOVHitResult(player, 256);
     }
+
+
+    //获取玩家是否更新方块
+    public static boolean isSetUpdateBlock(Player player){
+        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+        boolean flag = false;
+        if(attribute != null) {
+            double v = attribute.getBaseValue();
+            flag = v > 0;
+        }
+        return flag;
+    }
+
+    public static boolean getPermission(Player player, PermissionNode<Boolean> permiss){
+        boolean per = PermissionAPI.getPermission((ServerPlayer) player, permiss);
+        System.out.println("check: "+ per);
+        return per;
+    }
+
 
 }

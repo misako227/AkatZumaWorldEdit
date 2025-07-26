@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -82,12 +83,11 @@ public class ReplaceBlock {
 
 
     public void replace(UndoData undoMap){
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         for (Map.Entry<BlockPos, BlockState> entry : this.replaceMap.entrySet()) {
             BlockPos pos = entry.getKey();
-            BlockState state = entry.getValue();
-//            undoMap.put(pos, state);
-//            this.world.setBlock(pos, this.outputState, 2);
-            MySetBlock.setBlockAddUndo(this.world, pos, this.outputState, this.player, undoMap);
+//            BlockState state = entry.getValue();
+            MySetBlock.setBlockAddUndo(this.world, pos, this.outputState, flag, undoMap);
         }
 //        MutableComponent blockName = this.outputState.getBlock().getName().withStyle(ChatFormatting.GREEN);
 //        Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));

@@ -4,7 +4,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -108,9 +108,10 @@ public class WoodAxeItem extends Item {
 
         String msg = pos.toString().replaceFirst("^MutableBlockPos", "§5");
         msg = msg.replaceFirst("^BlockPos", "§5");
-        Util.logDebug(player,component.getString()+msg);
+
 
         if(player.isLocalPlayer())return false;
+        Util.logInfo(player,component.getString()+msg);
 
             if(pos2!=null){
                 Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos, pos2);
