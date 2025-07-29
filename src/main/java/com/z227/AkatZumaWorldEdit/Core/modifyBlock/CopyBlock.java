@@ -13,18 +13,15 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class CopyBlock {
     BlockPos playerCopyPos,playerPastePos, copyPos1,copyPos2;
@@ -32,7 +29,7 @@ public class CopyBlock {
 
     //客户端渲染使用
     Map<BlockPos, BlockState> clientCopyMap;
-//    List<RenderBlockDirectionBase> clientCopyList;
+    Map<BlockPos, List<Direction>> clientCopyDirectionMap;
     Direction faceThePlayer;
     Direction playerClockWise;
 
@@ -62,7 +59,8 @@ public class CopyBlock {
 //        this.serverLevel =  serverLevel;
         this.copyMap = new HashMap<>();
         this.clientCopyMap = new HashMap<>();
-//        this.clientCopyList = new ArrayList<>();
+        this.clientCopyDirectionMap = new HashMap<>();
+
         this.faceThePlayer = player.getDirection().getOpposite(); //方块朝向玩家的一面
         this.playerClockWise = player.getDirection().getClockWise();
 //        this.pastePosMap = new HashMap<>();
@@ -101,7 +99,7 @@ public class CopyBlock {
             Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, pos2);
             int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
             // 选区大小
-            if (!PlaceBlock.checkArea(pos1, pos2, player, areaValue, volume)) {
+            if (!PlaceBlock.checkArea(player, areaValue, volume)) {
                 return false;
             }
 
@@ -139,45 +137,79 @@ public class CopyBlock {
                     //添加到copyMap
                     this.copyMap.put(transfPos, state);
 
-                    //客户端
-                    if(serverlevel.isClientSide){
-                        if(state.getBlock().equals(Blocks.AIR)) continue;
-//                        BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
-
-                        BlockPos newPos = pos.relative(faceThePlayer);
-
-                        // 朝向玩家的面
-                        if(Block.shouldRenderFace(state, serverlevel, pos, faceThePlayer, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                            continue;
-                        }
-
-                        // c
-                        Direction d = PosDirection.calcNextPosDirection(player.getOnPos(), pos);
-                        newPos = pos.relative(d);
-                        if(Block.shouldRenderFace(state, serverlevel, pos, d, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                            continue;
-                        }
-
-                        Direction face = Direction.UP;
-                        if(pos.getY() > playerCopyPos.getY()){
-                            face = Direction.DOWN;
-                        }
-                        newPos = pos.relative(face);
-                        if(Block.shouldRenderFace(state, serverlevel, pos, face, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                        }
-
-                    }
-
-
                 }
             }
         }
 
 
         return true;
+    }
+
+    //客户端渲染使用
+    @OnlyIn(Dist.CLIENT)
+    public void checkPosAddClientCopyMap(Level level){
+        BlockPos pos1 = this.copyPos1,
+                pos2 = this.copyPos2;
+
+        int cx = this.playerCopyPos.getX(),
+                cy = this.playerCopyPos.getY(),
+                cz = this.playerCopyPos.getZ();
+        pastePos1 = this.copyPos1.offset(-cx,-cy, -cz);
+        pastePos2 = this.copyPos2.offset(-cx,-cy, -cz);
+
+        for (int x = Math.min(pos1.getX(), pos2.getX()); x <= Math.max(pos1.getX(), pos2.getX()); x++) {
+            for (int y = Math.min(pos1.getY(), pos2.getY()); y <= Math.max(pos1.getY(), pos2.getY()); y++) {
+                for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
+                    BlockPos pos = new BlockPos(x,y,z);
+                    BlockState state = level.getBlockState(pos);
+                    BlockPos transfPos = new BlockPos(x-cx, y-cy, z-cz);
+
+                    //添加到copyMap
+//                    this.copyMap.put(transfPos, state);
+
+                    //客户端
+
+                    if(state.isAir()) continue;
+//                    BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
+                    ArrayList<Direction> direList = new ArrayList<>();
+                    BlockPos newPos = pos.relative(faceThePlayer);
+                    // 朝向玩家的面
+                    if(Block.shouldRenderFace(state, level, pos, faceThePlayer, newPos)){
+                        this.clientCopyMap.put(transfPos, state);
+                        direList.add(faceThePlayer);
+//                        this.clientCopyDirectionMap.put(transfPos, direList);
+//                        continue;
+                    }
+
+                    // 侧边面
+                    Direction face = PosDirection.calcNextPosDirection(player.getOnPos(), pos);
+
+                    newPos = pos.relative(face);
+                    if(Block.shouldRenderFace(state, level, pos, face, newPos)){
+                        this.clientCopyMap.put(transfPos, state);
+                        direList.add(face);
+//                        this.clientCopyDirectionMap.put(transfPos, face);
+//                        continue;
+                    }
+
+                    //上下面
+                    face = Direction.UP;
+                    if(pos.getY() > playerCopyPos.getY()){
+                        face = Direction.DOWN;
+                    }
+                    newPos = pos.relative(face);
+                    if(Block.shouldRenderFace(state, level, pos, face, newPos)){
+                        this.clientCopyMap.put(transfPos, state);
+                        direList.add(face);
+//                        this.clientCopyDirectionMap.put(transfPos, face);
+                    }
+                    if(!direList.isEmpty()){
+                        this.clientCopyDirectionMap.put(transfPos, direList);
+                    }
+                }
+            }
+        }
+
     }
     public boolean canCopyBlock(BlockPos pos1, BlockPos pos2, Player player, PlayerMapData PMD){
         if(!PlaceBlock.cheakFlag(PMD,player)){
@@ -225,8 +257,6 @@ public class CopyBlock {
             BlockState state = entry.getValue();
 
             state = isFlipZFace(state,Y);
-
-
 
             int x = pos.getX()*flipVec3.getX(),
                 y = pos.getY()*flipVec3.getY(),
@@ -553,5 +583,11 @@ public class CopyBlock {
         this.maskMap = new HashMap<>();
     }
 
+    public Map<BlockPos, List<Direction>> getClientCopyDirectionMap() {
+        return clientCopyDirectionMap;
+    }
 
+    public void setClientCopyDirectionMap(Map<BlockPos, List<Direction>> clientCopyDirectionMap) {
+        this.clientCopyDirectionMap = clientCopyDirectionMap;
+    }
 }

@@ -19,7 +19,7 @@ public class AkatZumaLogger {
     private static BufferedWriter writer;
     private static String currentDate;
     // 日志写入线程池
-    private final ExecutorService executor;
+    private final ExecutorService singleThreadExecutor;
     // 日志队列
 //    private final BlockingQueue<LogTask> logQueue;
 
@@ -29,7 +29,7 @@ public class AkatZumaLogger {
     }
 
     private AkatZumaLogger() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.singleThreadExecutor = Executors.newSingleThreadExecutor();
 //        this.logQueue = new LinkedBlockingQueue<>();
         initialize();
     }
@@ -98,11 +98,11 @@ public class AkatZumaLogger {
     public void info(String message) {
 //        logQueue.offer(new LogTask("INFO",  message));
 //        executor.submit(() -> writeLog("INFO", message + Thread.currentThread().getName()));
-        executor.submit(() -> writeLog("INFO", message));
+        singleThreadExecutor.submit(() -> writeLog("INFO", message));
     }
 
-    public ExecutorService getExecutor() {
-        return executor;
+    public ExecutorService getSingleThreadExecutor() {
+        return singleThreadExecutor;
     }
 
 
@@ -119,6 +119,7 @@ public class AkatZumaLogger {
 
             //判断是否是新的一天
             if(!currentDate.equals(dateStr)){
+                writer.close();//关闭当前文件,创建新的文件
                 updateLogFile();
             }
 
@@ -131,22 +132,22 @@ public class AkatZumaLogger {
             writer.flush();
 
         } catch (IOException e) {
-            System.err.println("Failed to write log: " + e.getMessage());
+            System.err.println("AkatZumaWorldEdit Failed to write log: " + e.getMessage());
         }
     }
 
     // 关闭日志系统
     public void shutdown() {
-        System.out.println("AkatZUma Logger 关闭.");
+        System.out.println("AkatZuma Logger 关闭.");
 
-        executor.shutdown();
+        singleThreadExecutor.shutdown();
         try {
             writer.close();
-            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
+            if (!singleThreadExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                singleThreadExecutor.shutdownNow();
             }
         } catch (Exception e) {
-            executor.shutdownNow();
+            singleThreadExecutor.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }

@@ -217,7 +217,7 @@ public class BindInvPosCommand {
 
             List<Map<Integer, Integer>> blockInInvMap = null;
             if(n > 0 && !player.isCreative()){
-                blockInInvMap = PlaceBlock.checkInv(blockName, 1, 1, player, blockState);
+                blockInInvMap = PlaceBlock.checkInvNum(blockName, 1, 1, player, blockState);
                 if (blockInInvMap == null ) {
                     return false;
                 }

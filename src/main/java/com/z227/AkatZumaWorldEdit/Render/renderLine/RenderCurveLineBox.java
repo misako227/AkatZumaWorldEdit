@@ -1,11 +1,9 @@
-package com.z227.AkatZumaWorldEdit.Render;
+package com.z227.AkatZumaWorldEdit.Render.renderLine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
-import com.z227.AkatZumaWorldEdit.Render.renderLine.OptifinePipelineProvider;
-import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;

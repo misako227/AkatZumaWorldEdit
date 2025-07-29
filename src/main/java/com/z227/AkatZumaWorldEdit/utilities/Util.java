@@ -244,6 +244,7 @@ public class Util {
         logInfo(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
     }
 
+    // 记录复制、堆叠等没有指定方块的操作
     public static void recordPosLog(String str, Player player) {
         String playerName = logString(player.getName().getString());
         String playerPos = logString(player.getOnPos().toString());

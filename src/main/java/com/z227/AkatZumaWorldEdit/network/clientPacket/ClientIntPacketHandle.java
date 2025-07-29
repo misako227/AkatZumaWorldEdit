@@ -84,7 +84,7 @@ public class ClientIntPacketHandle {
         }else{//单人
             CopyBlock copyBlock = PMD.getCopyBlock();
             copyBlock.getClientCopyMap().clear();
-            copyBlock.checkPosAddCopyMap(level);
+            copyBlock.checkPosAddClientCopyMap(level);
         }
 
 

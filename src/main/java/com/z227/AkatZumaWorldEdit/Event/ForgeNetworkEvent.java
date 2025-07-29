@@ -195,7 +195,7 @@ public class ForgeNetworkEvent {
 
             return;
         }
-        //todo
+
         if(item instanceof WoodAxeItem){
             NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
             WoodAxeItem.clickPos(world,pos,player, true);

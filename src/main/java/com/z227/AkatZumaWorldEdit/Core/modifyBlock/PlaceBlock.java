@@ -131,6 +131,9 @@ public class PlaceBlock {
 
     //检查世界
     public static boolean cheakLevel(Level level, Player player) {
+        if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_World)){
+            return true;
+        }
         String worldName =  ((ServerLevelData)level.getLevelData()).getLevelName();
         String dimension = level.dimension().location().toString();
         String tempName = worldName + "/" + dimension;
@@ -143,7 +146,10 @@ public class PlaceBlock {
     }
 
 
-     public static boolean checkArea(BlockPos pos1, BlockPos pos2,Player player,int configVolume, int  volume){
+     public static boolean checkArea(Player player,int configVolume, int  volume){
+         if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_Area)){
+             return true;
+         }
          // 选区大小
          if(volume > configVolume){
 
@@ -155,6 +161,9 @@ public class PlaceBlock {
      }
 
     public static boolean checkBlackList(Player player, Integer n, MutableComponent deBlockName){
+        if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_Blacklist_Block)){
+            return true;
+        }
         //检查黑名单
         if(n < 0){
             Component component = Component.literal(" ")
@@ -195,13 +204,19 @@ public class PlaceBlock {
     }
 
 
+    //是否检查背包
+    public static boolean checkInv(boolean checkInventory, int num, Player player){
+        return checkInventory && num > 0 && !player.isCreative() && !PlayerUtil.getPermission(player, PermissionEventRegister.Check_Inv);
+    }
+
+
     //检查背包是否足够，返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
     //@param blockName 扣除的物品名 minecraft:block
     //@param n 扣除的比例
     //@param volume 扣除的总数量
     //@param player 玩家
     //@param deBlockName 扣除物品的显示名
-    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, BlockState blockState) {
+    public static List<Map<Integer, Integer>> checkInvNum(String blockName, int n, int volume, Player player, BlockState blockState) {
         List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
         Map<Integer, Integer> chestMap;
@@ -324,6 +339,11 @@ public class PlaceBlock {
     public static boolean checkVip(Player player){
         return AkatZumaWorldEdit.VipPlayerMap.containsKey(player.getName().getString());
     }
+
+
+
+
+
     /*
       * @param deductNum -1扣除数量为选区大小，其他值为指定扣除数量，填入大于0的值
      */
@@ -351,7 +371,7 @@ public class PlaceBlock {
             MutableComponent deBlockName = blockState.getBlock().getName();
 
             // 选区大小
-            if (!checkArea(pos1, pos2, player, areaValue, volume)) {
+            if (!checkArea(player, areaValue, volume)) {
                 return false;
             }
 
@@ -386,13 +406,10 @@ public class PlaceBlock {
             }
 
 
-            //TODO 添加权限节点
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative() && !PlayerUtil.getPermission(player, PermissionEventRegister.Check_Inv)){
-//            if(checkInventory && n > 0){
-//
+            if(checkInv(checkInventory, n, player)){
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,volume,player,blockState);
+                blockInInvMap = checkInvNum(blockName,n,volume,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 
@@ -408,7 +425,7 @@ public class PlaceBlock {
         return true;
     }
 
-
+    //曲线放置List使用
     public static boolean canPlaceBlockList(List<BlockPos> posList, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel) {
 
         //如果不是管理员
@@ -458,17 +475,17 @@ public class PlaceBlock {
             //检查是否替换成本MOD的建筑耗材方块
             blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
             if(blockName.equals("akatzumaworldedit:building_consumable") ){
-                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+//                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
                 blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
             }
 
 
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative()){
+            if(checkInv(checkInventory, n, player)){
 //            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,deductNum,player,blockState);
+                blockInInvMap = checkInvNum(blockName,n,deductNum,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 

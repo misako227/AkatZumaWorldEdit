@@ -87,7 +87,7 @@ public class StackBlock {
             Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, pos2);
             int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
             // 选区大小
-            if (!PlaceBlock.checkArea(this.maxPos1, this.maxPos2, player, areaValue, volume)) {
+            if (!PlaceBlock.checkArea(player, areaValue, volume)) {
                 return false;
             }
         }

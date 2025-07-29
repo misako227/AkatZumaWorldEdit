@@ -1,4 +1,4 @@
-package com.z227.AkatZumaWorldEdit.Render;
+package com.z227.AkatZumaWorldEdit.Render.renderBlock;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -144,6 +144,32 @@ public class RenderBlockTest {
 
             // 根据当前面的方向和是否需要遮蔽，计算光照因子
             float pBrightness0 = pLevel.getShade(bakedquad.getDirection(), bakedquad.isShade());
+//            if (bakedquad.isTinted()) {
+//                putQuadData(pState, pConsumer, pPoseStack.last(), bakedquad, pBrightness0, pPackedLight,pPackedOverlay);
+//            }else{
+//                // 将计算结果放入顶点消费者
+//                putQuadData(pConsumer, pPoseStack.last(), bakedquad, pBrightness0, pPackedLight,pPackedOverlay);
+//            }
+            putQuadData(pState, pConsumer, pPoseStack.last(), bakedquad, pBrightness0,pBrightness0,pBrightness0,pBrightness0,pPackedLight,pPackedLight,pPackedLight,pPackedLight, pPackedOverlay);
+
+        }
+    }
+
+    public static void renderModelFaceFlat(BlockState pState, int pPackedLight, int pPackedOverlay, PoseStack pPoseStack, VertexConsumer pConsumer, List<BakedQuad> pQuads) {
+        float pBrightness0 = 1.0F;
+        for(BakedQuad bakedquad : pQuads) {
+            // 如果需要重新计算光照，根据当前面的方向计算受影响的方块位置
+//            if (pRepackLight) {
+//                // 计算形状的光照信息，并更新形状标记
+//                this.calculateShape(pLevel, pState, pPos, bakedquad.getVertices(), bakedquad.getDirection(), (float[])null, pShapeFlags);
+//                // 根据形状标记确定光照计算位置
+//                BlockPos blockpos = pShapeFlags.get(0) ? pPos.relative(bakedquad.getDirection()) : pPos;
+//                // 重新获取光照值
+//                pPackedLight = LevelRenderer.getLightColor(pLevel, pState, blockpos);
+//            }
+
+            // 根据当前面的方向和是否需要遮蔽，计算光照因子
+//            float pBrightness0 = pLevel.getShade(bakedquad.getDirection(), bakedquad.isShade());
 //            if (bakedquad.isTinted()) {
 //                putQuadData(pState, pConsumer, pPoseStack.last(), bakedquad, pBrightness0, pPackedLight,pPackedOverlay);
 //            }else{

@@ -46,7 +46,7 @@ public class CopyCommand {
             PMD.setCopyBlock(copyBlock);        //添加到PMD
             Component component = Component.translatable("chat.akatzuma.copyBlock.copy_success").append(String.valueOf(copyBlock.getCopyMap().size()));
             AkatZumaWorldEdit.sendAkatMessage(component,player);
-            NetworkingHandle.sendToClient(new SendToClient(11), player);
+            NetworkingHandle.sendToClient(new SendToClient(11), player);//发包给客户端同步数据
             Util.recordPosLog(context.getInput(),player);
         }
 

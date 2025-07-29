@@ -81,8 +81,8 @@ public class RenderLineBox {
 
 
             //设置渲染系统的着色器为位置颜色着色器，返回的是着色器对象
-//            RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+//            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
 
 //                PoseStack matrix = event.getPoseStack();
             stack.pushPose();
