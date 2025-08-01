@@ -134,6 +134,11 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.log.block_list_vip", "vip黑白名单: ");
             this.add("chat.akatzuma.log.block_list_size", "普通黑白名单数量: ");
             this.add("chat.akatzuma.log.block_list_vip_size", "vip黑白名单数量: ");
+
+
+            //schematic
+            this.add("chat.akatzuma.error.schematic_not_found", "§c 没有找的schem文件");
+            this.add("chat.command.file_name", "schem文件名字");
         }
     }
 

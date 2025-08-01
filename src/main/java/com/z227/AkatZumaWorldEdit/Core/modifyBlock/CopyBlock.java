@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -411,7 +412,7 @@ public class CopyBlock {
 //    }
 
 
-    public boolean pasteBlock(ServerLevel serverlevel, UndoData undoMap, boolean air) {
+    public boolean pasteBlock(ServerLevel serverlevel,UndoData undoMap,  boolean air) {
 //        boolean isLowHeight = false;
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
@@ -424,6 +425,7 @@ public class CopyBlock {
             return false;
         }
         this.PMD.getUndoDataMap().push(undoMap);
+        boolean update = PlayerUtil.isSetUpdateBlock(this.player);
 
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
 
@@ -443,10 +445,11 @@ public class CopyBlock {
             }
             BlockState old = serverlevel.getBlockState(transfPos);
 
-            undoMap.put(transfPos,old);
-            MySetBlock.shapeSetBlock(serverlevel, transfPos, state, isMask,maskFlag,maskMap,undoMap);
+//            undoMap.put(transfPos,old);
+            MySetBlock.shapeSetBlock(serverlevel, transfPos, state,isMask,maskFlag,maskMap, update, undoMap);
 //            serverlevel.setBlock(transfPos, state, 2);
         }
+//        MySetBlock.setShapeFromList(serverlevel,player, transfPos, state, isMask,maskFlag,maskMap,undoMap);
         return true;
 
     }

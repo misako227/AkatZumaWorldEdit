@@ -93,5 +93,7 @@
   "chat.akatzuma.log.block_list": "普通黑白名单: ",
   "chat.akatzuma.log.block_list_vip": "vip黑白名单: ",
   "chat.akatzuma.log.block_list_size": "普通黑白名单数量: ",
-  "chat.akatzuma.log.block_list_vip_size": "vip黑白名单数量: "
+  "chat.akatzuma.log.block_list_vip_size": "vip黑白名单数量: ",
+  "chat.akatzuma.error.schematic_not_found": "§c 没有找的schem文件",
+  "chat.command.file_name": "schem文件名字"
 }

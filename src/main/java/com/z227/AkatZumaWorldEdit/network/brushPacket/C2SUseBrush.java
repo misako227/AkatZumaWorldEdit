@@ -74,13 +74,23 @@ public class C2SUseBrush {
         }else {
             ShapeBase shapeBase = brushBase.getShapeBase();
             shapeBase.setPlayerPos(pos);
-            if(shapeBase.init()){
-                switch (shape){
-                    case "sphere" -> brushBase.getShapeBase().sphere();
-                    case "cyl" -> brushBase.getShapeBase().cyl();
-                    case "ellipse" -> brushBase.getShapeBase().ellipse();
-                }
-            }
+            shapeBase.place();
+//            if(shapeBase.init()){
+//                switch (shape){
+//                    case "sphere" -> {
+//                        shapeBase.sphere();
+//                        shapeBase.placeBlocks();
+//                    }
+//                    case "cyl" -> {
+//                        shapeBase.cyl();
+//                        shapeBase.placeBlocks();
+//                    }
+//                    case "ellipse" -> {
+//                        shapeBase.ellipse();
+//                        shapeBase.placeBlocks();
+//                    }
+//                }
+//            }
 
         }
         PMD.setFlag(true);

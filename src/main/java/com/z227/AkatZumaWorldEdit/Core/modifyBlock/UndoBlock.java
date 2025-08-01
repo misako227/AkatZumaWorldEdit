@@ -2,20 +2,22 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
 
 public class UndoBlock {
 
-    public static void undoSetBlock(ServerLevel world, UndoData undoMap, UndoData redoMap, boolean flag) {
+    public static void undoSetBlock(ServerLevel world, Player player, UndoData undoMap, UndoData redoMap) {
         //遍历undoMap
-        for (Map.Entry<BlockPos, BlockState> entry : undoMap.getUndoMap().entrySet()) {
-            BlockState old = world.getBlockState(entry.getKey());
-            redoMap.getUndoMap().put(entry.getKey(),old);
-//            world.setBlock(entry.getKey(),entry.getValue(), 2);
-            MySetBlock.setBlockAddUndo(world, entry.getKey(),entry.getValue(),flag, redoMap);
-        }
+//        for (Map.Entry<BlockPos, BlockState> entry : undoMap.getUndoMap().entrySet()) {
+//            BlockState old = world.getBlockState(entry.getKey());
+//            redoMap.getUndoMap().put(entry.getKey(),old);
+////            world.setBlock(entry.getKey(),entry.getValue(), 2);
+//            MySetBlock.setBlockFromMap(world, entry.getKey(),entry.getValue(),flag, redoMap);
+//        }
+        MySetBlock.setBlockFromMaps(undoMap.getUndoMap(), world, player, redoMap);
     }
 
 

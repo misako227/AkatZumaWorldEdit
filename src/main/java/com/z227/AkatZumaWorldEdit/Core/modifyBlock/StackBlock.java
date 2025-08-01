@@ -13,7 +13,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StackBlock {
@@ -27,6 +29,8 @@ public class StackBlock {
     boolean permissionLevel;
     Map<BlockPos, BlockState> stackMap;
     BlockState invBlockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+    //状先存到列表中，然后根据列表生成
+    List<BlockPos> posList;
 
     public StackBlock(PlayerMapData PMD, ServerLevel level, Player player, int num, int direction) {
         this.player = player;
@@ -37,6 +41,7 @@ public class StackBlock {
         this.pos1 = this.PMD.getPos1();
         this.pos2 = this.PMD.getPos2();
         this.stackMap = new HashMap<>();
+        posList = new ArrayList<>();
         switch (direction) {
             case 0 -> this.stackVec3 = player.getDirection().getNormal();
             case 2 -> this.stackVec3 = new Vec3i(0, 1, 0);
@@ -132,7 +137,7 @@ public class StackBlock {
                 }
 //                undoMap.put(newPos, world.getBlockState(newPos));
 //                world.setBlock(newPos, state, 2);
-                MySetBlock.setBlockAddUndo(world,newPos,state,flag,undoMap);
+                MySetBlock.setSingleBlockAddUndo(world,newPos,state,flag, undoMap);
             }
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);

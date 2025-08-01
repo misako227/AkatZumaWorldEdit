@@ -7,13 +7,13 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class UndoCommand {
@@ -75,13 +75,14 @@ public class UndoCommand {
             PMD.getUndoDataMap().pop();
             PMD.getRedoDataMap().push(redoMap);
 
-            AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
-            boolean flag = false;
-            if(attribute != null) {
-                double v = attribute.getBaseValue();
-                flag = v > 0;
-            }
-            UndoBlock.undoSetBlock(serverlevel,undoMap, redoMap, flag);
+//            AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+//            boolean flag = false;
+//            if(attribute != null) {
+//                double v = attribute.getBaseValue();
+//                flag = v > 0;
+//            }
+            UndoBlock.undoSetBlock(serverlevel, player, undoMap, redoMap);
+            Util.recordPosLog("/undo", player);
             component = Component.translatable("chat.akatzuma.success_undo").append("(" + undoMap.getUndoMap().size()+ ")").withStyle(ChatFormatting.DARK_PURPLE);
         }
 

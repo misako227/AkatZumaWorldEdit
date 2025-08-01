@@ -55,6 +55,7 @@ public class CommandHandler {
         DelVipPlayerCommand.register(dispatcher,commandbuildcontext);
         GetWorldNameCommand.register(dispatcher,commandbuildcontext);
         SetFlagCommand.register(dispatcher,commandbuildcontext);
+//        LoadSchematicCommand.register(dispatcher,commandbuildcontext);
 
 
     }

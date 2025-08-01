@@ -2,6 +2,7 @@ package com.z227.AkatZumaWorldEdit;
 
 import com.z227.AkatZumaWorldEdit.ConfigFile.AkatZumaLogger;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
+import com.z227.AkatZumaWorldEdit.ConfigFile.schematic.Schematic;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
 import net.minecraft.ChatFormatting;
@@ -121,6 +122,7 @@ public class AkatZumaWorldEdit{
 
     public static void init(){
 //        AkatZumaLog.onInitialize();
+        Schematic.init();
     }
 
 

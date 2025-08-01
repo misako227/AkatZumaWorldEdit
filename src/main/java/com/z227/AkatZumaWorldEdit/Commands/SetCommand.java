@@ -5,8 +5,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
@@ -58,10 +58,10 @@ public class SetCommand {
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
 //            Map<BlockPos,BlockState> undoMap  = new HashMap<>();
 //            PMD.getUndoDataMap().push(undoMap);//添加到undo
-            UndoData undoData = new UndoData(serverlevel);
-            PMD.getUndoDataMap().push(undoData);//添加到undo
+//            UndoData undoData = new UndoData(serverlevel);
+//            PMD.getUndoDataMap().push(undoData);//添加到undo
             //放置方块
-            PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoData);
+            MySetBlock.setBlockFromPos(bp1,bp2,serverlevel,player, blockState);
 //            Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
 //            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
 //            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);

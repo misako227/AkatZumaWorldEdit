@@ -6,8 +6,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
-import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -63,14 +61,13 @@ public class LineCommand {
 //                if(drawLine(pos1, pos2, serverLevel, blockState, player, PMD)){
 //                    SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
 //                }
-                UndoData undoMap  = new UndoData(serverLevel);
-                PMD.getUndoDataMap().push(undoMap);
+//                UndoData undoMap  = new UndoData(serverLevel);
+//                PMD.getUndoDataMap().push(undoMap);
                 List<BlockPos> posList = drawLine(pos1, pos2);
 
-                boolean flag = PlayerUtil.isSetUpdateBlock(player);
-                for (BlockPos pos : posList) {
-                    MySetBlock.setBlockAddUndo(serverLevel, pos, blockState, flag, undoMap);
-                }
+//                boolean flag = PlayerUtil.isSetUpdateBlock(player);
+                MySetBlock.setBlockFromList(posList, serverLevel, player,  blockState);
+
             }
         }
 

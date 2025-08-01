@@ -245,10 +245,10 @@ public class Util {
     }
 
     // 记录复制、堆叠等没有指定方块的操作
-    public static void recordPosLog(String str, Player player) {
+    public static void recordPosLog(String command, Player player) {
         String playerName = logString(player.getName().getString());
         String playerPos = logString(player.getOnPos().toString());
-        String playerCommand = logString(str);
+        String playerCommand = logString(command);
         PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));

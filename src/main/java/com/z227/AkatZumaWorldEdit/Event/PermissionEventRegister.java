@@ -24,6 +24,6 @@ public class PermissionEventRegister {
             PermissionTypes.BOOLEAN, ((player, playerUUID, context) -> player != null && player.hasPermissions(2)));
     @SubscribeEvent
     public static void permissionRegister(PermissionGatherEvent.Nodes event) {
-        event.addNodes(Check_Inv);
+        event.addNodes(Check_Inv, Check_World, Check_Blacklist_Block, Check_Area);
     }
 }

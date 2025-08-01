@@ -4,14 +4,15 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.RotateBlock;
-import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShapeBase {
@@ -24,14 +25,18 @@ public class ShapeBase {
     boolean permissionLevel,hollow,teleport,isMask,maskFlag;
     int height,blockNum;
     String shape;
-    BlockPos playerPos;
-    UndoData undoMap;
+    BlockPos playerPos; //生成时玩家位置
+//    UndoData undoMap;
     int xOrigin;
     int yOrigin;
     int zOrigin;
     float xAngle,yAngle,zAngle;
     //客户端渲染使用
     Map<BlockState, Boolean> maskMap;
+    //每个形状先存到列表中，然后根据列表生成
+    List<BlockPos> posList;
+
+
 
 
 
@@ -73,14 +78,44 @@ public class ShapeBase {
         if(checkPos(this.player,this.PMD)){
 
             if(PlaceBlock.canPlaceBlock(this.pos1,this.pos2,this.world,this.player,this.blockState,this.blockNum, this.permissionLevel)) {
-                this.undoMap  = new UndoData(this.world);
-                PMD.getUndoDataMap().push(undoMap);
+//                this.undoMap  = new UndoData(this.world);
+//                PMD.getUndoDataMap().push(undoMap);
 //                this.world.setBlock(this.pos1, Blocks.COBBLESTONE.defaultBlockState(), 2);
 //                this.world.setBlock(this.pos2, Blocks.COBBLESTONE.defaultBlockState(), 2);
+                posList = new ArrayList<>();
                 return true;
             }
 
 
+        }
+        return false;
+    }
+
+    public void placeBlocks(){
+        MySetBlock.setShapeFromList(this.posList, (ServerLevel) this.world, this.player, this.blockState, this.isMask, this.maskFlag, this.maskMap);
+        if(teleport){
+            player.teleportTo( this.playerPos.getX(),this.playerPos.getY()+this.height,this.playerPos.getZ());
+        }
+    }
+
+    public boolean place(){
+        if(init()){
+            switch (shape){
+                case "sphere" -> {
+                    sphere();
+                    placeBlocks();
+                }
+                case "cyl" -> {
+                    cyl();
+                    placeBlocks();
+                }
+                case "ellipse" -> {
+                    ellipse();
+                    placeBlocks();
+                }
+
+            }
+            return true;
         }
         return false;
     }
@@ -151,11 +186,13 @@ public class ShapeBase {
         return PlaceBlock.checkLowHeight(pos1, pos2, player);
     }
 
+    //圆柱体
     public void cyl(){
         int xOrigin = this.playerPos.getX();
         int yOrigin = this.playerPos.getY();
         int zOrigin = this.playerPos.getZ();
 
+//        boolean updateBlock = PlayerUtil.isSetUpdateBlock(player);
         double step = 180.0 / (Math.PI * radius);
         for (int i = 0; i < this.height; i++) {
             if (this.radius > 50 && !hollow) { //半径大于50的实心圆
@@ -164,13 +201,14 @@ public class ShapeBase {
                         if (x * x + z * z <= radius * radius) {
                             BlockPos pos = new BlockPos(x + xOrigin, yOrigin+i, z + zOrigin);
                             pos = RotateBlock.rotateCyl(xAngle, yAngle, zAngle,pos, xOrigin,yOrigin ,zOrigin);
-                            MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+//                            MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask, this.maskFlag, updateBlock, this.maskMap, this.undoMap);
+                            this.posList.add(pos);
                         }
                     }
                 }
-                if(teleport){
-                    player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
-                }
+//                if(teleport){
+//                    player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
+//                }
 
             } else { //空心圆
                 for (double x = 0; x < 360; x += step) {
@@ -180,16 +218,15 @@ public class ShapeBase {
                         for (double j = 0; j <= radius; j+=0.5) {
                             calcCylPos(xOrigin, yOrigin+i, zOrigin, x, j);
                         }
-                        if(teleport){
-                            player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
-                        }
+//                        if(teleport){
+//                            player.teleportTo(xOrigin,yOrigin+this.height+1,zOrigin);
+//                        }
 
                     }
                 }
             }
 
         }
-
 
     }
 
@@ -218,11 +255,12 @@ public class ShapeBase {
 //        int tranY = (int)position.y + yOrigin;
 //        int tranZ = (int)position.z + zOrigin;
 
-
-        BlockPos bp = new BlockPos(clyX, yOrigin, clyZ);
+//        boolean updateBlock = PlayerUtil.isSetUpdateBlock(player);
+        BlockPos blockPos = new BlockPos(clyX, yOrigin, clyZ);
 //        BlockPos bp = new BlockPos(tranX,tranY,tranZ);
-        bp = RotateBlock.rotateCyl(xAngle,yAngle,zAngle,bp, xOrigin,yOrigin ,zOrigin);
-        MySetBlock.shapeSetBlock(this.world, bp, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+        blockPos = RotateBlock.rotateCyl(xAngle,yAngle,zAngle,blockPos, xOrigin,yOrigin ,zOrigin);
+        this.posList.add(blockPos);
+//        MySetBlock.shapeSetBlock(this.world, bp, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
      }
 
     //计算圆柱体所在方形的坐标
@@ -257,10 +295,12 @@ public class ShapeBase {
     }
 
 
+    //生成球体
     public void sphere(){
         int centerX = this.playerPos.getX();
         int centerY = this.playerPos.getY();
         int centerZ = this.playerPos.getZ();
+//        boolean updateBlock = PlayerUtil.isSetUpdateBlock(player);
             for (int x = centerX - radius; x <= centerX + radius; x++) {
                 for (int y = centerY - radius; y <= centerY + radius; y++) {
                     for (int z = centerZ - radius; z <= centerZ + radius; z++) {
@@ -269,20 +309,22 @@ public class ShapeBase {
                         {//空心球
                             if (distance < radius && distance >= radius - 1){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+                                this.posList.add(pos);
+//                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
                             }
                         }else{//实心球
                             if (distance < radius){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+                                this.posList.add(pos);
+//                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
                             }
                         }
                     }
                 }
             }
-        if(teleport){
-            player.teleportTo(centerX,centerY+this.radius,centerZ);
-        }
+//        if(teleport){
+//            player.teleportTo(centerX,centerY+this.radius,centerZ);
+//        }
 
     }
 
@@ -319,6 +361,7 @@ public class ShapeBase {
 
 
 
+    //生成椭圆
     public void ellipse(){
         int centerX = this.playerPos.getX();
         int centerY = this.playerPos.getY();
@@ -339,14 +382,14 @@ public class ShapeBase {
                 for (double z = centerZ - radiusZ; z <= centerZ + radiusZ; z += density) {
                     if (isPointInsideEllipsoid(x, y, z, centerX, centerY, centerZ, radiusX, radiusY, radiusZ)) {
                         BlockPos blockPos = new BlockPos((int)x,(int)y, (int)z);
-                        MySetBlock.shapeSetBlock(this.world, blockPos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+//                        MySetBlock.shapeSetBlock(this.world, blockPos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
+                        this.posList.add(blockPos);
                     }
                 }
             }
         }
-        if(teleport){
-            player.teleportTo(centerX,centerY+radiusY,centerZ);
-        }
+
+
     }
 
     private boolean isPointInsideEllipsoid(int x, int y, int z, int xCenter, int yCenter, int zCenter,
