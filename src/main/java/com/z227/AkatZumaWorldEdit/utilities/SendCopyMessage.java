@@ -23,6 +23,7 @@ public class SendCopyMessage {
     }
 
 
+    // 发送成功消息并记录日志，推荐放置成功后使用
     public static void sendSuccessMsg(BlockState blockState, Player player,String command) {
         Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
         Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));

@@ -2,7 +2,6 @@ package com.z227.AkatZumaWorldEdit;
 
 import com.z227.AkatZumaWorldEdit.ConfigFile.AkatZumaLogger;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
-import com.z227.AkatZumaWorldEdit.ConfigFile.schematic.Schematic;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
 import net.minecraft.ChatFormatting;
@@ -111,18 +110,10 @@ public class AkatZumaWorldEdit{
 
     }
 
-    private static String getCallerCallerClassName() {
-        // 0 - this method
-        // 1 - caller
-        // 2 - caller caller
-        // 获取调用者调用者的类名
-        StackWalker.StackFrame caller = StackWalker.getInstance().walk(s -> s.skip(2).findFirst()).orElseThrow(() -> new AssertionError("No caller found"));
-        return caller.getClassName();
-    }
 
     public static void init(){
 //        AkatZumaLog.onInitialize();
-        Schematic.init();
+//        Schematic.init();
     }
 
 
@@ -132,26 +123,28 @@ public class AkatZumaWorldEdit{
 
 
 
-    //发送消息
+    //一般发送错误提示消息
     public static void sendAkatMessage(Component component, Player player){
 
         player.sendSystemMessage(Component.literal("[").append(Akat).append(component));
     }
 
-    public static void sendAkatMessage(String message, Component component, Player player){
-        player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
-    }
+//    public static void sendAkatMessage(String message, Component component, Player player){
+//        player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
+//    }
 
     public static void sendAkatMessage(Component component, String message,  Player player){
         player.sendSystemMessage(Component.literal("[").append(Akat).append(component).append(message));
     }
 
+    //一般发送复制消息使用
     public static void sendAkatMessage(Component message, Component component, Player player){
         player.sendSystemMessage(Component.literal("[").append(Akat).append(message).append(component));
     }
     public static void sendClientMessage(Component message, Component component, Player player){
         player.displayClientMessage(Component.literal("[").append(Akat).append(message).append(component),true);
     }
+    //一般发送放置成功消息，推荐使用SendCopyMessage.sendSuccessMsg()
     public static void sendClientMessage(Component component, Player player){
         player.displayClientMessage(Component.literal("[").append(Akat).append(component),true);
     }

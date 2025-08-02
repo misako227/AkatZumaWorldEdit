@@ -65,7 +65,7 @@ public class PasteCommand {
 
         if(copyBlock.pasteBlock(serverlevel, undoMap, air)){
             AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),player);
-            Util.recordPosLog("/a paste",player);
+//            Util.recordPosLog("/a paste",player);
         }
 
         // 设置标志位

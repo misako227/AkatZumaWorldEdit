@@ -1,5 +1,6 @@
 package com.z227.AkatZumaWorldEdit.network.brushPacket;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
@@ -9,6 +10,7 @@ import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -68,7 +70,9 @@ public class C2SUseBrush {
             //undo
             UndoData undoMap  = new UndoData(serverlevel);
 
-            copyBlock.pasteBlock(serverlevel, undoMap, copyBlock.isAir());
+            if(copyBlock.pasteBlock(serverlevel, undoMap, copyBlock.isAir())){
+                AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),player);
+            }
 
 
         }else {

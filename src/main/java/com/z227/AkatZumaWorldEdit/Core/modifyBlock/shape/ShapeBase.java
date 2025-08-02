@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.RotateBlock;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ public class ShapeBase {
         this.height = height;
         this.hollow = hollow;
         this.shape = shape;//要生成的类型
-        this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY(),player.getBlockZ());
+        this.playerPos = new BlockPos(player.getBlockX(),player.getBlockY(),player.getBlockZ());//使用笔刷的时候会修改为笔刷位置
         this.permissionLevel = player.hasPermissions(2);
         this.blockNum = 0;
         this.xOrigin = this.playerPos.getX();
@@ -96,6 +97,7 @@ public class ShapeBase {
         if(teleport){
             player.teleportTo( this.playerPos.getX(),this.playerPos.getY()+this.height,this.playerPos.getZ());
         }
+        Util.recordBrushLog(shape, this.player, this.pos1, this.pos2);//记录日志
     }
 
     public boolean place(){

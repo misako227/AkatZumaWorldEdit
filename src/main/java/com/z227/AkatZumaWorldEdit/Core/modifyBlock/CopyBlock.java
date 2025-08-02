@@ -6,6 +6,7 @@ import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
 import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -14,7 +15,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -419,9 +423,12 @@ public class CopyBlock {
 
         //修改pos1、2为粘贴时的坐标系
         getPastePosAndRotation(rotation);
+
+        //检测粘贴区域高度
+        if(!PlaceBlock.checkLowHeight(tempPastePos1, tempPastePos2, player))return false;
         //粘帖前权限检查
 //        BlockPos pos1 = pastePos1,pos2= pastePos2;
-        if (!PlaceBlock.canPlaceBlock( tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel)){
+        if (!PlaceBlock.canPlaceBlock(tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel)){
             return false;
         }
         this.PMD.getUndoDataMap().push(undoMap);
@@ -443,12 +450,13 @@ public class CopyBlock {
             if(!air && state== Blocks.AIR.defaultBlockState()){
                 continue;
             }
-            BlockState old = serverlevel.getBlockState(transfPos);
+//            BlockState old = serverlevel.getBlockState(transfPos);
 
 //            undoMap.put(transfPos,old);
             MySetBlock.shapeSetBlock(serverlevel, transfPos, state,isMask,maskFlag,maskMap, update, undoMap);
 //            serverlevel.setBlock(transfPos, state, 2);
         }
+        Util.recordBrushLog("/paste",  player, this.tempPastePos1, this.tempPastePos2);
 //        MySetBlock.setShapeFromList(serverlevel,player, transfPos, state, isMask,maskFlag,maskMap,undoMap);
         return true;
 

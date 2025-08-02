@@ -255,6 +255,17 @@ public class Util {
         logInfo(playerName+playerCommand+playerPos+pos1+pos2);
     }
 
+    // 记录笔刷操作，手动填入笔刷位置
+    public static void recordBrushLog(String command, Player player, BlockPos pos1, BlockPos pos2) {
+        String playerName = logString(player.getName().getString());
+        String playerPos = logString(player.getOnPos().toString());
+        String playerCommand = logString(command);
+//        PlayerMapData PMD = getPMD(player);
+        String p1 = logString(String.valueOf(pos1));
+        String p2 = logString(String.valueOf(pos2));
+        logInfo(playerName+playerCommand+playerPos+p1+p2);
+    }
+
 
 //    public static void logInfo(String str){
 //        AkatZumaWorldEdit.LOGGER.info(str);
