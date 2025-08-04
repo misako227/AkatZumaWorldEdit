@@ -10,6 +10,14 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 - - -
 
 
+[权限节点](权限节点.md)
+
+
+<br>
+
+- - -
+
+
 ### 指令列表
 
  指令   | 描述  |
