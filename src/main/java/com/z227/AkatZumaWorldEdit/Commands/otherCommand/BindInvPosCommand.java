@@ -174,10 +174,12 @@ public class BindInvPosCommand {
 //        System.out.println(queryFlag);
 //        System.out.println(blockState);
 //        System.out.println(blockPos);
-
+//        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         if(setSingleBlock(world, blockPos, blockState, player, queryFlag)){
 //            world.setBlock(blockPos, blockState, 16);
-            MySetBlock.setBlockNotUpdate(world, blockPos,world.getBlockState(blockPos), blockState);
+//            UndoData undoData = new UndoData(world);
+
+            MySetBlock.setBlockFromList(List.of(blockPos),world, player, blockState );
         }
 
     }
@@ -214,7 +216,7 @@ public class BindInvPosCommand {
 
             List<Map<Integer, Integer>> blockInInvMap = null;
             if(n > 0 && !player.isCreative()){
-                blockInInvMap = PlaceBlock.checkInv(blockName, 1, 1, player, blockState);
+                blockInInvMap = PlaceBlock.checkInvNum(blockName, 1, 1, player, blockState);
                 if (blockInInvMap == null ) {
                     return false;
                 }

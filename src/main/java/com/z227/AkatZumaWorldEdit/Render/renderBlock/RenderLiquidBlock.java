@@ -1,7 +1,6 @@
-package com.z227.AkatZumaWorldEdit.Render;
+package com.z227.AkatZumaWorldEdit.Render.renderBlock;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -52,7 +51,7 @@ public class RenderLiquidBlock {
         VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.translucent());
 
         //关闭深度检测
-        RenderSystem.disableDepthTest();
+//        RenderSystem.disableDepthTest();
 
         Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         FluidState fluidState= blockState.getFluidState();
@@ -94,7 +93,7 @@ public class RenderLiquidBlock {
 
         stack.popPose();
 
-        RenderSystem.enableDepthTest();
+//        RenderSystem.enableDepthTest();
     }
 
 //    public static void drawBlock(PoseStack stack, BlockPos pos, BlockState blockState){

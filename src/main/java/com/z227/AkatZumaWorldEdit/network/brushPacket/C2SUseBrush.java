@@ -1,21 +1,21 @@
 package com.z227.AkatZumaWorldEdit.network.brushPacket;
 
+import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.ShapeBase;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class C2SUseBrush {
@@ -68,21 +68,33 @@ public class C2SUseBrush {
             copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
 
             //undo
-            Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+            UndoData undoMap  = new UndoData(serverlevel);
 
-            copyBlock.pasteBlock(serverlevel, undoMap, copyBlock.isAir());
+            if(copyBlock.pasteBlock(serverlevel, undoMap, copyBlock.isAir())){
+                AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),player);
+            }
 
 
         }else {
             ShapeBase shapeBase = brushBase.getShapeBase();
             shapeBase.setPlayerPos(pos);
-            if(shapeBase.init()){
-                switch (shape){
-                    case "sphere" -> brushBase.getShapeBase().sphere();
-                    case "cyl" -> brushBase.getShapeBase().cyl();
-                    case "ellipse" -> brushBase.getShapeBase().ellipse();
-                }
-            }
+            shapeBase.place();
+//            if(shapeBase.init()){
+//                switch (shape){
+//                    case "sphere" -> {
+//                        shapeBase.sphere();
+//                        shapeBase.placeBlocks();
+//                    }
+//                    case "cyl" -> {
+//                        shapeBase.cyl();
+//                        shapeBase.placeBlocks();
+//                    }
+//                    case "ellipse" -> {
+//                        shapeBase.ellipse();
+//                        shapeBase.placeBlocks();
+//                    }
+//                }
+//            }
 
         }
         PMD.setFlag(true);

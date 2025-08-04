@@ -54,8 +54,8 @@ public class EllipseCommand {
         ServerLevel serverlevel = context.getSource().getLevel();
 
         ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState, radius,radiusZ, height, hollow, "ellipse");
-        if(shapeBase.init()){
-            shapeBase.ellipse();
+        if(shapeBase.place()){
+//            shapeBase.ellipse();
             SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
         }
         // 设置标志位

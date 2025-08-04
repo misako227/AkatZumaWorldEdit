@@ -19,9 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LineCommand {
 
@@ -59,16 +57,17 @@ public class LineCommand {
                 return;
             }
 
-            if(PlaceBlock.canPlaceBlock(pos1,pos2,serverLevel,player,blockState,num, player.hasPermissions(2),PMD)){
+            if(PlaceBlock.canPlaceBlock(pos1,pos2,serverLevel,player,blockState,num, player.hasPermissions(2))){
 //                if(drawLine(pos1, pos2, serverLevel, blockState, player, PMD)){
 //                    SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
 //                }
-                Map<BlockPos, BlockState> undoMap  = new HashMap<>();
-                PMD.getUndoDataMap().push(undoMap);
+//                UndoData undoMap  = new UndoData(serverLevel);
+//                PMD.getUndoDataMap().push(undoMap);
                 List<BlockPos> posList = drawLine(pos1, pos2);
-                for (BlockPos pos : posList) {
-                    MySetBlock.setBlockNotUpdateAddUndo(serverLevel, pos, blockState, undoMap);
-                }
+
+//                boolean flag = PlayerUtil.isSetUpdateBlock(player);
+                MySetBlock.setBlockFromList(posList, serverLevel, player,  blockState);
+
             }
         }
 

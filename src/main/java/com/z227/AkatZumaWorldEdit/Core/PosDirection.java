@@ -44,6 +44,21 @@ public class PosDirection {
         }
     }
 
+    //根据叉乘计算旋转的角度
+    public static Direction calcDirection(Vec3i copyVec3, Vec3i pasteVec3, Direction Direction){
+//        BlockPos posVec3 = calcPosDirection(copyVec3, pasteVec3);
+        Vec3i v3= copyVec3.cross(pasteVec3);//-1 right, 1 left
+        switch (v3.getY() > 0 ? 1 : -1){
+            case -1:
+                return Direction.getCounterClockWise();
+            case  1:
+                return Direction.getClockWise();
+            default:
+                return Direction;
+
+        }
+    }
+
     //计算第二个坐标在第一个坐标的方向
     public static BlockPos calcPosDirection(BlockPos currentPos, BlockPos nextPos){
         BlockPos result ;
@@ -70,23 +85,35 @@ public class PosDirection {
     public static Direction calcNextPosDirection(BlockPos currentPos, BlockPos nextPos){
 
         double yaw = calcPosYaw(currentPos, nextPos);
+//        if(yaw > -45 && yaw < 45){
+//            return Direction.EAST;      //south
+//
+//        }else if(yaw > 45 && yaw < 135){
+//            return Direction.SOUTH;     //west
+//
+//        }else if(yaw > -135 && yaw < -45){
+//            return Direction.NORTH;     //east
+//
+//        }
 
         if(yaw > -45 && yaw < 45){
-            return Direction.EAST;
+            return Direction.SOUTH;      //south
 
         }else if(yaw > 45 && yaw < 135){
-            return Direction.SOUTH;
+            return Direction.WEST;     //west
 
         }else if(yaw > -135 && yaw < -45){
-            return Direction.NORTH;
+            return Direction.EAST;     //east
 
         }
 
-        return Direction.WEST;
+
+
+        return Direction.NORTH;      //north
 
     }
 
-
+    //计算从当前位置到下一个位置的偏航角（Yaw）
     public static double calcPosYaw(BlockPos currentPos, BlockPos nextPos){
         BlockPos vector = new BlockPos(nextPos.getX() - currentPos.getX(),
                 nextPos.getY() - currentPos.getY(),

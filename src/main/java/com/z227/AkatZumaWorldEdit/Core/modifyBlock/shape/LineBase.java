@@ -1,6 +1,6 @@
 package com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape;
 
-import com.z227.AkatZumaWorldEdit.Render.RenderCurveLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderCurveLineBox;
 import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;

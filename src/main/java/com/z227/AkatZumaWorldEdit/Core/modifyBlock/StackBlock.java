@@ -4,6 +4,7 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StackBlock {
@@ -26,6 +29,8 @@ public class StackBlock {
     boolean permissionLevel;
     Map<BlockPos, BlockState> stackMap;
     BlockState invBlockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
+    //状先存到列表中，然后根据列表生成
+    List<BlockPos> posList;
 
     public StackBlock(PlayerMapData PMD, ServerLevel level, Player player, int num, int direction) {
         this.player = player;
@@ -36,6 +41,7 @@ public class StackBlock {
         this.pos1 = this.PMD.getPos1();
         this.pos2 = this.PMD.getPos2();
         this.stackMap = new HashMap<>();
+        posList = new ArrayList<>();
         switch (direction) {
             case 0 -> this.stackVec3 = player.getDirection().getNormal();
             case 2 -> this.stackVec3 = new Vec3i(0, 1, 0);
@@ -53,7 +59,7 @@ public class StackBlock {
             calcMaxPos();
             if(!addStackMap())return false;
             //放置前权限检查
-            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState,-1, this.permissionLevel, this.PMD);
+            return PlaceBlock.canPlaceBlock(this.maxPos1, this.maxPos2, this.world, this.player, this.invBlockState,-1, this.permissionLevel);
         }
 //
         return false;
@@ -86,7 +92,7 @@ public class StackBlock {
             Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, pos2);
             int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
             // 选区大小
-            if (!PlaceBlock.checkArea(this.maxPos1, this.maxPos2, player, areaValue, volume)) {
+            if (!PlaceBlock.checkArea(player, areaValue, volume)) {
                 return false;
             }
         }
@@ -111,7 +117,7 @@ public class StackBlock {
         return true;
     }
 
-    public void stack(Map<BlockPos, BlockState> undoMap){
+    public void stack(UndoData undoMap){
         int x = this.stackVec3.getX(),
             y = this.stackVec3.getY(),
             z = this.stackVec3.getZ();
@@ -119,6 +125,7 @@ public class StackBlock {
             height = this.cube.getY(),
             width = this.cube.getZ();
         boolean isLowHeight = false;
+        boolean flag = PlayerUtil.isSetUpdateBlock(player);
         for (int i = 1; i <= stackNum; i++) {
             for (Map.Entry<BlockPos, BlockState> entry : stackMap.entrySet()) {
                 BlockPos pos = entry.getKey();
@@ -128,8 +135,9 @@ public class StackBlock {
                     isLowHeight=true;
                     continue;
                 }
-                undoMap.put(newPos, world.getBlockState(newPos));
-                world.setBlock(newPos, state, 2);
+//                undoMap.put(newPos, world.getBlockState(newPos));
+//                world.setBlock(newPos, state, 2);
+                MySetBlock.setSingleBlockAddUndo(world,newPos,state,flag, undoMap);
             }
         }
         AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.stack"),this.player);

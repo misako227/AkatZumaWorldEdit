@@ -74,8 +74,9 @@ public class CylinderCommand {
         ServerLevel serverlevel = context.getSource().getLevel();
 
         ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState, radius, height, hollow, "cyl",xAngle,yAngle,zAngle);
-        if(shapeBase.init()){
-            shapeBase.cyl();
+        if(shapeBase.place()){
+//            shapeBase.cyl();
+//            shapeBase.placeBlocks();
             SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
         }
         // 设置标志位

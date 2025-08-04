@@ -6,17 +6,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.StackBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StackCommand {
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
@@ -54,7 +50,7 @@ public class StackCommand {
         Player player = context.getSource().getPlayer();
         PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
         //undo
-        Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+        UndoData undoMap  = new UndoData(serverlevel);
         PMD.getUndoDataMap().push(undoMap);
 
         StackBlock stackBlock = new StackBlock(PMD,serverlevel,player,stackNum,direction);

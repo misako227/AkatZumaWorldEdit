@@ -5,8 +5,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.MySetBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,9 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SetCommand {
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
@@ -44,7 +43,7 @@ public class SetCommand {
 
         ServerPlayer player = context.getSource().getPlayer();
 
-        PlayerMapData PMD = AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID());
+        PlayerMapData PMD = Util.getPMD(player);
         BlockPos bp1= PMD.getPos1(), bp2 = PMD.getPos2();
 
 
@@ -57,10 +56,12 @@ public class SetCommand {
 
         //判断权限，背包等
         if(PlaceBlock.canSetBlock(bp1,bp2,serverlevel,player, blockState,playerPermission, PMD)){
-            Map<BlockPos,BlockState> undoMap  = new HashMap<>();
-            PMD.getUndoDataMap().push(undoMap);//添加到undo
+//            Map<BlockPos,BlockState> undoMap  = new HashMap<>();
+//            PMD.getUndoDataMap().push(undoMap);//添加到undo
+//            UndoData undoData = new UndoData(serverlevel);
+//            PMD.getUndoDataMap().push(undoData);//添加到undo
             //放置方块
-            PlaceBlock.traverseCube(bp1,bp2,serverlevel,player, blockState, undoMap);
+            MySetBlock.setBlockFromPos(bp1,bp2,serverlevel,player, blockState);
 //            Component blockName = blockState.getBlock().getName().withStyle(ChatFormatting.GREEN);
 //            Component setSuccess = Component.translatable("chat.akatzuma.set.success").append(blockName).append(Component.translatable("chat.akatzuma.undo.tip"));
 //            AkatZumaWorldEdit.sendClientMessage(setSuccess, player);

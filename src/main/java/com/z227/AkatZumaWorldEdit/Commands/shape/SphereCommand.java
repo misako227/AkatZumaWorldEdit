@@ -54,8 +54,9 @@ public class SphereCommand {
 
 
         ShapeBase shapeBase = new ShapeBase(PMD,serverlevel,player,blockState,radius, height,hollow, "sphere");
-        if(shapeBase.init()){
-            shapeBase.sphere();
+        if(shapeBase.place()){
+//            shapeBase.sphere();
+//            shapeBase.placeBlocks();
             SendCopyMessage.sendSuccessMsg(blockState,player, context.getInput());
         }
         // 设置标志位

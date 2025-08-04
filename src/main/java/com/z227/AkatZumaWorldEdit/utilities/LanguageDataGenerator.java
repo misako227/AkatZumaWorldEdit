@@ -83,6 +83,9 @@ public class LanguageDataGenerator {
             this.add("chat.akatzuma.success.add_viplayer", "添加成功 ");
             this.add("chat.akatzuma.success.del_viplayer", "删除成功 ");
             this.add("chat.akatzuma.error.not_viplayer", "没有找到:");
+            this.add("chat.akatzuma.get_world_name", "当前世界名字:");
+            this.add("chat.akatzuma.set_flag_state_1", "放置方块更新§a已开启");
+            this.add("chat.akatzuma.set_flag_state_0", "放置方块更新§c已关闭");
 
             this.add("chat.akatzuma.set.success", "已放置方块");
             this.add("chat.akatzuma.undo.tip", ",可以使用§d/a undo§f指令撤销操作");
@@ -123,34 +126,23 @@ public class LanguageDataGenerator {
             this.add("item.line_item.desc6", "§b Ctrl+Alt+右键§f删除所有点位");
             this.add("chat.akatzuma.line.delall", "§a 已删除所有点位");
 
+            //undo
+            this.add("chat.akatzuma.error.level_not_match", "§c请在原来的世界执行撤销操作");
+
+            //log
+            this.add("chat.akatzuma.log.block_list", "普通黑白名单: ");
+            this.add("chat.akatzuma.log.block_list_vip", "vip黑白名单: ");
+            this.add("chat.akatzuma.log.block_list_size", "普通黑白名单数量: ");
+            this.add("chat.akatzuma.log.block_list_vip_size", "vip黑白名单数量: ");
 
 
-            //++++++++++++++++++IMGUI
-            this.add("key.akatzumaworldedit.editmode", "打开编辑模式");
-            this.add("akatzuma.screen.edit_mode", "编辑模式界面");
-
-            //-----------------IMGUI
+            //schematic
+            this.add("chat.akatzuma.error.schematic_not_found", "§c 没有找的schem文件");
+            this.add("chat.command.file_name", "schem文件名字");
         }
     }
 
-    // 英文语言文件
-    public static class EnglishLanguageProvider extends LanguageProvider {
-        public EnglishLanguageProvider(PackOutput packOutput) {
-            super(packOutput,  AkatZumaWorldEdit.MODID,"en_us");
-        }
 
-        @Override
-        protected void addTranslations() {
-            this.add("chat.item.wood_axe.left", "left:");
-            this.add("chat.item.wood_axe.right", "right:");
-            this.add("item.akatzumaworldedit.wood_axe","§bwooden axe");
-            this.add("item.akatzumaworldedit.query_blockstate_item", "§bquery block state");
-
-            this.add("chat.akatzuma.success.add_viplayer", "添加成功:");
-            this.add("chat.akatzuma.success.del_viplayer", "删除成功:");
-            this.add("chat.akatzuma.error.not_viplayer",   "没有找到:");
-        }
-    }
 
 
 }

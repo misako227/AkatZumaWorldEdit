@@ -6,18 +6,14 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.PlaceBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class PasteCommand {
     public static void  register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext pContext) {
@@ -65,11 +61,11 @@ public class PasteCommand {
         copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
 
         //undo
-        Map<BlockPos, BlockState> undoMap  = new HashMap<>();
+        UndoData undoMap = new UndoData(serverlevel);
 
         if(copyBlock.pasteBlock(serverlevel, undoMap, air)){
             AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.paste"),player);
-            Util.recordPosLog("/a paste",player);
+//            Util.recordPosLog("/a paste",player);
         }
 
         // 设置标志位

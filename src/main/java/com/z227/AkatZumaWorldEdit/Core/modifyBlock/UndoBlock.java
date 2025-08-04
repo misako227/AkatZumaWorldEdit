@@ -2,29 +2,31 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
 
 public class UndoBlock {
 
-    public static void undoSetBlock(ServerLevel world, Map<BlockPos,BlockState> undoMap, Map<BlockPos,BlockState> redoMap) {
+    public static void undoSetBlock(ServerLevel world, Player player, UndoData undoMap, UndoData redoMap) {
         //遍历undoMap
-        for (Map.Entry<BlockPos, BlockState> entry : undoMap.entrySet()) {
-            BlockState old = world.getBlockState(entry.getKey());
-            redoMap.put(entry.getKey(),old);
-//            world.setBlock(entry.getKey(),entry.getValue(), 2);
-            MySetBlock.setBlockNotUpdate(world,entry.getKey(),old,entry.getValue());
-        }
+//        for (Map.Entry<BlockPos, BlockState> entry : undoMap.getUndoMap().entrySet()) {
+//            BlockState old = world.getBlockState(entry.getKey());
+//            redoMap.getUndoMap().put(entry.getKey(),old);
+////            world.setBlock(entry.getKey(),entry.getValue(), 2);
+//            MySetBlock.setBlockFromMap(world, entry.getKey(),entry.getValue(),flag, redoMap);
+//        }
+        MySetBlock.setBlockFromMaps(undoMap.getUndoMap(), world, player, redoMap);
     }
 
 
-    public static void redoSetBlock( ServerLevel world, Map<BlockPos,BlockState> redoMap) {
+    public static void redoSetBlock( ServerLevel world, UndoData redoMap, boolean flag) {
         //遍历
-        for (Map.Entry<BlockPos, BlockState> entry : redoMap.entrySet()) {
+        for (Map.Entry<BlockPos, BlockState> entry : redoMap.getUndoMap().entrySet()) {
 //            world.setBlock(entry.getKey(),entry.getValue(), 2);
-            BlockState old = world.getBlockState(entry.getKey());
-            MySetBlock.setBlockNotUpdate(world,entry.getKey(),old,entry.getValue());
+//            BlockState old = world.getBlockState(entry.getKey());
+            MySetBlock.setBlock(world,entry.getKey(), entry.getValue(), flag);
         }
     }
 

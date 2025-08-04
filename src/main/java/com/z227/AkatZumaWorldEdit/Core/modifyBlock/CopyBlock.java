@@ -5,6 +5,8 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
+import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -21,10 +23,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class CopyBlock {
     BlockPos playerCopyPos,playerPastePos, copyPos1,copyPos2;
@@ -32,7 +37,7 @@ public class CopyBlock {
 
     //客户端渲染使用
     Map<BlockPos, BlockState> clientCopyMap;
-//    List<RenderBlockDirectionBase> clientCopyList;
+    Map<BlockPos, List<Direction>> clientCopyDirectionMap;
     Direction faceThePlayer;
     Direction playerClockWise;
 
@@ -62,7 +67,8 @@ public class CopyBlock {
 //        this.serverLevel =  serverLevel;
         this.copyMap = new HashMap<>();
         this.clientCopyMap = new HashMap<>();
-//        this.clientCopyList = new ArrayList<>();
+        this.clientCopyDirectionMap = new HashMap<>();
+
         this.faceThePlayer = player.getDirection().getOpposite(); //方块朝向玩家的一面
         this.playerClockWise = player.getDirection().getClockWise();
 //        this.pastePosMap = new HashMap<>();
@@ -101,7 +107,7 @@ public class CopyBlock {
             Vec3i vec3 = PlaceBlock.calculateCubeDimensions(pos1, pos2);
             int volume =  vec3.getX() * vec3.getY()* vec3.getZ();
             // 选区大小
-            if (!PlaceBlock.checkArea(pos1, pos2, player, areaValue, volume)) {
+            if (!PlaceBlock.checkArea(player, areaValue, volume)) {
                 return false;
             }
 
@@ -139,44 +145,106 @@ public class CopyBlock {
                     //添加到copyMap
                     this.copyMap.put(transfPos, state);
 
-                    if(serverlevel.isClientSide){
-                        if(state.getBlock().equals(Blocks.AIR)) continue;
-//                        BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
-
-                        BlockPos newPos = pos.relative(faceThePlayer);
-
-                        // 朝向玩家的面
-                        if(Block.shouldRenderFace(state, serverlevel, pos, faceThePlayer, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                            continue;
-                        }
-
-                        // c
-                        Direction d = PosDirection.calcNextPosDirection(player.getOnPos(), pos);
-                        newPos = pos.relative(d);
-                        if(Block.shouldRenderFace(state, serverlevel, pos, d, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                            continue;
-                        }
-
-                        Direction face = Direction.UP;
-                        if(pos.getY() > playerCopyPos.getY()){
-                            face = Direction.DOWN;
-                        }
-                        newPos = pos.relative(face);
-                        if(Block.shouldRenderFace(state, serverlevel, pos, face, newPos)){
-                            this.clientCopyMap.put(transfPos, state);
-                        }
-
-                    }
-
-
                 }
             }
         }
 
 
         return true;
+    }
+
+    /**
+     * 将世界坐标转换到裁剪空间
+     */
+    private static Vector4f toClipCoords(Vec3 worldPos, Vec3 cameraPos, Matrix4f mvpMatrix) {
+        // 计算相对于相机的位置
+        float relX = (float) (worldPos.x - cameraPos.x);
+        float relY = (float) (worldPos.y - cameraPos.y);
+        float relZ = (float) (worldPos.z - cameraPos.z);
+
+        // 创建齐次坐标 (x, y, z, w=1)
+        Vector4f eyeCoords = new Vector4f(relX, relY, relZ, 1.0F);
+
+        // 应用 MVP 矩阵变换
+        Vector4f clipCoords = new Vector4f();
+        mvpMatrix.transform(eyeCoords, clipCoords);
+        return clipCoords;
+    }
+
+    public static boolean isOnEdge(int x, int y, int z,
+                                   int minX, int minY, int minZ,
+                                   int maxX, int maxY, int maxZ) {
+        // 检查是否在立方体边界上
+        boolean onXFace = (x == minX || x == maxX);
+        boolean onYFace = (y == minY || y == maxY);
+        boolean onZFace = (z == minZ || z == maxZ);
+
+        // 只要在任意一个面上就是边缘
+        return onXFace || onYFace || onZFace;
+    }
+
+    //客户端渲染使用
+    @OnlyIn(Dist.CLIENT)
+    public void checkPosAddClientCopyMap(Level level){
+        BlockPos pos1 = this.copyPos1,
+                pos2 = this.copyPos2;
+
+        int cx = this.playerCopyPos.getX(),
+                cy = this.playerCopyPos.getY(),
+                cz = this.playerCopyPos.getZ();
+        pastePos1 = this.copyPos1.offset(-cx,-cy, -cz);
+        pastePos2 = this.copyPos2.offset(-cx,-cy, -cz);
+
+        int minX = Math.min(pos1.getX(), pos2.getX());
+        int minY = Math.min(pos1.getY(), pos2.getY());
+        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+        int maxX = Math.max(pos1.getX(), pos2.getX());
+        int maxY = Math.max(pos1.getY(), pos2.getY());
+        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+
+
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    BlockPos pos = new BlockPos(x,y,z);
+                    BlockState state = level.getBlockState(pos);
+                    if(state.isAir()) continue;
+                    BlockPos transfPos = new BlockPos(x-cx, y-cy, z-cz);
+
+//                    BlockPos.MutableBlockPos mutableBlockPos = pos.mutable();
+                    ArrayList<Direction> direList = new ArrayList<>();
+                    BlockPos newPos = pos.relative(faceThePlayer);
+                    // 朝向玩家的面
+                    if(Block.shouldRenderFace(state, level, pos, faceThePlayer, newPos)){
+                        this.clientCopyMap.put(transfPos, state);
+                        direList.add(faceThePlayer);
+                        direList.add(faceThePlayer.getClockWise());
+                        direList.add(faceThePlayer.getCounterClockWise());
+                    }
+
+
+                    //上下面
+                    Direction face = Direction.UP;
+                    if(pos.getY() > player.getEyePosition().y()){
+                        face = Direction.DOWN;
+                    }
+                    newPos = pos.relative(face);
+                    if(Block.shouldRenderFace(state, level, pos, face, newPos)){
+                        this.clientCopyMap.put(transfPos, state);
+                        direList.add(face);
+//                        this.clientCopyDirectionMap.put(transfPos, face);
+                    }
+
+
+
+                    if(!direList.isEmpty()){
+                        this.clientCopyDirectionMap.put(transfPos, direList);
+                    }
+                }
+            }
+        }
+
     }
     public boolean canCopyBlock(BlockPos pos1, BlockPos pos2, Player player, PlayerMapData PMD){
         if(!PlaceBlock.cheakFlag(PMD,player)){
@@ -194,6 +262,8 @@ public class CopyBlock {
 
         return true;
     }
+
+
 
 
 
@@ -225,8 +295,6 @@ public class CopyBlock {
 
             state = isFlipZFace(state,Y);
 
-
-
             int x = pos.getX()*flipVec3.getX(),
                 y = pos.getY()*flipVec3.getY(),
                 z = pos.getZ()*flipVec3.getZ();
@@ -238,6 +306,42 @@ public class CopyBlock {
 
 
         if(!player.isLocalPlayer())AkatZumaWorldEdit.sendAkatMessage(Component.translatable("chat.akatzuma.success.flip"), this.player);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void flipClientMap(boolean Y){
+        if(clientCopyDirectionMap != null){
+            Vec3i flipVec3 = new Vec3i(1,1,1);
+//        Rotation rotation = Rotation.NONE;
+            if(this.copyVec3.getX()==0){
+                flipVec3 =   new Vec3i(-1,1,1);
+//            rotation = Rotation.CLOCKWISE_180;
+            }else{
+                flipVec3 =   new Vec3i(1,1,-1);
+
+            }
+            if(Y)flipVec3 =   new Vec3i(1,-1,1);
+            Map<BlockPos, List<Direction>> flipClientDireMap = new HashMap<>();
+            for (Map.Entry<BlockPos, List<Direction>> entry : clientCopyDirectionMap.entrySet()) {
+                BlockPos pos = entry.getKey();
+                List<Direction> directions = entry.getValue();
+                //翻转上下
+                for (int i = 0; i < directions.size(); i++) {
+                    if(directions.get(i) == Direction.UP || directions.get(i) == Direction.DOWN){
+                        directions.set(i, directions.get(i).getOpposite());
+                    }
+                }
+
+                //翻转坐标
+                int x = pos.getX()*flipVec3.getX(),
+                        y = pos.getY()*flipVec3.getY(),
+                        z = pos.getZ()*flipVec3.getZ();
+                BlockPos transfPos = new BlockPos(x, y, z);
+                flipClientDireMap.put(transfPos, directions);
+            }
+            this.clientCopyDirectionMap.clear();
+            this.clientCopyDirectionMap = flipClientDireMap;
+        }
     }
 
     public BlockState isFlipZFace(BlockState state,boolean Y){
@@ -380,19 +484,23 @@ public class CopyBlock {
 //    }
 
 
-    public boolean pasteBlock(ServerLevel serverlevel, Map<BlockPos, BlockState> undoMap, boolean air) {
+    public boolean pasteBlock(ServerLevel serverlevel,UndoData undoMap,  boolean air) {
 //        boolean isLowHeight = false;
         //计算玩家朝向旋转的角度
         Rotation rotation = PosDirection.calcDirection(this.copyVec3,this.pasteVec3);
 
         //修改pos1、2为粘贴时的坐标系
         getPastePosAndRotation(rotation);
+
+        //检测粘贴区域高度
+        if(!PlaceBlock.checkLowHeight(tempPastePos1, tempPastePos2, player))return false;
         //粘帖前权限检查
 //        BlockPos pos1 = pastePos1,pos2= pastePos2;
-        if (!PlaceBlock.canPlaceBlock( tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel, this.PMD)){
+        if (!PlaceBlock.canPlaceBlock(tempPastePos1, tempPastePos2,serverlevel, this.player, this.invBlockState ,-1, this.permissionLevel)){
             return false;
         }
         this.PMD.getUndoDataMap().push(undoMap);
+        boolean update = PlayerUtil.isSetUpdateBlock(this.player);
 
         for (Map.Entry<BlockPos, BlockState> entry : this.copyMap.entrySet()) {
 
@@ -410,12 +518,13 @@ public class CopyBlock {
             if(!air && state== Blocks.AIR.defaultBlockState()){
                 continue;
             }
-            BlockState old = serverlevel.getBlockState(transfPos);
+//            BlockState old = serverlevel.getBlockState(transfPos);
+//            undoMap.put(transfPos,old);
+            MySetBlock.shapeSetBlock(serverlevel, transfPos, state,isMask,maskFlag,maskMap, update, undoMap);
 
-            undoMap.put(transfPos,old);
-            MySetBlock.shapeSetBlock(serverlevel, transfPos, state, isMask,maskFlag,maskMap,undoMap);
-//            serverlevel.setBlock(transfPos, state, 2);
         }
+        Util.recordBrushLog("/paste",  player, this.tempPastePos1, this.tempPastePos2);
+//        MySetBlock.setShapeFromList(serverlevel,player, transfPos, state, isMask,maskFlag,maskMap,undoMap);
         return true;
 
     }
@@ -552,5 +661,11 @@ public class CopyBlock {
         this.maskMap = new HashMap<>();
     }
 
+    public Map<BlockPos, List<Direction>> getClientCopyDirectionMap() {
+        return clientCopyDirectionMap;
+    }
 
+    public void setClientCopyDirectionMap(Map<BlockPos, List<Direction>> clientCopyDirectionMap) {
+        this.clientCopyDirectionMap = clientCopyDirectionMap;
+    }
 }

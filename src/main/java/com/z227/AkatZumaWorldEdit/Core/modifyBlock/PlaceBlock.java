@@ -4,9 +4,11 @@ package com.z227.AkatZumaWorldEdit.Core.modifyBlock;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
+import com.z227.AkatZumaWorldEdit.Event.PermissionEventRegister;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.messagePacket.S2CInventoryNotEnough;
 import com.z227.AkatZumaWorldEdit.utilities.BlockStateString;
+import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.RemoveItem;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.ChatFormatting;
@@ -14,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -92,28 +93,26 @@ public class PlaceBlock {
 
 
     //遍历两个坐标之间的每个点
-    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState, Map<BlockPos,BlockState> undoMap) {
-        int minX = Math.min(pos1.getX(), pos2.getX());
-        int minY = Math.min(pos1.getY(), pos2.getY());
-        int minZ = Math.min(pos1.getZ(), pos2.getZ());
-        int maxX = Math.max(pos1.getX(), pos2.getX());
-        int maxY = Math.max(pos1.getY(), pos2.getY());
-        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-
-                    BlockPos v3 = new BlockPos(x, y, z);
-                    BlockState old =  world.getBlockState(v3);
-                    undoMap.put(v3,old);
-//                    world.setBlock(v3,blockState, 16);
-//                    world.sendBlockUpdated(v3, old,blockState,16);
-                    MySetBlock.setBlockNotUpdate(world,v3,old,blockState);
-
-                }
-            }
-        }
-    }
+//    public static void traverseCube(BlockPos pos1, BlockPos pos2, ServerLevel world, Player player, BlockState blockState, UndoData undoMap) {
+//        int minX = Math.min(pos1.getX(), pos2.getX());
+//        int minY = Math.min(pos1.getY(), pos2.getY());
+//        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+//        int maxX = Math.max(pos1.getX(), pos2.getX());
+//        int maxY = Math.max(pos1.getY(), pos2.getY());
+//        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+//        boolean flag = PlayerUtil.isSetUpdateBlock(player);
+//        for (int x = minX; x <= maxX; x++) {
+//            for (int y = minY; y <= maxY; y++) {
+//                for (int z = minZ; z <= maxZ; z++) {
+//
+//                    BlockPos v3 = new BlockPos(x, y, z);
+////                    world.sendBlockUpdated(v3, old,blockState,16);
+////                    MySetBlock.setBlockAddUndo(world, v3, blockState, flag, undoMap);
+//
+//                }
+//            }
+//        }
+//    }
 
 
     public static boolean cheakFlag(PlayerMapData PMD, Player player) {
@@ -128,6 +127,9 @@ public class PlaceBlock {
 
     //检查世界
     public static boolean cheakLevel(Level level, Player player) {
+        if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_World)){
+            return true;
+        }
         String worldName =  ((ServerLevelData)level.getLevelData()).getLevelName();
         String dimension = level.dimension().location().toString();
         String tempName = worldName + "/" + dimension;
@@ -140,7 +142,10 @@ public class PlaceBlock {
     }
 
 
-     public static boolean checkArea(BlockPos pos1, BlockPos pos2,Player player,int configVolume, int  volume){
+     public static boolean checkArea(Player player,int configVolume, int  volume){
+         if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_Area)){
+             return true;
+         }
          // 选区大小
          if(volume > configVolume){
 
@@ -152,6 +157,9 @@ public class PlaceBlock {
      }
 
     public static boolean checkBlackList(Player player, Integer n, MutableComponent deBlockName){
+        if(PlayerUtil.getPermission(player, PermissionEventRegister.Check_Blacklist_Block)){
+            return true;
+        }
         //检查黑名单
         if(n < 0){
             Component component = Component.literal(" ")
@@ -192,13 +200,19 @@ public class PlaceBlock {
     }
 
 
+    //是否检查背包
+    public static boolean checkInv(boolean checkInventory, int num, Player player){
+        return checkInventory && num > 0 && !player.isCreative() && !PlayerUtil.getPermission(player, PermissionEventRegister.Check_Inv);
+    }
+
+
     //检查背包是否足够，返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
     //@param blockName 扣除的物品名 minecraft:block
     //@param n 扣除的比例
     //@param volume 扣除的总数量
     //@param player 玩家
     //@param deBlockName 扣除物品的显示名
-    public static List<Map<Integer, Integer>> checkInv(String blockName, int n, int volume, Player player, BlockState blockState) {
+    public static List<Map<Integer, Integer>> checkInvNum(String blockName, int n, int volume, Player player, BlockState blockState) {
         List<Map<Integer, Integer>> temp = new ArrayList<>();
         Map<Integer, Integer> blockInInvMap = Util.findBlockInPlayerInv(player, blockName);
         Map<Integer, Integer> chestMap;
@@ -277,7 +291,7 @@ public class PlaceBlock {
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
         //如果不是管理员
-        return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel, PMD);
+        return canPlaceBlock(pos1, pos2, world, player, blockState, -1, permissionLevel);
     }
 
     public static boolean canSetBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int num, boolean permissionLevel, PlayerMapData PMD) {
@@ -285,7 +299,7 @@ public class PlaceBlock {
         if(!checkPos(pos1, pos2, player, PMD))return false;
 
         //如果不是管理员
-        return canPlaceBlock(pos1, pos2, world, player, blockState, num, permissionLevel, PMD);
+        return canPlaceBlock(pos1, pos2, world, player, blockState, num, permissionLevel);
     }
 
 
@@ -322,7 +336,15 @@ public class PlaceBlock {
         return AkatZumaWorldEdit.VipPlayerMap.containsKey(player.getName().getString());
     }
 
-    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel, PlayerMapData PMD) {
+
+
+
+
+    /*
+      * @param deductNum -1扣除数量为选区大小，其他值为指定扣除数量，填入大于0的值
+     */
+
+    public static boolean canPlaceBlock(BlockPos pos1, BlockPos pos2, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel) {
 
         //如果不是管理员
         if (!permissionLevel) {
@@ -345,7 +367,7 @@ public class PlaceBlock {
             MutableComponent deBlockName = blockState.getBlock().getName();
 
             // 选区大小
-            if (!checkArea(pos1, pos2, player, areaValue, volume)) {
+            if (!checkArea(player, areaValue, volume)) {
                 return false;
             }
 
@@ -380,13 +402,10 @@ public class PlaceBlock {
             }
 
 
-            //TODO 添加权限节点
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative()){
-//            if(checkInventory && n > 0){
-//
+            if(checkInv(checkInventory, n, player)){
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,volume,player,blockState);
+                blockInInvMap = checkInvNum(blockName,n,volume,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 
@@ -402,7 +421,7 @@ public class PlaceBlock {
         return true;
     }
 
-
+    //曲线放置List使用
     public static boolean canPlaceBlockList(List<BlockPos> posList, Level world, Player player, BlockState blockState,int deductNum,  boolean permissionLevel) {
 
         //如果不是管理员
@@ -452,17 +471,17 @@ public class PlaceBlock {
             //检查是否替换成本MOD的建筑耗材方块
             blockName = isReplaceToBuildItem(player,blockName,blackWhiteMap);
             if(blockName.equals("akatzumaworldedit:building_consumable") ){
-                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
+//                deBlockName = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState().getBlock().getName();
                 blockState = AkatZumaWorldEdit.Building_Consumable_Block.get().defaultBlockState();
             }
 
 
             //检查背包 && 是否无限制放置
-            if(checkInventory && n > 0 && !player.isCreative()){
+            if(checkInv(checkInventory, n, player)){
 //            if(checkInventory && n > 0){
 //
                 //返回一个map为物品的槽位和数量，返回null则背包为空或者数量不够
-                blockInInvMap = checkInv(blockName,n,deductNum,player,blockState);
+                blockInInvMap = checkInvNum(blockName,n,deductNum,player,blockState);
                 if(blockInInvMap==null)return false;
             }
 

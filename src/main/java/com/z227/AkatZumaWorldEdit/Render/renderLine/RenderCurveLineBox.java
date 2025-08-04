@@ -1,4 +1,4 @@
-package com.z227.AkatZumaWorldEdit.Render;
+package com.z227.AkatZumaWorldEdit.Render.renderLine;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -12,6 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL11C;
 
 import java.util.List;
 
@@ -106,31 +107,47 @@ public class RenderCurveLineBox {
 //            Vec3 view = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
 
             //启动混合模式，控制颜色和深度值合并在一起，即RGB通道和透明度通道
-            GL11.glEnable(GL11.GL_BLEND);
+//            GL11.glEnable(GL11.GL_BLEND);
             //设置混合函数，设置混合函数是源颜色的透明通道和目标颜色的1-透明通道进行混合
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+            //禁用深度测试
+//            GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+
+
+
+//                PoseStack matrix = event.getPoseStack();
+            stack.pushPose();
             //抗锯齿
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            //禁用深度测试
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            // 禁用背面剔除
+            RenderSystem.disableCull();
+            RenderSystem.depthFunc(GL11C.GL_ALWAYS);
+            RenderSystem.lineWidth(3.0F);
 
             //设置渲染系统的着色器为位置颜色着色器，返回的是着色器对象
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-//                PoseStack matrix = event.getPoseStack();
-            stack.pushPose();
+
             stack.translate(-view.x, -view.y, -view.z);
 
+            OptifinePipelineProvider.beginLeash().run();
             vertexBuffer.bind();
             //绘制场景模型
             vertexBuffer.drawWithShader(stack.last().pose(), mat4f, RenderSystem.getShader());
             VertexBuffer.unbind();
+            OptifinePipelineProvider.endLeash().run();
+
+            RenderSystem.enableCull();
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+
             stack.popPose();
 
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+//            GL11.glEnable(GL11.GL_DEPTH_TEST);
             //关闭混合
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+//            GL11.glDisable(GL11.GL_BLEND);
+
         }
     }
 

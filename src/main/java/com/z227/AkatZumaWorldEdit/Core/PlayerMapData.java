@@ -3,6 +3,7 @@ package com.z227.AkatZumaWorldEdit.Core;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
+import com.z227.AkatZumaWorldEdit.Core.modifyBlock.UndoData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineBase;
 import com.z227.AkatZumaWorldEdit.utilities.BoundedStack;
 import net.minecraft.core.BlockPos;
@@ -38,8 +39,9 @@ public class PlayerMapData {
     private byte sopBackpackFlag = 2;
 
 
-    private BoundedStack<Map<BlockPos,BlockState>> undoDataMap;
-    private BoundedStack<Map<BlockPos,BlockState>> redoDataMap;
+    private BoundedStack<UndoData> undoDataMap;
+    private BoundedStack<UndoData> redoDataMap;
+
 
     private CopyBlock copyBlock;
 //    private CopyBlock copyBlockClient;
@@ -47,12 +49,12 @@ public class PlayerMapData {
     //连线工具
     private LineBase lineBase;
 
-
-    public  BoundedStack<Map<BlockPos,BlockState>> getUndoDataMap() {
-        return this.undoDataMap;
+    public BoundedStack<UndoData> getUndoDataMap() {
+        return undoDataMap;
     }
-    public  BoundedStack<Map<BlockPos,BlockState>> getRedoDataMap() {
-        return this.redoDataMap;
+
+    public BoundedStack<UndoData> getRedoDataMap() {
+        return redoDataMap;
     }
 
     public Map<Item, BrushBase> BrushMap;

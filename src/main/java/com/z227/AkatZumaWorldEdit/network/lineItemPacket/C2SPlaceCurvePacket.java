@@ -15,9 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class C2SPlaceCurvePacket {
@@ -59,12 +57,13 @@ public class C2SPlaceCurvePacket {
 
         if(PlaceBlock.canPlaceBlockList(curvePosList, level, player, blockState, curvePosList.size(), player.hasPermissions(2))){
             PlayerMapData PMD = Util.getPMD(player);
-            Map<BlockPos, BlockState> undoMap  = new HashMap<>();
-            PMD.getUndoDataMap().push(undoMap);
-            for(BlockPos pos : curvePosList){
-                MySetBlock.setBlockNotUpdateAddUndo(level, pos,blockState, undoMap);
-            }
-
+//            UndoData undoMap  = new UndoData(level);
+//            PMD.getUndoDataMap().push(undoMap);
+//            boolean flag = PlayerUtil.isSetUpdateBlock(player);
+//            for(BlockPos pos : curvePosList){
+//                MySetBlock.setBlockAddUndo(level, pos,blockState,flag, undoMap);
+//            }
+            MySetBlock.setBlockFromList(curvePosList, level, player, blockState);
 
             SendCopyMessage.sendSuccessMsg(blockState,player, "curve_item");
 

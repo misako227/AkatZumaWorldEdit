@@ -10,7 +10,7 @@ import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
 import com.z227.AkatZumaWorldEdit.Items.WoodAxeItem;
-import com.z227.AkatZumaWorldEdit.Render.RenderLineBox;
+import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.network.NetworkingHandle;
 import com.z227.AkatZumaWorldEdit.network.SendToClientCompoundTag;
 import com.z227.AkatZumaWorldEdit.network.posPacket.C2SPos1;
@@ -24,6 +24,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -45,6 +47,7 @@ import net.minecraftforge.registries.tags.ITag;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 
@@ -63,6 +66,17 @@ public class ForgeNetworkEvent {
             Util.getPMD(player).setInvPosNBT(bp.getCompoundNBT(),player);
         });
 //        AkatZumaWorldEdit.PlayerWEMap.get(player.getUUID()).setVip(Util.checkVip(playerName, Config.VIPPlayerList.get()));
+
+        AttributeInstance attribute = player.getAttribute(AkatZumaWorldEdit.SET_FLAG_ATTRIBUTE.get());
+        if (attribute == null) {
+            // 添加修饰符, 0 = 不更新方块，1 = 更新方块
+            attribute.addPermanentModifier(new AttributeModifier(
+                    UUID.randomUUID(),
+                    "set_flag",
+                    1,
+                    AttributeModifier.Operation.ADDITION
+            ));
+        }
 
     }
 
@@ -90,13 +104,16 @@ public class ForgeNetworkEvent {
     public static void ServerStarted(ServerStartedEvent event){
         addTagsToMap(Config.BLACKListTags.get(), AkatZumaWorldEdit.defaultBlockMap);
         addTagsToMap(Config.VIPBLACKListTags.get(), AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
-
         int defaultSize = AkatZumaWorldEdit.defaultBlockMap.size();
         int vipSize = AkatZumaWorldEdit.VipBlockMap.size();
-        Util.logDebug("普通黑白名单："+AkatZumaWorldEdit.defaultBlockMap);
-        Util.logDebug("vip黑白名单："+AkatZumaWorldEdit.VipBlockMap);
-        AkatZumaWorldEdit.LOGGER.info("普通黑白名单总数：" + defaultSize + "，vip黑白名单总数："+ vipSize);
+
+        AkatZumaWorldEdit.LOGGER.info("加载黑名单标签完成");
+//        Util.logInfo("："+AkatZumaWorldEdit.defaultBlockMap);
+//        Util.logInfo("："+AkatZumaWorldEdit.VipBlockMap);
+        Util.logInfo(
+                Component.translatable("chat.akatzuma.log.block_list_size").getString()
+                + defaultSize + ", "
+                + Component.translatable("chat.akatzuma.log.block_list_vip_size").getString() + vipSize);
         Util.setLoadSop();
     }
 
@@ -148,7 +165,7 @@ public class ForgeNetworkEvent {
 
             ITag<Block> tempTag =  ForgeRegistries.BLOCKS.tags().getTag(BlockTags.create(new ResourceLocation(tagName.group(1), tagName.group(2))));
             if(tempTag.size()==0) return;
-            tempTag.forEach(block -> {output.put(BlockStateString.getBlockName(block), -1);});
+            tempTag.forEach(block -> {output.put(BlockStateString.getBlockName(block), -2);});
         });
 
     }
@@ -178,6 +195,7 @@ public class ForgeNetworkEvent {
 
             return;
         }
+
         if(item instanceof WoodAxeItem){
             NetworkingHandle.INSTANCE.sendToServer(new C2SPos1(pos));
             WoodAxeItem.clickPos(world,pos,player, true);
