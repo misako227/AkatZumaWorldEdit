@@ -34,14 +34,14 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBlock {
-    private static VertexBuffer vertexBuffer;
-    public static boolean requestedRefresh = false;
-
-    public static void updateBLockVertexBuffer() {
-        vertexBuffer = null;
-        requestedRefresh = true;
-
-    }
+//    private static VertexBuffer vertexBuffer;
+//    public static boolean requestedRefresh = false;
+//
+//    public static void updateBLockVertexBuffer() {
+//        vertexBuffer = null;
+//        requestedRefresh = true;
+//
+//    }
 
     public static void renderBlock(CopyBlock copyBlock, PoseStack stack, Player player, Matrix4f projectionMatrix, Vec3 camera) {
         if(copyBlock == null) return;
@@ -76,9 +76,12 @@ public class RenderBlock {
             BlockPos pos = entry.getKey();
             BlockPos pastePos = pos.rotate(rotation);
             pastePos = pastePos.offset(player.getOnPos());
-//            pastePos = pastePos.offset(copyBlock.getPlayerCopyPos().relative(Direction.UP, 10));
             BlockState state = entry.getValue().rotate(rotation);
 
+//            BlockPos pastePos = pos.rotate(Rotation.NONE);
+//            pastePos = pastePos.offset(copyBlock.getPlayerCopyPos().relative(Direction.UP, 2));
+//            BlockState state = entry.getValue();
+//
 //            if(!state.getFluidState().isEmpty()){
 //                RenderLiquidBlock.drawLiquid(stack,pastePos, state);
 //
@@ -154,7 +157,7 @@ public class RenderBlock {
 //        BitSet bitSet = new BitSet(3);
 
         for (Direction direction : directions) {
-            direction = getDirectionRotate(direction,rotation);
+//            direction = getDirectionRotate(direction,rotation);
             // 获取当前方向的四边形列表
             List<BakedQuad> quads = bakedModel.getQuads(blockState, direction, randomSource, ModelData.EMPTY, null);
             RenderBlockTest.renderModelFaceFlat( blockState,15728880,655363, stack, vertexConsumer, quads);

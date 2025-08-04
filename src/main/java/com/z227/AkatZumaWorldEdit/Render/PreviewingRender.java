@@ -4,18 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
-import com.z227.AkatZumaWorldEdit.Core.PosDirection;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Render.renderBlock.RenderBlock;
 import com.z227.AkatZumaWorldEdit.Render.renderBlock.RenderBlockTest;
-import com.z227.AkatZumaWorldEdit.Render.renderBlock.RenderLiquidBlock;
 import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderCurveLineBox;
 import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -27,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,7 +36,6 @@ import org.joml.Matrix4f;
 
 import java.util.BitSet;
 import java.util.List;
-import java.util.Map;
 
 
 @Mod.EventBusSubscriber(modid = AkatZumaWorldEdit.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -112,47 +107,46 @@ public class PreviewingRender {
 
 
 
-    public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
-        if(copyBlock == null) return;
-        int size = copyBlock.getClientCopyMap().size();
-        if(size == 0 || size > 100000) return;
-
-        VertexConsumer vertexConsumerB = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.cutout());
-
-
-        copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
-        copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
-//        copyBlock.setPlayerPastePos(copyBlock.getPlayerCopyPos().relative(Direction.UP, 10));// TODO: 2025/7/26 0026
-//        copyBlock.setPasteVec3(copyBlock.getCopyVec3());//粘帖时朝向
-
-        //计算玩家朝向旋转的角度
-        Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
-
-        RandomSource randomSource = RandomSource.create();
-        randomSource.setSeed(42L);
-        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        Level level = Minecraft.getInstance().level;
-        Map<BlockPos, List<Direction>> clientCopyDirectionMap = copyBlock.getClientCopyDirectionMap();
-        for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getClientCopyMap().entrySet()){
-
-
-            BlockPos pos = entry.getKey();
-            //根据玩家朝向旋转复制内容
-
-            BlockPos pastePos = pos.rotate(rotation);
-            pastePos = pastePos.offset(player.getOnPos());
-            BlockState state = entry.getValue().rotate(rotation);
-
-            if(!state.getFluidState().isEmpty()){
-                RenderLiquidBlock.drawLiquid(stack,pastePos, state);
-
-            }else{
-                drawBlock(stack,vertexConsumerB, pastePos, state, clientCopyDirectionMap.get(pos), level, randomSource,camvec);
-            }
-
-        }
-
-    }
+//    public static void drawCopyBlock(CopyBlock copyBlock,PoseStack stack, Player player){
+//        if(copyBlock == null) return;
+//        int size = copyBlock.getClientCopyMap().size();
+//        if(size == 0 || size > 100000) return;
+//
+//        VertexConsumer vertexConsumerB = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.cutout());
+//
+//
+//        copyBlock.setPlayerPastePos(player.getOnPos());//粘帖时位置
+//        copyBlock.setPasteVec3(player.getDirection().getNormal());//粘帖时朝向
+//
+//
+//        //计算玩家朝向旋转的角度
+//        Rotation rotation = PosDirection.calcDirection(copyBlock.getCopyVec3(),copyBlock.getPasteVec3());
+//
+//        RandomSource randomSource = RandomSource.create();
+//        randomSource.setSeed(42L);
+//        Vec3 camvec = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+//        Level level = Minecraft.getInstance().level;
+//        Map<BlockPos, List<Direction>> clientCopyDirectionMap = copyBlock.getClientCopyDirectionMap();
+//        for (Map.Entry<BlockPos, BlockState> entry : copyBlock.getClientCopyMap().entrySet()){
+//
+//
+//            BlockPos pos = entry.getKey();
+//            //根据玩家朝向旋转复制内容
+//
+//            BlockPos pastePos = pos.rotate(rotation);
+//            pastePos = pastePos.offset(player.getOnPos());
+//            BlockState state = entry.getValue().rotate(rotation);
+//
+//            if(!state.getFluidState().isEmpty()){
+//                RenderLiquidBlock.drawLiquid(stack,pastePos, state);
+//
+//            }else{
+//                drawBlock(stack,vertexConsumerB, pastePos, state, clientCopyDirectionMap.get(pos), level, randomSource,camvec);
+//            }
+//
+//        }
+//
+//    }
 
     public static void drawBlock(PoseStack stack,VertexConsumer vertexConsumer,BlockPos pos,BlockState blockState,List<Direction> directions, Level level,RandomSource randomSource,Vec3 camvec){
 

@@ -78,9 +78,7 @@ public class PlayerUtil {
     }
 
     public static boolean getPermission(Player player, PermissionNode<Boolean> permiss){
-        boolean per = PermissionAPI.getPermission((ServerPlayer) player, permiss);
-        System.out.println("check: "+ per);//todo
-        return per;
+        return PermissionAPI.getPermission((ServerPlayer) player, permiss);
     }
 
 

@@ -22,7 +22,7 @@ public class MySetBlock {
    ////////////////////////////////////////////////// shape //////////////////////////////////////////////
     //flag 是否更新方块, true则更新方块
     public static void setShapeBlockAddUndo(ServerLevel world, BlockPos pos, BlockState blockState, BlockState old,  UndoData undoMap) {
-        undoMap.put(pos, old);
+        undoMap.putIfAbsent(pos, old);
         if(old != blockState){
             setBlockState(world,pos,blockState,false);
             sendBlockUpdated(world,pos );
@@ -30,6 +30,7 @@ public class MySetBlock {
 
     }
 
+    //paste笔刷使用
     public static void shapeSetBlock(Level world, BlockPos pos, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap, boolean updateBlock, UndoData undoMap) {
 
         BlockState old = world.getBlockState(pos);
@@ -53,7 +54,7 @@ public class MySetBlock {
 
     }
 
-    public static void setShapeFromList(Collection<BlockPos> posList, ServerLevel serverlevel, Player player, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap) {
+    public static void setShapeFromList(Map<BlockPos, BlockState> posMap, ServerLevel serverlevel, Player player, BlockState blockState, boolean isMask, boolean maskFlag, Map maskMap) {
 
         PlayerMapData PMD = Util.getPMD(player);
         UndoData undoData = new UndoData(serverlevel);
@@ -62,8 +63,9 @@ public class MySetBlock {
 
 
         if (flag) {//原版更新方块
-            for (BlockPos v3 : posList) {
-                BlockState old = serverlevel.getBlockState(v3);
+            for (Map.Entry<BlockPos, BlockState> entry : posMap.entrySet()){
+                BlockPos v3 = entry.getKey();
+                BlockState old = entry.getValue();
                 if(isMask){//笔刷
                     if(maskFlag && maskMap.get(old) == null) {//白名单
                         return;
@@ -71,12 +73,13 @@ public class MySetBlock {
                         return;
                     }
                 }
-                undoData.put(v3, old);
+                undoData.putIfAbsent(v3, old);
                 serverlevel.setBlock(v3, blockState, 2);
             }
         }else{//不更新方块
-            for (BlockPos v3 : posList) {
-                BlockState old = serverlevel.getBlockState(v3);
+            for (Map.Entry<BlockPos, BlockState> entry : posMap.entrySet()){
+                BlockPos v3 = entry.getKey();
+                BlockState old = entry.getValue();
                 if(isMask){//笔刷
                     if(maskFlag && maskMap.get(old) == null) {//白名单
                         return;

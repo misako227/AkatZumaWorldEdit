@@ -140,7 +140,7 @@ public class ClientEventRegister {
                 lastTime=System.currentTimeMillis();
                 return;
             }
-            if(System.currentTimeMillis()-lastTime > 300){
+            if(System.currentTimeMillis()-lastTime > 200){
                 SendCopyMessage.sendCommand("a undo");
                 lastTime=System.currentTimeMillis();
             }else{

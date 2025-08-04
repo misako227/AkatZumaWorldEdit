@@ -11,9 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShapeBase {
@@ -35,7 +33,7 @@ public class ShapeBase {
     //客户端渲染使用
     Map<BlockState, Boolean> maskMap;
     //每个形状先存到列表中，然后根据列表生成
-    List<BlockPos> posList;
+    Map<BlockPos, BlockState> posMap;
 
 
 
@@ -83,7 +81,7 @@ public class ShapeBase {
 //                PMD.getUndoDataMap().push(undoMap);
 //                this.world.setBlock(this.pos1, Blocks.COBBLESTONE.defaultBlockState(), 2);
 //                this.world.setBlock(this.pos2, Blocks.COBBLESTONE.defaultBlockState(), 2);
-                posList = new ArrayList<>();
+                posMap = new HashMap<>();
                 return true;
             }
 
@@ -92,8 +90,14 @@ public class ShapeBase {
         return false;
     }
 
+    public void putMap(BlockPos pos){
+        if(posMap.containsKey(pos)) return;
+        BlockState old = world.getBlockState(pos);
+        posMap.put(pos, old);
+    }
+
     public void placeBlocks(){
-        MySetBlock.setShapeFromList(this.posList, (ServerLevel) this.world, this.player, this.blockState, this.isMask, this.maskFlag, this.maskMap);
+        MySetBlock.setShapeFromList(this.posMap, (ServerLevel) this.world, this.player, this.blockState, this.isMask, this.maskFlag, this.maskMap);
         if(teleport){
             player.teleportTo( this.playerPos.getX(),this.playerPos.getY()+this.height,this.playerPos.getZ());
         }
@@ -204,7 +208,7 @@ public class ShapeBase {
                             BlockPos pos = new BlockPos(x + xOrigin, yOrigin+i, z + zOrigin);
                             pos = RotateBlock.rotateCyl(xAngle, yAngle, zAngle,pos, xOrigin,yOrigin ,zOrigin);
 //                            MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask, this.maskFlag, updateBlock, this.maskMap, this.undoMap);
-                            this.posList.add(pos);
+                            putMap(pos);
                         }
                     }
                 }
@@ -261,7 +265,7 @@ public class ShapeBase {
         BlockPos blockPos = new BlockPos(clyX, yOrigin, clyZ);
 //        BlockPos bp = new BlockPos(tranX,tranY,tranZ);
         blockPos = RotateBlock.rotateCyl(xAngle,yAngle,zAngle,blockPos, xOrigin,yOrigin ,zOrigin);
-        this.posList.add(blockPos);
+        putMap(blockPos);
 //        MySetBlock.shapeSetBlock(this.world, bp, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
      }
 
@@ -311,13 +315,13 @@ public class ShapeBase {
                         {//空心球
                             if (distance < radius && distance >= radius - 1){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                this.posList.add(pos);
+                                putMap(pos);
 //                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
                             }
                         }else{//实心球
                             if (distance < radius){
                                 BlockPos pos = new BlockPos(x, y, z);
-                                this.posList.add(pos);
+                                putMap(pos);
 //                                MySetBlock.shapeSetBlock(this.world, pos, this.blockState, this.isMask,this.maskFlag,updateBlock,this.maskMap, this.undoMap);
                             }
                         }
@@ -383,9 +387,9 @@ public class ShapeBase {
             for (double y = centerY - radiusY; y <= centerY + radiusY; y += density) {
                 for (double z = centerZ - radiusZ; z <= centerZ + radiusZ; z += density) {
                     if (isPointInsideEllipsoid(x, y, z, centerX, centerY, centerZ, radiusX, radiusY, radiusZ)) {
-                        BlockPos blockPos = new BlockPos((int)x,(int)y, (int)z);
+                        BlockPos pos = new BlockPos((int)x,(int)y, (int)z);
 //                        MySetBlock.shapeSetBlock(this.world, blockPos, this.blockState, this.isMask,this.maskFlag,this.maskMap, this.undoMap);
-                        this.posList.add(blockPos);
+                        putMap(pos);
                     }
                 }
             }

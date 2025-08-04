@@ -5,7 +5,6 @@ import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPos;
 import com.z227.AkatZumaWorldEdit.Capability.BindInventoryPosCapability;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
-;
 import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import net.minecraft.client.Minecraft;
@@ -16,6 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
+
+;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientIntPacketHandle {
@@ -68,6 +69,7 @@ public class ClientIntPacketHandle {
         RenderLineBox.updateVertexBuffer();
     }
 
+    //  11
     public static void setClientCopyMap(){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
@@ -79,17 +81,20 @@ public class ClientIntPacketHandle {
         PlayerMapData PMD = Util.getPMD(player);
         if(!mc.isLocalServer()){//多人
             CopyBlock copyBlock = new CopyBlock(PMD, player);
-            copyBlock.checkPosAddCopyMap(level);
+//            copyBlock.checkPosAddCopyMap(level);
+            copyBlock.checkPosAddClientCopyMap(level);
             PMD.setCopyBlock(copyBlock);
         }else{//单人
             CopyBlock copyBlock = PMD.getCopyBlock();
             copyBlock.getClientCopyMap().clear();
             copyBlock.checkPosAddClientCopyMap(level);
+
         }
 
 
     }
 
+    // 12 | 13
     public static void setClientFlip(boolean up){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
@@ -99,6 +104,7 @@ public class ClientIntPacketHandle {
         CopyBlock copyBlock = PMD.getCopyBlock();
         if(copyBlock != null){
             copyBlock.flip(up,true);
+            copyBlock.flipClientMap(up);
         }
 
 
