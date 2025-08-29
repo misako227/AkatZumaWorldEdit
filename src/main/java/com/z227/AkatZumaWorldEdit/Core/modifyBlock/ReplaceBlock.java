@@ -69,7 +69,7 @@ public class ReplaceBlock {
                 for (int z = Math.min(pos1.getZ(), pos2.getZ()); z <= Math.max(pos1.getZ(), pos2.getZ()); z++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = world.getBlockState(pos);
-                    if (state == this.inputState || state.getBlock().defaultBlockState() == this.inputState){
+                    if (state == this.inputState){
                         this.replaceMap.put(pos, state);
                     }
                 }

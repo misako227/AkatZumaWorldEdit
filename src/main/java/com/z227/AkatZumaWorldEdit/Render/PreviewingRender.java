@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.CopyBlock;
-import com.z227.AkatZumaWorldEdit.Event.ImguiMethod.ImguiMouseEvent;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Render.renderBlock.RenderBlock;
@@ -26,7 +25,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -97,15 +95,15 @@ public class PreviewingRender {
                         RenderCurveLineBox.renderBlockLine(stack, player, projectionMatrix, camera);
                     }
 
-                    if(ImguiMouseEvent.pos1 != null && ImguiMouseEvent.pos2 != null){
-                        stack.pushPose();
-                        stack.translate(-view.x, -view.y, -view.z);
-                        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
-                        renderLine(vertexConsumer, stack, ImguiMouseEvent.pos1,ImguiMouseEvent.pos2, 1.0F, 0.0F,0.0F, 1.0F);
-                        AABB aabb = new AABB(ImguiMouseEvent.pos1, ImguiMouseEvent.pos2);
-                        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 1.0F, 1.0F, 0.0F, 1.0F);
-                        stack.popPose();
-                    }
+//                    if(ImguiMouseEvent.pos1 != null && ImguiMouseEvent.pos2 != null){
+//                        stack.pushPose();
+//                        stack.translate(-view.x, -view.y, -view.z);
+//                        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines());
+//                        renderLine(vertexConsumer, stack, ImguiMouseEvent.pos1,ImguiMouseEvent.pos2, 1.0F, 0.0F,0.0F, 1.0F);
+//                        AABB aabb = new AABB(ImguiMouseEvent.pos1, ImguiMouseEvent.pos2);
+//                        LevelRenderer.renderLineBox(stack, vertexConsumer, aabb, 1.0F, 1.0F, 0.0F, 1.0F);
+//                        stack.popPose();
+//                    }
 
 
                     return;
