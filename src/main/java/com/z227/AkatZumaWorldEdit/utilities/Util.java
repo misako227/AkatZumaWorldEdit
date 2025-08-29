@@ -11,6 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
@@ -241,7 +243,11 @@ public class Util {
         PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
-        logInfo(playerName+playerCommand+playerPos+logBlockName+pos1+pos2);
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        String worldName =  ((ServerLevelData)serverLevel.getLevelData()).getLevelName();
+        String dimension = serverLevel.dimension().location().toString();
+        String worldNameAndDimension = logString(worldName + "/" + dimension);
+        logInfo(playerName+playerCommand+playerPos+logBlockName+pos1+pos2+worldNameAndDimension);
     }
 
     // 记录复制、堆叠等没有指定方块的操作
@@ -252,7 +258,11 @@ public class Util {
         PlayerMapData PMD = getPMD(player);
         String pos1 = logString(String.valueOf(PMD.getPos1()));
         String pos2 = logString(String.valueOf(PMD.getPos2()));
-        logInfo(playerName+playerCommand+playerPos+pos1+pos2);
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        String worldName =  ((ServerLevelData)serverLevel.getLevelData()).getLevelName();
+        String dimension = serverLevel.dimension().location().toString();
+        String worldNameAndDimension = logString(worldName + "/" + dimension);
+        logInfo(playerName+playerCommand+playerPos+pos1+pos2+worldNameAndDimension);
     }
 
     // 记录笔刷操作，手动填入笔刷位置
@@ -263,7 +273,11 @@ public class Util {
 //        PlayerMapData PMD = getPMD(player);
         String p1 = logString(String.valueOf(pos1));
         String p2 = logString(String.valueOf(pos2));
-        logInfo(playerName+playerCommand+playerPos+p1+p2);
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        String worldName =  ((ServerLevelData)serverLevel.getLevelData()).getLevelName();
+        String dimension = serverLevel.dimension().location().toString();
+        String worldNameAndDimension = logString(worldName + "/" + dimension);
+        logInfo(playerName+playerCommand+playerPos+p1+p2+worldNameAndDimension);
     }
 
 
