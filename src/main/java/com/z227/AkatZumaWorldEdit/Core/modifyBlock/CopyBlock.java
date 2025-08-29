@@ -511,7 +511,7 @@ public class CopyBlock {
             //转到粘帖时的坐标系
             BlockPos transfPos = pos.offset(this.playerPastePos);
             //判断放置的高度是否超过最低高度，超过则忽略
-            if(transfPos.getY()< Config.LOWHeight.get()){
+            if(!player.hasPermissions(2) && transfPos.getY()< Config.LOWHeight.get()){
 //                isLowHeight=true;
                 continue;
             }
