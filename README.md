@@ -502,4 +502,5 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 
 * [建筑手杖](https://github.com/Theta-Dev/ConstructionWand)
 * [建筑小帮手](https://github.com/Direwolf20-MC/BuildingGadgets2)
+* [WorldEdit](https://github.com/enginehub/WorldEdit)
 * [WorldEditCUI](https://github.com/zbx1425/WorldEditCUI-Arch)
