@@ -28,3 +28,5 @@ forge*changelog.txt
 copy.bat
 run-data/config/fml.toml
 zh.txt
+libs
+/libs
