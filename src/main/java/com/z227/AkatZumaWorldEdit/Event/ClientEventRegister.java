@@ -5,7 +5,6 @@ import com.z227.AkatZumaWorldEdit.AkatZumaWorldEdit;
 import com.z227.AkatZumaWorldEdit.Commands.brush.BrushBase;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Core.modifyBlock.shape.LineItemEvent;
-import com.z227.AkatZumaWorldEdit.Event.ImguiMethod.ImguiMouseEvent;
 import com.z227.AkatZumaWorldEdit.Items.LineItem;
 import com.z227.AkatZumaWorldEdit.Items.ProjectorItem;
 import com.z227.AkatZumaWorldEdit.Items.QueryBlockStateItem;
@@ -17,6 +16,7 @@ import com.z227.AkatZumaWorldEdit.utilities.PlayerUtil;
 import com.z227.AkatZumaWorldEdit.utilities.SendCopyMessage;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
 import com.z227.ImGuiRender.EditModeData;
+import com.z227.ImGuiRender.render.LeftMenuRender;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -69,6 +69,13 @@ public class ClientEventRegister {
 
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_F12,
+            "key.akatzuma");
+
+    public static final KeyMapping BACKSPACE_KEY = new KeyMapping("key.akatzumaworldedit.backspace",
+            KeyConflictContext.IN_GAME,
+
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_BACKSPACE,
             "key.akatzuma");
 
 
@@ -142,11 +149,11 @@ public class ClientEventRegister {
         }
     }
 
-    //++ImGui Render
+    //+++ImGui Render
     @SubscribeEvent
     public static void onClickMouse(InputEvent.MouseButton.Pre event) {
 
-        if(EditModeData.getEditMode()){
+        if(EditModeData.isOpenEditMode()){
             int button = event.getButton();
             int action = event.getAction();
 
@@ -154,24 +161,18 @@ public class ClientEventRegister {
 
             switch (button) {
                 //长按左右键抓取鼠标到游戏
-//                case GLFW.GLFW_MOUSE_BUTTON_RIGHT: {
-//                    if(action == GLFW.GLFW_PRESS){
-//                        Minecraft.getInstance().mouseHandler.grabMouse();
-//                        event.setCanceled(true);
-//                    }else{
-//                        Minecraft.getInstance().mouseHandler.releaseMouse();
-//                        event.setCanceled(true);
-//                    }
-//                    break;
-//                }
-                //左键
                 case GLFW.GLFW_MOUSE_BUTTON_RIGHT: {
-//                    if(action == GLFW.GLFW_PRESS){
-                        ImguiMouseEvent.screenToWorld();
-//                    }
-
-
+                    if(action == GLFW.GLFW_PRESS){
+                        Minecraft.getInstance().mouseHandler.grabMouse();
+                        event.setCanceled(true);
+                    }else{
+                        Minecraft.getInstance().mouseHandler.releaseMouse();
+                        event.setCanceled(true);
+                    }
+                    break;
                 }
+
+
             }
 
 
@@ -179,7 +180,7 @@ public class ClientEventRegister {
 
 
     }
-
+    //---ImGui Render
 
 
 
@@ -192,22 +193,30 @@ public class ClientEventRegister {
         if (player == null)return;
 
 
-        //++++ImGui Render
+        //+++ImGui Render
 
         //ESC退出编辑模式
-        if(Util.isDownKey(GLFW.GLFW_KEY_ESCAPE) && EditModeData.getEditMode()){
-            EditModeData.setEditMode(false);
+        if(Util.isDownKey(GLFW.GLFW_KEY_ESCAPE) && EditModeData.isOpenEditMode()){
+            EditModeData.setOpenEditMode();
             return;
         }
 
 
         //按键切换编辑模式
         if (EDITMODE_KEY.consumeClick()) {
-            EditModeData.setEditMode();
+            EditModeData.setOpenEditMode();
             return;
         }
 
-        //----ImGui Render
+        if (BACKSPACE_KEY.consumeClick()) {
+            if(EditModeData.isOpenEditMode()){
+                EditModeData.getInstance().clear();
+                LeftMenuRender.currentMenu.updateVertexBuffer();
+            }
+            return;
+        }
+
+        //---ImGui Render
 
         if (UNDO_KEY.consumeClick()) {
             if(lastTime == -1){

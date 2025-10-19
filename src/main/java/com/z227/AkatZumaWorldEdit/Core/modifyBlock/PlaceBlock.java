@@ -31,7 +31,11 @@ import java.util.Map;
 
 public class PlaceBlock {
 
-    //判断能否放置方块 by ConstructionWand
+    //判断能否放置方块
+    /*
+     *  https://github.com/Theta-Dev/ConstructionWand
+     *  author: Theta-Dev
+     */
     public static Boolean isPlaceBlock(Level world, Player player, BlockPos blockPos, BlockState blockState){
 
         BlockSnapshot blockSnapshot = BlockSnapshot.create(world.dimension(), world, blockPos);

@@ -12,10 +12,12 @@ import net.minecraftforge.fml.common.Mod;
 @OnlyIn(Dist.CLIENT)
 public class ClientModEvent {
 
+    // 注册按键
     @SubscribeEvent
     public static void registerKey(RegisterKeyMappingsEvent event){
         event.register(ClientEventRegister.UNDO_KEY);
         event.register(ClientEventRegister.EDITMODE_KEY);
+        event.register(ClientEventRegister.BACKSPACE_KEY);
     }
 
 

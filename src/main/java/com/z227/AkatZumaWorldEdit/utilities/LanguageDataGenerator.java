@@ -139,6 +139,14 @@ public class LanguageDataGenerator {
             //schematic
             this.add("chat.akatzuma.error.schematic_not_found", "§c 没有找的schem文件");
             this.add("chat.command.file_name", "schem文件名字");
+
+
+            //+++ImGui
+            this.add("imgui.akatzuma.selection_mode", "功能");
+            this.add("imgui.akatzuma.selection_mode.sel", "选区");
+            this.add("imgui.akatzuma.selection_mode.copy", "复制");
+
+            //---ImGui
         }
     }
 

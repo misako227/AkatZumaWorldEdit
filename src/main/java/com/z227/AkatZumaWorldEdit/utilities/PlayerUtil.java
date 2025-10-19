@@ -62,7 +62,7 @@ public class PlayerUtil {
 
     }
     public static BlockHitResult getPlayerPOVHitResult(Player player){
-        return getPlayerPOVHitResult(player, 256);
+        return getPlayerPOVHitResult(player, 200);
     }
 
 

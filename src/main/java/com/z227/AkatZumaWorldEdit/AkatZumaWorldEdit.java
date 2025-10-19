@@ -5,6 +5,7 @@ import com.z227.AkatZumaWorldEdit.ConfigFile.Config;
 import com.z227.AkatZumaWorldEdit.Core.PlayerMapData;
 import com.z227.AkatZumaWorldEdit.Items.*;
 import com.z227.AkatZumaWorldEdit.utilities.ConfigFileUtil;
+import com.z227.ImGuiRender.EditModeData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -14,6 +15,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -114,7 +117,9 @@ public class AkatZumaWorldEdit{
     }
 
 
+    @OnlyIn(Dist.CLIENT)
     public static void init(){
+        EditModeData.init();
 //        AkatZumaLog.onInitialize();
 //        Schematic.init();
     }

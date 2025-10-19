@@ -29,7 +29,7 @@ public class EditModeScreen extends Screen {
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if (pKeyCode == 256 || pKeyCode == ClientEventRegister.EDITMODE_KEY.getKey().getValue()) {
             this.minecraft.setScreen((Screen)null);
-            EditModeData.setEditMode();
+            EditModeData.setOpenEditMode();
             return true;
         }else if(pKeyCode == 87){
 //            Minecraft.getInstance().options.keyUp.isDown();

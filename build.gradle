@@ -146,10 +146,10 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-//     flatDir {
-////         dir 'libs'
-//         dir "D:/oneself/akatzuma-world-edit/libs"
-//     }
+     flatDir {
+//         dir 'libs'
+         dir "libs"
+     }
     maven {
         url "https://cursemaven.com"
         content { includeGroup "curse.maven" }
@@ -175,6 +175,11 @@ dependencies {
     implementation fg.deobf("curse.maven:sophisticatedstorage-619320:4859704")
     implementation fg.deobf("curse.maven:sophisticatedbackpacks-422301:4859687")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.4.2+1.20.1")
+
+//    implementation fg.deobf(files("akatzuma_imgui:1.90.+"))
+
+    implementation fg.deobf("libs:akatzuma_imgui:1.90.0")
+//    implementation("libs:imgui:1.90.0")
 
 //    implementation fg.deobf("curse.maven:bigger-stacks-564896:4858160")
 

@@ -14,7 +14,7 @@ public class MouseHandlerMixin {
 
     @Inject(method = "onPress", at = @At(value = "HEAD"), cancellable = true)
     public void onPress(long pWindowPointer, int pButton, int pAction, int pModifiers, CallbackInfo ci) {
-        if(EditModeData.getEditMode()){
+        if(EditModeData.isOpenEditMode()){
             if(pButton != GLFW.GLFW_MOUSE_BUTTON_RIGHT){
                 ci.cancel();
             }
@@ -23,14 +23,14 @@ public class MouseHandlerMixin {
 
     @Inject(method = "grabMouse", at = @At(value = "HEAD"), cancellable = true)
     public void grabMouse(CallbackInfo ci) {
-        if(EditModeData.getEditMode() && !Util.isDownMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT)){
+        if(EditModeData.isOpenEditMode() && !Util.isDownMouse(GLFW.GLFW_MOUSE_BUTTON_RIGHT)){
             ci.cancel();
         }
     }
 
     @Inject(method = "onScroll", at = @At(value = "HEAD"), cancellable = true)
     public void onScroll(long pWindowPointer, double pXOffset, double pYOffset, CallbackInfo ci) {
-        if(EditModeData.getEditMode()){
+        if(EditModeData.isOpenEditMode()){
             ci.cancel();
         }
     }

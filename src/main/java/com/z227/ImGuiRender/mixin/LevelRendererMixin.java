@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LevelRendererMixin {
     @Inject(method = "renderLevel", at = @At(value = "HEAD"))
     public void renderLevel(PoseStack pPoseStack, float pPartialTick, long pFinishNanoTime, boolean pRenderBlockOutline, Camera pCamera, GameRenderer pGameRenderer, LightTexture pLightTexture, Matrix4f pProjectionMatrix, CallbackInfo ci) {
-        if(EditModeData.getEditMode()){
+        if(EditModeData.isOpenEditMode()){
             EditModeData.projectionMatrix = pProjectionMatrix;
             EditModeData.cameraRotation = pCamera.rotation();
         }

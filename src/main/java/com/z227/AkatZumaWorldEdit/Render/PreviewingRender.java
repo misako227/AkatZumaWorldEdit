@@ -12,6 +12,8 @@ import com.z227.AkatZumaWorldEdit.Render.renderBlock.RenderBlockTest;
 import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderCurveLineBox;
 import com.z227.AkatZumaWorldEdit.Render.renderLine.RenderLineBox;
 import com.z227.AkatZumaWorldEdit.utilities.Util;
+import com.z227.ImGuiRender.EditModeData;
+import com.z227.ImGuiRender.EditModeLevelRender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -47,6 +49,14 @@ public class PreviewingRender {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS) {
             return;
         }
+
+        //+++ ImGui
+        if(EditModeData.isOpenEditMode()){
+            EditModeLevelRender.render(event);
+            return;
+        }
+        //--- ImGui
+
         Player player = Minecraft.getInstance().player;
         if (player == null)return;
 

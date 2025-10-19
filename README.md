@@ -5,9 +5,14 @@
 
 MCMOD：https://www.mcmod.cn/class/13584.html
 
+### 本项目写的太烂且大部分代码使用AI生成，已无力维护
+
 <br>
 
+
+
 - - -
+
 
 
 [权限节点](权限节点.md)
@@ -485,3 +490,16 @@ MCMOD：https://www.mcmod.cn/class/13584.html
 ```log
   [Dev][a set minecraft:birch_planks][BlockPos{x=-103, y=63, z=63}][Birch Planks=Block{minecraft:birch_planks}][BlockPos{x=-107, y=64, z=63}][BlockPos{x=-107, y=65, z=62}]
 ```
+
+<br>
+ 
+- - -
+
+
+
+
+#### <font color=green>| </font> 参考的项目
+
+* [建筑手杖](https://github.com/Theta-Dev/ConstructionWand)
+* [建筑小帮手](https://github.com/Direwolf20-MC/BuildingGadgets2)
+* [WorldEditCUI](https://github.com/zbx1425/WorldEditCUI-Arch)

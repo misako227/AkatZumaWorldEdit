@@ -5,7 +5,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
 
-// by https://www.mcmod.cn/class/13662.html
+/*  by https://www.mcmod.cn/class/13662.html, https://github.com/zbx1425/WorldEditCUI-Arch
+ *  author:zbx1425
+ */
 
 /**
  * Optifine shaders uses a lot more frame buffers to render the world -- we have to make sure we're on the right one.

@@ -14,7 +14,7 @@ public class GuiMixin {
     @Inject(method = "renderCrosshair", at = @At(value = "HEAD"), cancellable = true)
     public void renderCrosshair(GuiGraphics pGuiGraphics, CallbackInfo ci) {
         // 如果处于编辑模式，则取消渲染准星
-        if(EditModeData.getEditMode()){
+        if(EditModeData.isOpenEditMode()){
             ci.cancel();
         }
     }
