@@ -14,7 +14,7 @@ archivesBaseName = 'akatzumaworldedit-forge1.19.2'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 jarJar.enable()
-jarJar.fromRuntimeConfiguration()
+//jarJar.fromRuntimeConfiguration()
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -232,13 +232,13 @@ tasks.named('jarJar') {
 }
 
 //
-jarJar {
-    // Include or exclude dependencies here from runtime configuration
-    dependencies {
-        // Exclude any dependency which begins with 'com.google.gson.'
-        include(dependency('org.joml:joml:1.10.5'))
-    }
-}
+//jarJar {
+//    // Include or exclude dependencies here from runtime configuration
+//    dependencies {
+//        // Exclude any dependency which begins with 'com.google.gson.'
+//        include(dependency('org.joml:joml:1.10.5'))
+//    }
+//}
 //
 
 
